@@ -33,10 +33,10 @@ public class BiDirectedGraphTest {
 		graph.putVertex("one", "one value");
 		graph.putVertex("two", "two value");
 		
-		graph.putEdge("one", "two", "one - two");
+		graph.putEdge(new EdgeKey<String>("one", "two"), "one - two");
 		
-		assertEquals("one - two", graph.getEdge("one", "two"));
-		assertEquals("one - two", graph.getEdge("two", "one"));
+		assertEquals("one - two", graph.getEdge(new EdgeKey<String>("one", "two")));
+		assertEquals("one - two", graph.getEdge(new EdgeKey<String>("two", "one")));
 	}
 	
 	@Test
@@ -52,15 +52,15 @@ public class BiDirectedGraphTest {
 		graph.putVertex("one", "one value");
 		graph.putVertex("two", "two value");
 		
-		graph.putEdge("one", "two", "one - two");
+		graph.putEdge(new EdgeKey<String>("one", "two"), "one - two");
 		
-		assertTrue(graph.containsEdge("one", "two"));
-		assertTrue(graph.containsEdge("two", "one"));
+		assertTrue(graph.containsEdge(new EdgeKey<String>("one", "two")));
+		assertTrue(graph.containsEdge(new EdgeKey<String>("two", "one")));
 		
-		graph.removeEdge("two", "one");
+		graph.removeEdge(new EdgeKey<String>("two", "one"));
 		
-		assertFalse(graph.containsEdge("one", "two"));
-		assertFalse(graph.containsEdge("two", "one"));
+		assertFalse(graph.containsEdge(new EdgeKey<String>("one", "two")));
+		assertFalse(graph.containsEdge(new EdgeKey<String>("two", "one")));
 	}
 	
 	@Test
@@ -68,7 +68,7 @@ public class BiDirectedGraphTest {
 		graph.putVertex("one", "one value");
 		graph.putVertex("two", "two value");
 		
-		graph.putEdge("one", "two", "one - two");
+		graph.putEdge(new EdgeKey<String>("one", "two"), "one - two");
 		
 		assertEquals(2, graph.getVertexSize());
 		assertEquals(2, graph.getEdgeSize());
@@ -84,7 +84,7 @@ public class BiDirectedGraphTest {
 		graph.putVertex("one", "one value");
 		graph.putVertex("two", "two value");
 		
-		graph.putEdge("one", "two", "one - two");
+		graph.putEdge(new EdgeKey<String>("one", "two"), "one - two");
 		
 		Set<String> expected = new HashSet<String>(Arrays.asList("two"));
 		Set<String> actual = new HashSet<String>(graph.getAdjacentVertices("one"));
@@ -98,12 +98,27 @@ public class BiDirectedGraphTest {
 	}
 	
 	@Test
-	public void testGetKeySet() throws Exception {
+	public void testGetVertexSet() throws Exception {
 		graph.putVertex("one", "one value");
 		graph.putVertex("two", "two value");
 		
 		Set<String> expected = new HashSet<String>(Arrays.asList("one", "two"));
-		Set<String> actual = new HashSet<String>(graph.getKeySet());
+		Set<String> actual = new HashSet<String>(graph.getVertexSet());
+		
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void testGetEdgeSet() throws Exception {
+		graph.putVertex("one", "one value");
+		graph.putVertex("two", "two value");
+		
+		graph.putEdge(new EdgeKey<String>("one", "two"), "one - two");
+		
+		Set<EdgeKey<String>> expected = new HashSet<EdgeKey<String>>(Arrays.asList(
+				new EdgeKey<String>("one", "two"),
+				new EdgeKey<String>("two", "one")));
+		Set<EdgeKey<String>> actual = new HashSet<EdgeKey<String>>(graph.getEdgeSet());
 		
 		assertEquals(expected, actual);
 	}

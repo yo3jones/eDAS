@@ -41,9 +41,9 @@ public class BiDirectedGraph<K, V, E> implements Graph<K, V, E> {
 	}
 
 	@Override
-	public E putEdge(K fromKey, K toKey, E edge) throws IllegalArgumentException {
-		backingGraph.putEdge(toKey, fromKey, edge);
-		return backingGraph.putEdge(fromKey, toKey, edge);
+	public E putEdge(EdgeKey<K> key, E edge) throws IllegalArgumentException {
+		backingGraph.putEdge(new EdgeKey<K>(key.getToKey(), key.getFromKey()), edge);
+		return backingGraph.putEdge(key, edge);
 	}
 
 	@Override
@@ -52,8 +52,8 @@ public class BiDirectedGraph<K, V, E> implements Graph<K, V, E> {
 	}
 
 	@Override
-	public E getEdge(K fromKey, K toKey) throws IllegalArgumentException {
-		return backingGraph.getEdge(fromKey, toKey);
+	public E getEdge(EdgeKey<K> key) throws IllegalArgumentException {
+		return backingGraph.getEdge(key);
 	}
 
 	@Override
@@ -62,9 +62,9 @@ public class BiDirectedGraph<K, V, E> implements Graph<K, V, E> {
 	}
 
 	@Override
-	public E removeEdge(K fromKey, K toKey) throws IllegalArgumentException {
-		backingGraph.removeEdge(toKey, fromKey);
-		return backingGraph.removeEdge(fromKey, toKey);
+	public E removeEdge(EdgeKey<K> key) throws IllegalArgumentException {
+		backingGraph.removeEdge(new EdgeKey<K>(key.getToKey(), key.getFromKey()));
+		return backingGraph.removeEdge(key);
 	}
 
 	@Override
@@ -78,10 +78,15 @@ public class BiDirectedGraph<K, V, E> implements Graph<K, V, E> {
 	}
 
 	@Override
-	public Set<K> getKeySet() {
-		return backingGraph.getKeySet();
+	public Set<K> getVertexSet() {
+		return backingGraph.getVertexSet();
 	}
 
+	@Override
+	public Set<EdgeKey<K>> getEdgeSet() {
+		return backingGraph.getEdgeSet();
+	}
+	
 	@Override
 	public int getVertexSize() {
 		return backingGraph.getVertexSize();
@@ -98,8 +103,8 @@ public class BiDirectedGraph<K, V, E> implements Graph<K, V, E> {
 	}
 
 	@Override
-	public boolean containsEdge(K fromKey, K toKey) throws IllegalArgumentException {
-		return backingGraph.containsEdge(fromKey, toKey);
+	public boolean containsEdge(EdgeKey<K> key) throws IllegalArgumentException {
+		return backingGraph.containsEdge(key);
 	}
 
 	/**

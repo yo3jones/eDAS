@@ -46,34 +46,27 @@ public class HashGraphTest {
 		graph.putVertex("two", "two value");
 		graph.putVertex("three", "three value");
 		
-		graph.putEdge("one", "two", "one - two");
-		graph.putEdge("two", "three", "two - three");
+		graph.putEdge(new EdgeKey<String>("one", "two"), "one - two");
+		graph.putEdge(new EdgeKey<String>("two", "three"), "two - three");
 		
 		assertEquals(2, graph.getEdgeSize());
-		assertEquals("one - two", graph.getEdge("one", "two"));
-		assertEquals("two - three", graph.getEdge("two", "three"));
-		assertNull(graph.getEdge("two", "one"));
+		assertEquals("one - two", graph.getEdge(new EdgeKey<String>("one", "two")));
+		assertEquals("two - three", graph.getEdge(new EdgeKey<String>("two", "three")));
+		assertNull(graph.getEdge(new EdgeKey<String>("two", "one")));
 		
-		graph.putEdge("one", "two", "other - one - two");
+		graph.putEdge(new EdgeKey<String>("one", "two"), "other - one - two");
 		assertEquals(2, graph.getEdgeSize());
-		assertEquals("other - one - two", graph.getEdge("one", "two"));
+		assertEquals("other - one - two", graph.getEdge(new EdgeKey<String>("one", "two")));
 		
 		try {
-			graph.putEdge(null, "two", "");
+			graph.putEdge(null, "");
 			fail();
 		} catch (IllegalArgumentException e) {
 			// this is good
 		}
 		
 		try {
-			graph.putEdge("one", null, "");
-			fail();
-		} catch (IllegalArgumentException e) {
-			// this is good
-		}
-		
-		try {
-			graph.putEdge("four", "one", "");
+			graph.putEdge(new EdgeKey<String>("four", "one"), "");
 			fail();
 		} catch (IllegalArgumentException e) {
 			assertEquals("Cannot add edge because the from vertex does not exist. "
@@ -81,7 +74,7 @@ public class HashGraphTest {
 		}
 		
 		try {
-			graph.putEdge("one", "four", "");
+			graph.putEdge(new EdgeKey<String>("one", "four"), "");
 			fail();
 		} catch (IllegalArgumentException e) {
 			assertEquals("Cannot add edge because the to vertex does not exist. [toVertex=four]", 
@@ -94,29 +87,22 @@ public class HashGraphTest {
 		graph.putVertex("one", "one value");
 		graph.putVertex("two", "two value");
 		
-		graph.putEdge("one", "two", "one - two");
-		graph.putEdge("two", "one", "two - one");
+		graph.putEdge(new EdgeKey<String>("one", "two"), "one - two");
+		graph.putEdge(new EdgeKey<String>("two", "one"), "two - one");
 		
 		assertEquals(2, graph.getEdgeSize());
 		
-		assertEquals("one - two", graph.removeEdge("one", "two"));
+		assertEquals("one - two", graph.removeEdge(new EdgeKey<String>("one", "two")));
 		
 		assertEquals(1, graph.getEdgeSize());
-		assertEquals("two - one", graph.getEdge("two", "one"));
-		assertNull(graph.getEdge("one", "two"));
+		assertEquals("two - one", graph.getEdge(new EdgeKey<String>("two", "one")));
+		assertNull(graph.getEdge(new EdgeKey<String>("one", "two")));
 		
-		assertNull(graph.removeEdge("three", "one"));
-		assertNull(graph.removeEdge("one", "three"));
-		
-		try {
-			graph.removeEdge(null, "one");
-			fail();
-		} catch (IllegalArgumentException e) {
-			// this is good
-		}
+		assertNull(graph.removeEdge(new EdgeKey<String>("three", "one")));
+		assertNull(graph.removeEdge(new EdgeKey<String>("one", "three")));
 		
 		try {
-			graph.removeEdge("one", null);
+			graph.removeEdge(null);
 			fail();
 		} catch (IllegalArgumentException e) {
 			// this is good
@@ -129,9 +115,9 @@ public class HashGraphTest {
 		graph.putVertex("two", "two value");
 		graph.putVertex("three", "three value");
 		
-		graph.putEdge("one", "two", "one - two");
-		graph.putEdge("two", "one", "two - one");
-		graph.putEdge("two", "three", "two - three");
+		graph.putEdge(new EdgeKey<String>("one", "two"), "one - two");
+		graph.putEdge(new EdgeKey<String>("two", "one"), "two - one");
+		graph.putEdge(new EdgeKey<String>("two", "three"), "two - three");
 		
 		assertEquals(3, graph.getVertexSize());
 		assertEquals(3, graph.getEdgeSize());
@@ -157,9 +143,9 @@ public class HashGraphTest {
 		graph.putVertex("two", "two value");
 		graph.putVertex("three", "three value");
 		
-		graph.putEdge("one", "two", "one - two");
-		graph.putEdge("two", "one", "two - one");
-		graph.putEdge("two", "three", "two - three");
+		graph.putEdge(new EdgeKey<String>("one", "two"), "one - two");
+		graph.putEdge(new EdgeKey<String>("two", "one"), "two - one");
+		graph.putEdge(new EdgeKey<String>("two", "three"), "two - three");
 		
 		graph.clear();
 		
@@ -173,9 +159,9 @@ public class HashGraphTest {
 		graph.putVertex("two", "two value");
 		graph.putVertex("three", "three value");
 		
-		graph.putEdge("one", "two", "one - two");
-		graph.putEdge("two", "one", "two - one");
-		graph.putEdge("two", "three", "two - three");
+		graph.putEdge(new EdgeKey<String>("one", "two"), "one - two");
+		graph.putEdge(new EdgeKey<String>("two", "one"), "two - one");
+		graph.putEdge(new EdgeKey<String>("two", "three"), "two - three");
 		
 		Set<String> adjacentVertices = graph.getAdjacentVertices("two");
 		assertNotNull(adjacentVertices);
@@ -202,13 +188,33 @@ public class HashGraphTest {
 	}
 	
 	@Test
-	public void testGetKeySet() throws Exception {
+	public void testGetVertexKeySet() throws Exception {
 		graph.putVertex("one", "one value");
 		graph.putVertex("two", "two value");
 		graph.putVertex("three", "three value");
 		
 		Set<String> expected = new HashSet<String>(Arrays.asList("one", "two", "three"));
-		Set<String> actual = new HashSet<String>(graph.getKeySet());
+		Set<String> actual = new HashSet<String>(graph.getVertexSet());
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	public void testGetEdgeSet() throws Exception {
+		graph.putVertex("one", "one value");
+		graph.putVertex("two", "two value");
+		graph.putVertex("three", "three value");
+		
+		graph.putEdge(new EdgeKey<String>("one", "two"), "one - two");
+		graph.putEdge(new EdgeKey<String>("two", "one"), "two - one");
+		graph.putEdge(new EdgeKey<String>("two", "three"), "two - three");
+		
+		Set<EdgeKey<String>> expected = new HashSet<EdgeKey<String>>(Arrays.asList(
+				new EdgeKey<String>("one", "two"),
+				new EdgeKey<String>("two", "one"),
+				new EdgeKey<String>("two", "three")));
+		
+		Set<EdgeKey<String>> actual = new HashSet<EdgeKey<String>>(graph.getEdgeSet());
+		
 		assertEquals(expected, actual);
 	}
 	
@@ -232,22 +238,15 @@ public class HashGraphTest {
 		graph.putVertex("one", "one value");
 		graph.putVertex("two", "two value");
 		
-		graph.putEdge("one", "two", "one - two");
+		graph.putEdge(new EdgeKey<String>("one", "two"), "one - two");
 		
-		assertTrue(graph.containsEdge("one", "two"));
-		assertFalse(graph.containsEdge("two", "one"));
-		assertFalse(graph.containsEdge("one", "three"));
-		assertFalse(graph.containsEdge("three", "one"));
-		
-		try {
-			graph.containsEdge(null, "one");
-			fail();
-		} catch (IllegalArgumentException e) {
-			// this is good
-		}
+		assertTrue(graph.containsEdge(new EdgeKey<String>("one", "two")));
+		assertFalse(graph.containsEdge(new EdgeKey<String>("two", "one")));
+		assertFalse(graph.containsEdge(new EdgeKey<String>("one", "three")));
+		assertFalse(graph.containsEdge(new EdgeKey<String>("three", "one")));
 		
 		try {
-			graph.containsEdge("one", null);
+			graph.containsEdge(null);
 			fail();
 		} catch (IllegalArgumentException e) {
 			// this is good

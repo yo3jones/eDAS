@@ -7,8 +7,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.util.Assert;
 
 /**
@@ -24,7 +22,7 @@ import org.springframework.util.Assert;
  * <li>{@link #removeEdge(Object, Object)}</li>
  * <li>{@link #clear()}</li>
  * <li>{@link #getAdjacentVertices(Object)}</li>
- * <li>{@link #getKeySet()}</li>
+ * <li>{@link #getVertexSet()}</li>
  * <li>{@link #getVertexSize()}</li>
  * <li>{@link #getEdgeSize()}</li>
  * <li>{@link #containsVertex(Object)}</li>
@@ -47,62 +45,6 @@ import org.springframework.util.Assert;
  * @see Graph
  */
 public class HashGraph<K, V, E> implements Graph<K, V, E> {
-
-	/**
-	 * This class represents a hash key for an edge between two vertices.
-	 * 
-	 * @param <K>
-	 *            A key that uniquely identifies a vertex in the graph.
-	 */
-	private static class EdgeKey<K> {
-		
-		/**
-		 * The key that uniquely identifies the start vertex of the edge.
-		 */
-		private K fromKey;
-		
-		/**
-		 * The key that uniquely identifies the end vertex of the edge.
-		 */
-		private K toKey;
-		
-		/**
-		 * Creates an edge key between two vertices identified by fromKey and
-		 * toKey.
-		 * 
-		 * @param fromKey
-		 *            The key that uniquely identified the start vertex of the
-		 *            edge.
-		 * @param toKey
-		 *            The key that uniquely identifies the end vertex of the
-		 *            edge.
-		 */
-		public EdgeKey(K fromKey, K toKey) {
-			this.fromKey = fromKey;
-			this.toKey = toKey;
-		}
-		
-		@Override
-		public boolean equals(Object obj) {
-			if (obj == null) { return false; }
-			if (obj == this) { return true; }
-			if (obj.getClass() != getClass()) { return false; }
-			EdgeKey<?> that = (EdgeKey<?>) obj;
-			return new EqualsBuilder()
-					.append(this.fromKey, that.fromKey)
-					.append(this.toKey, that.toKey)
-					.isEquals();
-		}
-		
-		@Override
-		public int hashCode() {
-			return new HashCodeBuilder()
-					.append(fromKey)
-					.append(toKey)
-					.toHashCode();
-		}
-		
-	}
 	
 	/**
 	 * This class simply holds adjacent vertex information for a vertex.
@@ -152,7 +94,7 @@ public class HashGraph<K, V, E> implements Graph<K, V, E> {
 	private Map<K, V> vertices = new HashMap<K, V>();
 	
 	/**
-	 * A mapping between and {@link EdgeKey} and the edge's value.
+	 * A mapping between and {@link HashEdgeKey} and the edge's value.
 	 */
 	private Map<EdgeKey<K>, E> edges = new HashMap<EdgeKey<K>, E>();
 	
@@ -183,21 +125,17 @@ public class HashGraph<K, V, E> implements Graph<K, V, E> {
 	}
 
 	@Override
-	public E putEdge(K fromKey, K toKey, E edge) throws IllegalArgumentException {
+	public E putEdge(EdgeKey<K> key, E edge) throws IllegalArgumentException {
 		// first make sure we have valid arguments
-		Assert.notNull(fromKey);
-		Assert.notNull(toKey);
-		if (!vertices.containsKey(fromKey)) {
+		Assert.notNull(key);
+		if (!vertices.containsKey(key.getFromKey())) {
 			throw new IllegalArgumentException("Cannot add edge because the from vertex does not "
-					+ "exist. [fromVertex=" + fromKey + "]");
+					+ "exist. [fromVertex=" + key.getFromKey() + "]");
 		}
-		if (!vertices.containsKey(toKey)) {
+		if (!vertices.containsKey(key.getToKey())) {
 			throw new IllegalArgumentException("Cannot add edge because the to vertex does not "
-					+ "exist. [toVertex=" + toKey + "]");
+					+ "exist. [toVertex=" + key.getToKey() + "]");
 		}
-		
-		// create an edge key
-		EdgeKey<K> key = new EdgeKey<K>(fromKey, toKey);
 		
 		if (edges.containsKey(key)) {
 			// this edge already exists, so just update it's value
@@ -205,12 +143,12 @@ public class HashGraph<K, V, E> implements Graph<K, V, E> {
 		}
 		
 		// update the adjacent set
-		AdjacentVertices<K> fromAdjacentVertices = adjacentVertices.get(fromKey);
-		fromAdjacentVertices.getAdjacentVertices().add(toKey);
+		AdjacentVertices<K> fromAdjacentVertices = adjacentVertices.get(key.getFromKey());
+		fromAdjacentVertices.getAdjacentVertices().add(key.getToKey());
 		
 		// update the reverse adjacent set
-		AdjacentVertices<K> toAjacentVertices = adjacentVertices.get(toKey);
-		toAjacentVertices.getReverseAdjacentVertices().add(fromKey);
+		AdjacentVertices<K> toAjacentVertices = adjacentVertices.get(key.getToKey());
+		toAjacentVertices.getReverseAdjacentVertices().add(key.getFromKey());
 		
 		// put the edge in the edges map
 		return edges.put(key, edge);
@@ -223,10 +161,8 @@ public class HashGraph<K, V, E> implements Graph<K, V, E> {
 	}
 
 	@Override
-	public E getEdge(K fromKey, K toKey) throws IllegalArgumentException {
-		Assert.notNull(fromKey);
-		Assert.notNull(toKey);
-		EdgeKey<K> key = new EdgeKey<K>(fromKey, toKey);
+	public E getEdge(EdgeKey<K> key) throws IllegalArgumentException {
+		Assert.notNull(key);
 		return edges.get(key);
 	}
 
@@ -252,12 +188,12 @@ public class HashGraph<K, V, E> implements Graph<K, V, E> {
 		
 		// remove the edges for this vertex
 		for (K adjacentVertex : adjacentVertices) {
-			removeEdge(key, adjacentVertex);
+			removeEdge(new EdgeKey<K>(key, adjacentVertex));
 		}
 		
 		// remove the reverse edges for this vertex
 		for (K reverseAdjacentVertex : reverseAdjacentVertices) {
-			removeEdge(reverseAdjacentVertex, key);
+			removeEdge(new EdgeKey<K>(reverseAdjacentVertex, key));
 		}
 		
 		// now we can remove the adjacent vertices for this vertex
@@ -268,26 +204,24 @@ public class HashGraph<K, V, E> implements Graph<K, V, E> {
 	}
 	
 	@Override
-	public E removeEdge(K fromKey, K toKey) throws IllegalArgumentException {
+	public E removeEdge(EdgeKey<K> key) throws IllegalArgumentException {
 		// make sure the arguments are valid
-		Assert.notNull(fromKey);
-		Assert.notNull(toKey);
+		Assert.notNull(key);
 		
-		if (!vertices.containsKey(fromKey) || !vertices.containsKey(toKey)) {
+		if (!vertices.containsKey(key.getFromKey()) || !vertices.containsKey(key.getToKey())) {
 			// at least one of the vertices is not in this graph, so nothing to do
 			return null;
 		}
 		
 		// remove this edge from the adjacent vertices set
-		AdjacentVertices<K> fromAdjacentVertices = adjacentVertices.get(fromKey);
-		fromAdjacentVertices.getAdjacentVertices().remove(toKey);
+		AdjacentVertices<K> fromAdjacentVertices = adjacentVertices.get(key.getFromKey());
+		fromAdjacentVertices.getAdjacentVertices().remove(key.getToKey());
 		
 		// remove this edge from the reverse adjacent vertices set
-		AdjacentVertices<K> toAdjacentVertices = adjacentVertices.get(toKey);
-		toAdjacentVertices.getReverseAdjacentVertices().remove(fromKey);
+		AdjacentVertices<K> toAdjacentVertices = adjacentVertices.get(key.getToKey());
+		toAdjacentVertices.getReverseAdjacentVertices().remove(key.getFromKey());
 		
 		// now we can remove this edge from the edges map
-		EdgeKey<K> key = new EdgeKey<K>(fromKey, toKey);
 		return edges.remove(key);
 	}
 	
@@ -311,10 +245,17 @@ public class HashGraph<K, V, E> implements Graph<K, V, E> {
 	}
 
 	@Override
-	public Set<K> getKeySet() {
+	public Set<K> getVertexSet() {
+		// TODO return an unmodifiable set
 		return vertices.keySet();
 	}
 
+	@Override
+	public Set<EdgeKey<K>> getEdgeSet() {
+		// TODO return an unmodifiable set
+		return edges.keySet();
+	}
+	
 	@Override
 	public int getVertexSize() {
 		return vertices.size();
@@ -332,10 +273,8 @@ public class HashGraph<K, V, E> implements Graph<K, V, E> {
 	}
 	
 	@Override
-	public boolean containsEdge(K fromKey, K toKey) throws IllegalArgumentException {
-		Assert.notNull(fromKey);
-		Assert.notNull(toKey);
-		EdgeKey<K> key = new EdgeKey<K>(fromKey, toKey);
+	public boolean containsEdge(EdgeKey<K> key) throws IllegalArgumentException {
+		Assert.notNull(key);
 		return edges.containsKey(key);
 	}
 	
