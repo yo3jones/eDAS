@@ -7,6 +7,10 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>distsim Maven Webapp</name>
   <url>http://maven.apache.org</url>
+  <properties>
+  	<org.springframework.version>4.0.0.RELEASE</org.springframework.version>
+  	<jackson.version>2.3.1</jackson.version>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -17,8 +21,54 @@
     <dependency>
     	<groupId>org.springframework</groupId>
     	<artifactId>spring-context</artifactId>
-    	<version>4.0.0.RELEASE</version>
+    	<version>${org.springframework.version}</version>
     </dependency>
+    <dependency>
+    	<groupId>org.springframework</groupId>
+    	<artifactId>spring-context-support</artifactId>
+    	<version>${org.springframework.version}</version>
+    </dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-expression</artifactId>
+		<version>${org.springframework.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-beans</artifactId>
+		<version>${org.springframework.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-aop</artifactId>
+		<version>${org.springframework.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-web</artifactId>
+		<version>${org.springframework.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-webmvc</artifactId>
+		<version>${org.springframework.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-test</artifactId>
+		<version>${org.springframework.version}</version>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>com.fasterxml.jackson.core</groupId>
+		<artifactId>jackson-databind</artifactId>
+		<version>${jackson.version}</version>
+	</dependency>
+	<dependency>
+		<groupId>com.fasterxml.jackson.core</groupId>
+		<artifactId>jackson-core</artifactId>
+		<version>${jackson.version}</version>
+	</dependency>
     <dependency>
     	<groupId>org.apache.commons</groupId>
     	<artifactId>commons-lang3</artifactId>

@@ -2,6 +2,7 @@ package edu.unlv.cs.graph;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -246,14 +247,12 @@ public class HashGraph<K, V, E> implements Graph<K, V, E> {
 
 	@Override
 	public Set<K> getVertexSet() {
-		// TODO return an unmodifiable set
-		return vertices.keySet();
+		return Collections.unmodifiableSet(vertices.keySet());
 	}
 
 	@Override
 	public Set<EdgeKey<K>> getEdgeSet() {
-		// TODO return an unmodifiable set
-		return edges.keySet();
+		return Collections.unmodifiableSet(edges.keySet());
 	}
 	
 	@Override
