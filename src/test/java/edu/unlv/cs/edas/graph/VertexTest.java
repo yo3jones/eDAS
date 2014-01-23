@@ -1,9 +1,12 @@
-package edu.unlv.cs.distsim.graph;
+package edu.unlv.cs.edas.graph;
 
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import edu.unlv.cs.edas.graph.Key;
+import edu.unlv.cs.edas.graph.Vertex;
 
 public class VertexTest {
 

@@ -1,4 +1,4 @@
-package edu.unlv.cs.distsim.dto;
+package edu.unlv.cs.edas.dto;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,8 +6,8 @@ import java.util.Collections;
 
 import org.springframework.util.Assert;
 
-import edu.unlv.cs.distsim.graph.Edge;
-import edu.unlv.cs.distsim.graph.Vertex;
+import edu.unlv.cs.edas.graph.Edge;
+import edu.unlv.cs.edas.graph.Vertex;
 
 /**
  * An immutable data transfer object that holds graph information for the

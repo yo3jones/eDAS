@@ -1,4 +1,4 @@
-package edu.unlv.cs.distsim.graph;
+package edu.unlv.cs.edas.graph;
 
 import edu.unlv.cs.graph.HashGraph;
 

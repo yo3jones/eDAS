@@ -1,4 +1,4 @@
-package edu.unlv.cs.distsim.graph;
+package edu.unlv.cs.edas.graph;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
