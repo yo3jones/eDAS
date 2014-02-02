@@ -16,18 +16,22 @@ import edu.unlv.cs.edas.graph.Vertex;
  * 
  * @author Chris Jones
  * 
+ * @param <V>
+ *            The vertex type.
+ * @param <E>
+ *            The edge type.
  */
-public class GraphDto {
+public class GraphDto<V extends Vertex, E extends Edge> {
 
 	/**
 	 * A collection of all the vertices in this graph.
 	 */
-	private Collection<Vertex> vertices;
+	private Collection<V> vertices;
 	
 	/**
 	 * A collection of all the edges in this graph.
 	 */
-	private Collection<Edge> edges;
+	private Collection<E> edges;
 	
 	/**
 	 * Constructs a graph data transfer object with the given vertices and
@@ -40,12 +44,11 @@ public class GraphDto {
 	 * @throws IllegalArgumentException
 	 *             If either the vertices or edges are null.
 	 */
-	public GraphDto(Collection<Vertex> vertices, Collection<Edge> edges) 
-			throws IllegalArgumentException {
+	public GraphDto(Collection<V> vertices, Collection<E> edges) throws IllegalArgumentException {
 		Assert.notNull(vertices);
 		Assert.notNull(edges);
-		this.vertices = new ArrayList<Vertex>(vertices);
-		this.edges = new ArrayList<Edge>(edges);
+		this.vertices = new ArrayList<V>(vertices);
+		this.edges = new ArrayList<E>(edges);
 	}
 	
 	/**
@@ -53,7 +56,7 @@ public class GraphDto {
 	 * 
 	 * @return All the vertices in this graph.
 	 */
-	public Collection<Vertex> getVertices() {
+	public Collection<V> getVertices() {
 		return Collections.unmodifiableCollection(vertices);
 	}
 	
@@ -62,7 +65,7 @@ public class GraphDto {
 	 * 
 	 * @return All the edges in this graph.
 	 */
-	public Collection<Edge> getEdges() {
+	public Collection<E> getEdges() {
 		return Collections.unmodifiableCollection(edges);
 	}
 	

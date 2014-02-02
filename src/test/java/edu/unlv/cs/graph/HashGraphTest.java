@@ -11,6 +11,26 @@ import org.junit.Test;
 
 public class HashGraphTest {
 
+	public static HashGraph<String, String, String> toGraph(String[][][] values) {
+		HashGraph<String, String, String> graph = new HashGraph<String, String, String>();
+		
+		String[][] vertices = values[0];
+		for (String[] vertex : vertices) {
+			String key = vertex[0];
+			String value = vertex[1];
+			graph.putVertex(key, value);
+		}
+		
+		String[][] edges = values[1];
+		for (String[] edge : edges) {
+			EdgeKey<String> key = new EdgeKey<String>(edge[0], edge[1]);
+			String value = edge[2];
+			graph.putEdge(key, value);
+		}
+		
+		return graph;
+	}
+	
 	private HashGraph<String, String, String> graph;
 	
 	@Before
