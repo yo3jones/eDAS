@@ -1,4 +1,4 @@
-package edu.unlv.cs.edas.graph;
+package edu.unlv.cs.edas.graph.domain;
 
 import edu.unlv.cs.graph.HashGraph;
 

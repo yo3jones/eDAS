@@ -1,4 +1,4 @@
-package edu.unlv.cs.edas.graph;
+package edu.unlv.cs.edas.graph.domain;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -12,9 +12,13 @@ import org.springframework.util.Assert;
  * @author Chris Jones
  * 
  */
-public final class Key {
+public class Key {
 
 	String name;
+	
+	Key() {
+		
+	}
 	
 	/**
 	 * Constructs a vertex key with the given name.
@@ -36,6 +40,10 @@ public final class Key {
 	 */
 	public String getName() {
 		return name;
+	}
+	
+	void setName(String name) {
+		this.name = name;
 	}
 	
 	@Override

@@ -1,4 +1,4 @@
-package edu.unlv.cs.edas.graph;
+package edu.unlv.cs.edas.graph.domain;
 
 import org.springframework.util.Assert;
 
@@ -17,6 +17,10 @@ public class Edge {
 	 * The id of the edge.
 	 */
 	private EdgeKey<Key> id;
+	
+	protected Edge() {
+		
+	}
 	
 	/**
 	 * Constructs an edge with the given id.
@@ -38,6 +42,10 @@ public class Edge {
 	 */
 	public EdgeKey<Key> getId() {
 		return id;
+	}
+	
+	void setId(EdgeKey<Key> id) {
+		this.id = id;
 	}
 	
 }

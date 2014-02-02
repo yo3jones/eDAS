@@ -2,10 +2,10 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>edu.unlv.cs</groupId>
-  <artifactId>distsim</artifactId>
+  <artifactId>edas</artifactId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
-  <name>distsim Maven Webapp</name>
+  <name>eDAS Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <properties>
   	<org.springframework.version>4.0.0.RELEASE</org.springframework.version>
@@ -18,6 +18,17 @@
       <version>4.8.1</version>
       <scope>test</scope>
     </dependency>
+	<dependency>
+		<groupId>javax.servlet</groupId>
+		<artifactId>javax.servlet-api</artifactId>
+		<version>3.0.1</version>
+		<scope>provided</scope>
+	</dependency>
+	<dependency>
+		<groupId>javax.inject</groupId>
+		<artifactId>javax.inject</artifactId>
+		<version>1</version>
+	</dependency>
     <dependency>
     	<groupId>org.springframework</groupId>
     	<artifactId>spring-context</artifactId>
@@ -74,6 +85,11 @@
     	<artifactId>commons-lang3</artifactId>
     	<version>3.2.1</version>
     </dependency>
+	<dependency>
+		<groupId>commons-io</groupId>
+		<artifactId>commons-io</artifactId>
+		<version>2.4</version>
+	</dependency>
     <dependency>
     	<groupId>org.mockito</groupId>
     	<artifactId>mockito-all</artifactId>
@@ -82,7 +98,7 @@
     </dependency>
   </dependencies>
   <build>
-    <finalName>distsim</finalName>
+    <finalName>edas</finalName>
     <plugins>
     	<plugin>
     		<groupId>org.apache.maven.plugins</groupId>

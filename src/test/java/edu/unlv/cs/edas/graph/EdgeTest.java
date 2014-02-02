@@ -5,8 +5,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.unlv.cs.edas.graph.Edge;
-import edu.unlv.cs.edas.graph.Key;
+import edu.unlv.cs.edas.graph.domain.Edge;
+import edu.unlv.cs.edas.graph.domain.Key;
 import edu.unlv.cs.graph.EdgeKey;
 
 public class EdgeTest {

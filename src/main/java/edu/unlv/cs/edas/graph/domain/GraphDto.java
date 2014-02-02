@@ -1,13 +1,10 @@
-package edu.unlv.cs.edas.dto;
+package edu.unlv.cs.edas.graph.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
 import org.springframework.util.Assert;
-
-import edu.unlv.cs.edas.graph.Edge;
-import edu.unlv.cs.edas.graph.Vertex;
 
 /**
  * An immutable data transfer object that holds graph information for the
@@ -26,30 +23,12 @@ public class GraphDto<V extends Vertex, E extends Edge> {
 	/**
 	 * A collection of all the vertices in this graph.
 	 */
-	private Collection<V> vertices;
+	private Collection<V> vertices = new ArrayList<V>();
 	
 	/**
 	 * A collection of all the edges in this graph.
 	 */
-	private Collection<E> edges;
-	
-	/**
-	 * Constructs a graph data transfer object with the given vertices and
-	 * edges.
-	 * 
-	 * @param vertices
-	 *            The vertices of the graph.
-	 * @param edges
-	 *            The edges of the graph.
-	 * @throws IllegalArgumentException
-	 *             If either the vertices or edges are null.
-	 */
-	public GraphDto(Collection<V> vertices, Collection<E> edges) throws IllegalArgumentException {
-		Assert.notNull(vertices);
-		Assert.notNull(edges);
-		this.vertices = new ArrayList<V>(vertices);
-		this.edges = new ArrayList<E>(edges);
-	}
+	private Collection<E> edges = new ArrayList<E>();
 	
 	/**
 	 * Returns all the vertices in this graph.
@@ -60,6 +39,16 @@ public class GraphDto<V extends Vertex, E extends Edge> {
 		return Collections.unmodifiableCollection(vertices);
 	}
 	
+	public void setVertices(Collection<V> vertices) {
+		Assert.notNull(vertices);
+		this.vertices = vertices;
+	}
+	
+	public void addVertex(V vertex) {
+		Assert.notNull(vertex);
+		vertices.add(vertex);
+	}
+	
 	/**
 	 * Returns all the edges in this graph.
 	 * 
@@ -67,6 +56,15 @@ public class GraphDto<V extends Vertex, E extends Edge> {
 	 */
 	public Collection<E> getEdges() {
 		return Collections.unmodifiableCollection(edges);
+	}
+	
+	public void setEdges(Collection<E> edges) {
+		Assert.notNull(edges);
+		this.edges = edges;
+	}
+	
+	public void addEdge(E edge) {
+		edges.add(edge);
 	}
 	
 }

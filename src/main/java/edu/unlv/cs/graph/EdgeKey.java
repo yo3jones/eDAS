@@ -26,6 +26,10 @@ public final class EdgeKey<K> {
 	 */
 	private K toKey;
 	
+	EdgeKey() {
+		
+	}
+	
 	/**
 	 * Creates an edge key between two vertices identified by fromKey and
 	 * toKey.

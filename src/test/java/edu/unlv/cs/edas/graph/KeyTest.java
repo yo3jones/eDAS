@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.unlv.cs.edas.graph.Key;
+import edu.unlv.cs.edas.graph.domain.Key;
 
 public class KeyTest {
 

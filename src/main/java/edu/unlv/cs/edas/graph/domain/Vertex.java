@@ -1,4 +1,4 @@
-package edu.unlv.cs.edas.graph;
+package edu.unlv.cs.edas.graph.domain;
 
 import org.springframework.util.Assert;
 
@@ -15,6 +15,10 @@ public class Vertex {
 	 * The unique identifier of this vertex.
 	 */
 	private Key id;
+	
+	protected Vertex() {
+		
+	}
 	
 	/**
 	 * Constructs a vertex with the given id.
@@ -36,6 +40,10 @@ public class Vertex {
 	 */
 	public final Key getId() {
 		return id;
+	}
+	
+	void setId(Key id) {
+		this.id = id;
 	}
 	
 }
