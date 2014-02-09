@@ -1,6 +1,7 @@
 package edu.unlv.cs.graph.dom.domain;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import edu.unlv.cs.graph.Graph;
 
@@ -26,6 +27,8 @@ public interface GraphDomBuilderContext<K, V, E> {
 	 * @return The document being generated.
 	 */
 	Document getDocument();
+	
+	Element getRootElement();
 	
 	/**
 	 * Returns the graph.

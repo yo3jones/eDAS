@@ -2,13 +2,12 @@
 	"vertices":	[
 		{
 			"id":		{"name":"A"},
-			"position":	{"x":1,"y":1}
+			"position":	{"x":100,"y":100}
 		}, {
 			"id":		{"name":"B"},
-			"position":	{"x":2,"y":2}
+			"position":	{"x":200,"y":200}
 		}
-	],
-	"edges":	[
+	], "edges":	[
 		{
 			"id":	{
 				"fromKey":	{"name":"A"},

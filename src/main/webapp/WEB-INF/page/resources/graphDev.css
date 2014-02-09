@@ -1,0 +1,46 @@
+@CHARSET "US-ASCII";
+
+BODY {
+	font-size: 62.5%;
+}
+
+.left {
+	position: absolute;
+	left: 0px;
+	width: 400px;
+	top: 0px;
+	bottom: 0px;
+	background-color: gray;
+	padding: 5px;
+}
+
+.right {
+	position: absolute;
+	left: 400px;
+	right: 0px;
+	top: 0px;
+	bottom: 0px;
+	background-color: gray;
+	padding: 5px;
+}
+
+.input-container,
+.output-container {
+	position: absolute;
+	top: 35px;
+	bottom: 5px;
+	left: 5px;
+	right: 5px;
+}
+
+.output-container {
+	top: 5px;
+}
+
+TEXTAREA#input {
+	height: 100%;
+	width: 98%;
+	padding: 0px;
+	margin: 0px;
+	border: 0px;
+}

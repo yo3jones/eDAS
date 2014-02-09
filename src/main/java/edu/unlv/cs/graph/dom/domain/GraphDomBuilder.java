@@ -1,6 +1,7 @@
 package edu.unlv.cs.graph.dom.domain;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import edu.unlv.cs.graph.EdgeKey;
@@ -35,6 +36,8 @@ public interface GraphDomBuilder<K, V, E, C> {
 	 */
 	Document createDocument();
 	
+	Element createRootElement(Document document);
+	
 	/**
 	 * Returns a new context object that will be passed in for every call to
 	 * {@link #createVertex(Object, Object, Object)} and
@@ -50,7 +53,7 @@ public interface GraphDomBuilder<K, V, E, C> {
 	 *         {@link #createVertex(Object, Object, Object)} and
 	 *         {@link #createEdge(Object, EdgeKey, Object)}.
 	 */
-	C createContext(Document document, Graph<K, V, E> graph);
+	C createContext(Document document, Element rootElement, Graph<K, V, E> graph);
 	
 	/**
 	 * Returns a new node that represents the given vertex of the graph.

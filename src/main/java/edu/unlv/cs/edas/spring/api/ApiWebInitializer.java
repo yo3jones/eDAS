@@ -7,6 +7,11 @@ import edu.unlv.cs.edas.spring.root.RootConfig;
 public class ApiWebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 	@Override
+	protected String getServletName() {
+		return super.getServletName() + "Api";
+	}
+	
+	@Override
 	protected Class<?>[] getRootConfigClasses() {
 		return new Class<?>[] {RootConfig.class};
 	}

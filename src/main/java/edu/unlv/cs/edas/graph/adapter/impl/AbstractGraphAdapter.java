@@ -19,15 +19,21 @@ public abstract class AbstractGraphAdapter<V extends Vertex, E extends Edge, G e
 	public G createGraph(D graphDto) {
 		G graph = createGraph();
 		
-		for (V vertex : graphDto.getVertices()) {
+		updateGraphFromDto(graph, graphDto);
+		
+		return graph;
+	}
+	
+	@Override
+	public void updateGraphFromDto(G graph, D graphDto) {
+		graph.clear();
+		for (V vertex : graphDto.getVertices().values()) {
 			graph.putVertex(vertex.getId(), vertex);
 		}
 		
-		for (E edge : graphDto.getEdges()) {
+		for (E edge : graphDto.getEdges().values()) {
 			graph.putEdge(edge.getId(), edge);
 		}
-		
-		return graph;
 	}
 	
 	@Override

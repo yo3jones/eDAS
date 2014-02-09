@@ -5,6 +5,7 @@ import edu.unlv.cs.edas.graph.domain.Vertex;
 
 public class DesignVertex extends Vertex {
 
+	private String label;
 	private Position position;
 
 	protected DesignVertex() {
@@ -13,6 +14,14 @@ public class DesignVertex extends Vertex {
 	
 	public DesignVertex(Key id) throws IllegalArgumentException {
 		super(id);
+	}
+	
+	public String getLabel() {
+		return label;
+	}
+	
+	public void setLabel(String label) {
+		this.label = label;
 	}
 	
 	public Position getPosition() {

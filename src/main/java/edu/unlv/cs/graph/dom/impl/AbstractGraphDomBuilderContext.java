@@ -1,6 +1,7 @@
 package edu.unlv.cs.graph.dom.impl;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import edu.unlv.cs.graph.Graph;
 import edu.unlv.cs.graph.dom.domain.GraphDomBuilderContext;
@@ -26,6 +27,8 @@ public abstract class AbstractGraphDomBuilderContext<K, V, E> implements
 	 */
 	private Document document;
 	
+	private Element rootElement;
+	
 	/**
 	 * The graph.
 	 */
@@ -37,8 +40,10 @@ public abstract class AbstractGraphDomBuilderContext<K, V, E> implements
 	 * @param document
 	 * @param graph
 	 */
-	public AbstractGraphDomBuilderContext(Document document, Graph<K, V, E> graph) {
+	public AbstractGraphDomBuilderContext(Document document, Element rootElement, 
+			Graph<K, V, E> graph) {
 		this.document = document;
+		this.rootElement = rootElement;
 		this.graph = graph;
 	}
 	
@@ -46,7 +51,12 @@ public abstract class AbstractGraphDomBuilderContext<K, V, E> implements
 	public Document getDocument() {
 		return document;
 	}
-
+	
+	@Override
+	public Element getRootElement() {
+		return rootElement;
+	}
+	
 	@Override
 	public Graph<K, V, E> getGraph() {
 		return graph;

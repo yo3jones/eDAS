@@ -1,6 +1,7 @@
 package edu.unlv.cs.graph.dom.impl;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import edu.unlv.cs.graph.EdgeKey;
@@ -40,21 +41,24 @@ public class GraphDomAdapterImpl<K, V, E> implements GraphDomAdapter<K, V, E> {
 		// create the document that all the nodes will be appended to
 		Document document = builder.createDocument();
 		
-		// create the context that will be used to build the DOM
-		C context = builder.createContext(document, graph);
+		Element rootElement = builder.createRootElement(document);
+		document.appendChild(rootElement);
 		
-		// add vertices
-		for (K key : graph.getVertexSet()) {
-			V vertex = graph.getVertex(key);
-			Node vertexNode = builder.createVertex(context, key, vertex);
-			document.appendChild(vertexNode);
-		}
+		// create the context that will be used to build the DOM
+		C context = builder.createContext(document, rootElement, graph);
 		
 		// add edges
 		for (EdgeKey<K> key : graph.getEdgeSet()) {
 			E edge = graph.getEdge(key);
 			Node edgeNode = builder.createEdge(context, key, edge);
-			document.appendChild(edgeNode);
+			rootElement.appendChild(edgeNode);
+		}
+		
+		// add vertices
+		for (K key : graph.getVertexSet()) {
+			V vertex = graph.getVertex(key);
+			Node vertexNode = builder.createVertex(context, key, vertex);
+			rootElement.appendChild(vertexNode);
 		}
 		
 		return document;

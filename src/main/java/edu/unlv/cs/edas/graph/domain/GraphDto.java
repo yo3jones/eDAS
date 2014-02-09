@@ -1,10 +1,7 @@
 package edu.unlv.cs.edas.graph.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-
-import org.springframework.util.Assert;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * An immutable data transfer object that holds graph information for the
@@ -23,48 +20,35 @@ public class GraphDto<V extends Vertex, E extends Edge> {
 	/**
 	 * A collection of all the vertices in this graph.
 	 */
-	private Collection<V> vertices = new ArrayList<V>();
+	private Map<String, V> vertices = new HashMap<String, V>();
 	
 	/**
 	 * A collection of all the edges in this graph.
 	 */
-	private Collection<E> edges = new ArrayList<E>();
+	private Map<String, E> edges = new HashMap<String, E>();
 	
-	/**
-	 * Returns all the vertices in this graph.
-	 * 
-	 * @return All the vertices in this graph.
-	 */
-	public Collection<V> getVertices() {
-		return Collections.unmodifiableCollection(vertices);
+	public Map<String, V> getVertices() {
+		return vertices;
 	}
 	
-	public void setVertices(Collection<V> vertices) {
-		Assert.notNull(vertices);
+	public void setVertices(Map<String, V> vertices) {
 		this.vertices = vertices;
 	}
 	
 	public void addVertex(V vertex) {
-		Assert.notNull(vertex);
-		vertices.add(vertex);
+		vertices.put(vertex.getId().getId().toString(), vertex);
 	}
 	
-	/**
-	 * Returns all the edges in this graph.
-	 * 
-	 * @return All the edges in this graph.
-	 */
-	public Collection<E> getEdges() {
-		return Collections.unmodifiableCollection(edges);
+	public Map<String, E> getEdges() {
+		return edges;
 	}
 	
-	public void setEdges(Collection<E> edges) {
-		Assert.notNull(edges);
+	public void setEdges(Map<String, E> edges) {
 		this.edges = edges;
 	}
 	
 	public void addEdge(E edge) {
-		edges.add(edge);
+		edges.put(edge.getId().getFromKey().getId() + "-" + edge.getId().getToKey().getId(), edge);
 	}
 	
 }

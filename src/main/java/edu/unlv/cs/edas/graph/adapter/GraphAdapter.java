@@ -12,4 +12,6 @@ public interface GraphAdapter<V extends Vertex, E extends Edge, G extends Graph<
 	
 	D createDto(G graph);
 	
+	void updateGraphFromDto(G graph, D graphDto);
+	
 }

@@ -14,7 +14,7 @@ import org.springframework.util.Assert;
  */
 public class Key {
 
-	String name;
+	private Integer id;
 	
 	Key() {
 		
@@ -28,22 +28,17 @@ public class Key {
 	 * @throws IllegalArgumentException
 	 *             If the name is null.
 	 */
-	public Key(String name) throws IllegalArgumentException {
-		Assert.notNull(name);
-		this.name = name;
+	public Key(Integer id) throws IllegalArgumentException {
+		Assert.notNull(id);
+		this.id = id;
 	}
 	
-	/**
-	 * Returns the name of the vertex.
-	 * 
-	 * @return The name of the vertex.
-	 */
-	public String getName() {
-		return name;
+	public Integer getId() {
+		return id;
 	}
 	
-	void setName(String name) {
-		this.name = name;
+	void setId(Integer id) {
+		this.id = id;
 	}
 	
 	@Override
@@ -53,21 +48,21 @@ public class Key {
 		if (obj.getClass() != this.getClass()) return false;
 		Key that = (Key) obj;
 		return new EqualsBuilder()
-			.append(this.name, that.name)
+			.append(this.id, that.id)
 			.isEquals();
 	}
 	
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder()
-			.append(name)
+			.append(id)
 			.toHashCode();
 	}
 	
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-			.append("name", name)
+			.append("id", id)
 			.toString();
 	}
 	
