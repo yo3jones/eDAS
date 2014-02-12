@@ -15,9 +15,9 @@ public class KeyTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		expected = new Key("one");
-		expectedCopy = new Key("one");
-		expectedOther = new Key("two");
+		expected = new Key(1);
+		expectedCopy = new Key(1);
+		expectedOther = new Key(2);
 	}
 	
 	@Test
@@ -32,7 +32,7 @@ public class KeyTest {
 	
 	@Test
 	public void testGetters() throws Exception {
-		assertEquals("one", expected.getName());
+		assertEquals(1, expected.getId().intValue());
 	}
 	
 	@Test
@@ -52,7 +52,7 @@ public class KeyTest {
 	
 	@Test
 	public void testToString() throws Exception {
-		assertEquals("Key[name=one]", expected.toString());
+		assertEquals("Key[id=1]", expected.toString());
 	}
 	
 }

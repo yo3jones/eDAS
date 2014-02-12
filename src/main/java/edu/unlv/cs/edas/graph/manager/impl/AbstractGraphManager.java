@@ -9,6 +9,17 @@ import edu.unlv.cs.edas.graph.domain.GraphId;
 import edu.unlv.cs.edas.graph.domain.Vertex;
 import edu.unlv.cs.edas.graph.manager.GraphManager;
 
+/**
+ * An implementation of {@link GraphManager} for storing graphs.
+ * TODO this class will evolve once there is a persistence strategy
+ * 
+ * @author Chris Jones
+ *
+ * @param <I>
+ * @param <V>
+ * @param <E>
+ * @param <G>
+ */
 public abstract class AbstractGraphManager<I extends GraphId, V extends Vertex, E extends Edge, 
 		G extends Graph<V, E>> implements GraphManager<I, V, E, G> {
 

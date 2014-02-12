@@ -13,17 +13,10 @@
 		_comm: null,
 		
 		_create: function() {
-			var me = this;
-			
 			this._comm = $('<div></div>').graphComm({
 				baseUrl: this.options.baseUrl + "/api/v1/design/graphs",
-				errorCallback: function() {
-					$("#edas-graph-error-message").show("bounce", 500, function() {
-						setTimeout(function() {
-							$("#edas-graph-error-message").hide("slide", {direction: "up"}, 500);
-						}, 7000);
-					});
-				}
+				error: $.proxy(this._onCommError, this),
+				groupComplete: $.proxy(this._showInfo, this)
 			}).appendTo(this.element);
 			
 			var toolbarElement = $('<div id="edas-graph-toolbar"></div>')
@@ -44,10 +37,7 @@
 				.button({
 					text: false,
 					icons: {primary: "ui-icon-circle-plus"}
-				})
-				.click(function() {
-					me.createVertex();
-				});
+				}).click($.proxy(this.createVertex, this));
 			
 			$(	'<span id="edas-graph-state-button-group">' +
 					'<input type="radio" id="edas-graph-state-button-select" name="edas-graph-state-button-group">' + 
@@ -59,20 +49,21 @@
 				'</span>').appendTo(toolbarImplElement).buttonset();
 			$("#edas-graph-state-button-select")
 				.button({text: false, icons: {primary: 'ui-icon-arrow-4'}})
-				.click(function() {
-					me.options.state = new GraphStates.SelectGraphState(me);
-				})
+				.click($.proxy(this._changeState, this, new GraphStates.SelectGraphState(this)))
 				.click();
 			$("#edas-graph-state-button-line")
 				.button({text: false, icons: {primary: 'ui-icon-minus'}})
-				.click(function() {
-					me.options.state = new GraphStates.LineGraphState(me);
-				});
+				.click($.proxy(this._changeState, this, new GraphStates.LineGraphState(this)));
 			$("#edas-graph-state-button-delete")
 				.button({text: false, icons: {primary: 'ui-icon-close'}})
-				.click(function() {
-					me.options.state = new GraphStates.DeleteGraphState(me);
-				});
+				.click($.proxy(this._changeState, this, new GraphStates.DeleteGraphState(this)));
+			
+			$('<button id="edas-graph-button-refresh" >Refresh</button>')
+			.appendTo(toolbarImplElement)
+			.button({
+				text: false,
+				icons: {primary: "ui-icon-refresh"}
+			}).click($.proxy(this.refresh, this));
 			
 			$('<div id="edas-graph-svg-container"></div>').appendTo(this.element)
 				.css("position", "absolute")
@@ -84,16 +75,16 @@
 			$(  '<div id="edas-graph-vertex-label-dialog">' +
 					'<input type="text" id="edas-graph-vertex-label-dialog-input" class="ui-widget-content ui-corner-all">' +
 				'</div>')
-					.appendTo(this.element)
-					.dialog({
-						autoOpen: false,
-						width: 165,
-						height: 40,
-						modal: true,
-						closeOnEscape: true,
-						draggable: false,
-						resizable: false
-					});
+				.appendTo(this.element)
+				.dialog({
+					autoOpen: false,
+					width: 165,
+					height: 40,
+					modal: true,
+					closeOnEscape: true,
+					draggable: false,
+					resizable: false
+				});
 			$(".ui-dialog-titlebar").hide();
 			
 			$(	'<div id="edas-graph-error-message" class="ui-widget">' +
@@ -104,21 +95,27 @@
 						'<button id="edas-graph-error-reload-button">refresh</button>' +
 						'</p>' +
 					'</div>' +
-			'</div>')
+				'</div>')
 				.css("position", "absolute")
 				.width("200px")
 				.height("50px")
-				.appendTo(this.element);
-			$("#edas-graph-error-message")
-				.position({my: "center top", at: "center top", of: this.element})
-				.hide();
+				.appendTo(this.element).hide();
+			
+			$(	'<div id="edas-graph-info-message" class="ui-widget">' +
+					'<div class="ui-state-highlight ui-corner-all" style="padding: 0 .7em;">' +
+						'<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>' +
+						'The graph is updated</p>' +
+					'</div>' +
+				'</div>')
+				.css("position", "absolute")
+				.width("200px")
+				.height("50px")
+				.appendTo(this.element).hide();
+			
 			$("#edas-graph-error-reload-button").button({
 				text: false,
 				icons: {primary: "ui-icon-refresh"}
-			}).click(function() {
-				me._loadGraph();
-				$("#edas-graph-error-message").hide("slide", {direction: "up"}, 500);
-			}).css("margin-left", "5px");
+			}).click($.proxy(this.refresh, this)).css("margin-left", "5px");
 			
 			this.options.url = this.options.baseUrl + "/api/v1/design/graphs";
 			
@@ -126,6 +123,60 @@
 				this._loadGraph();
 			} else {
 				this._createGraph();
+			}
+		},
+		
+		refresh: function() {
+			this._loadGraph();
+			this._hideError();
+		},
+		
+		_changeState: function(newState) {
+			this.options.state = newState;
+			newState.init();
+		},
+		
+		_onCommError: function() {
+			this._showError();
+		},
+		
+		_showError: function() {
+			this._hideInfo($.proxy(function() {
+				$("#edas-graph-error-message")
+				.show()
+				.position({my: "center top", at: "center top", of: this.element})
+				.hide()
+				.show("bounce", 500, $.proxy(function() {
+					setTimeout($.proxy(this._hideError, this), 7000);
+				}, this));
+			}, this));
+		},
+		
+		_hideError: function(then) {
+			if ($("#edas-graph-error-message").is(":visible")) {
+				$("#edas-graph-error-message").hide("slide", {direction: "up"}, 500, then);
+			} else {
+				then();
+			}
+		},
+		
+		_showInfo: function() {
+			this._hideError($.proxy(function() {
+				$("#edas-graph-info-message")
+					.show()
+					.position({my: "center top", at: "center top", of: this.element})
+					.hide()
+					.show("slide", {direction: "up"}, 500, $.proxy(function() {
+						setTimeout($.proxy(this._hideInfo, this), 1000);
+					}, this));
+			}, this));
+		},
+		
+		_hideInfo: function(then) {
+			if ($("#edas-graph-info-message").is(":visible")) {
+				$("#edas-graph-info-message").hide("slide", {direction: "up"}, 500, then);
+			} else {
+				then();
 			}
 		},
 		
@@ -185,17 +236,15 @@
 		},
 		
 		_loadJsonGraph: function() {
-			var me = this;
-			this._comm.graphComm("getJson", "/" + me.options.graphId, function(data) {
-				me.options.graph = data;
-			});
+			this._comm.graphComm("getJson", "/" + this.options.graphId, $.proxy(function(data) {
+				this.options.graph = data;
+			}, this));
 		},
 		
 		_loadSvgGraph: function() {
-			var me = this;
-			this._comm.graphComm("getSvg", "/" + me.options.graphId, function(data) {
-				me._presentSvgGraph(data);
-			});
+			this._comm.graphComm("getSvg", "/" + this.options.graphId, $.proxy(function(data) {
+				this._presentSvgGraph(data);
+			}, this));
 		},
 		
 		_presentSvgGraph: function(data) {
@@ -205,42 +254,40 @@
 		},
 		
 		_makeInteractive: function() {
-			var me = this;
-			this.getSvg().mousedown(function(event) {
-				me.options.state.onMouseDown(event);
-			}).mousemove(function(event) {
-				me.options.state.onMouseMove(event);
-			}).mouseup(function(event) {
-				me.options.state.onMouseUp(event);
-			});
+			this.getSvg().mousedown($.proxy(function(event) {
+				this.options.state.onMouseDown(event);
+			}, this)).mousemove($.proxy(function(event) {
+				this.options.state.onMouseMove(event);
+			}, this)).mouseup($.proxy(function(event) {
+				this.options.state.onMouseUp(event);
+			}, this));
 			
-			$("circle, text").dblclick(function(event) {
-				me.options.state.onDblClickVertex(event);
-			}).click(function(event) {
-				me.options.state.onClickVertex(event);
-			}).hover(function(event) {
-				me.options.state.onHoverInVertex(event);
-			}, function(event) {
-				me.options.state.onHoverOutVertex(event);
-			});
+			$("circle, text").dblclick($.proxy(function(event) {
+				this.options.state.onDblClickVertex(event);
+			}, this)).click($.proxy(function(event) {
+				this.options.state.onClickVertex(event);
+			}, this)).hover($.proxy(function(event) {
+				this.options.state.onHoverInVertex(event);
+			}, this), $.proxy(function(event) {
+				this.options.state.onHoverOutVertex(event);
+			}, this));
 			
-			$("line").dblclick(function(event) {
-				me.options.state.onDblClickEdge(event);
-			}).click(function(event) {
-				me.options.state.onClickEdge(event);
-			}).hover(function(event) {
-				me.options.state.onHoverInEdge(event);
-			}, function(event) {
-				me.options.state.onHoverOutEdge(event);
-			});
+			$("line").dblclick($.proxy(function(event) {
+				this.options.state.onDblClickEdge(event);
+			}, this)).click($.proxy(function(event) {
+				this.options.state.onClickEdge(event);
+			}, this)).hover($.proxy(function(event) {
+				this.options.state.onHoverInEdge(event);
+			}, this), $.proxy(function(event) {
+				this.options.state.onHoverOutEdge(event);
+			}, this));
 		},
 		
 		_createGraph: function() {
-			var me = this;
-			this._comm.graphComm("postJson", "?empty=true", function(data) {
-				me.options.graphId = data.id;
-				me._loadGraph();
-			});
+			this._comm.graphComm("postJson", "?empty=true", $.proxy(function(data) {
+				this.options.graphId = data.id;
+				this._loadGraph();
+			}, this));
 		},
 		
 		simulateError: function() {

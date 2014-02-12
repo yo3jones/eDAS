@@ -14,6 +14,12 @@ import edu.unlv.cs.edas.graph.design.DesignVertex;
 import edu.unlv.cs.edas.graph.design.manager.DesignGraphManager;
 import edu.unlv.cs.edas.graph.manager.impl.AbstractGraphManager;
 
+/**
+ * An implementation of {@link AbstractGraphManager} for design graphs.
+ * 
+ * @author Chris Jones
+ *
+ */
 @Component @Scope(SCOPE_SINGLETON)
 public class DesignGraphManagerImpl extends AbstractGraphManager<DesignGraphId, DesignVertex, 
 		DesignEdge, DesignGraph> implements DesignGraphManager {

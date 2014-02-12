@@ -6,7 +6,7 @@ import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
+import org.w3c.dom.Element;
 
 import edu.unlv.cs.graph.EdgeKey;
 import edu.unlv.cs.graph.Graph;
@@ -23,9 +23,10 @@ public class GraphDomAdapterImplTest {
 	private String context;
 	private HashGraph<String, String, String> graph;
 	private Document document;
+	private Element rootElement;
 	
-	private Node[] vertexNodes;
-	private Node[] edgeNodes;
+	private Element[] vertexNodes;
+	private Element[] edgeNodes;
 	
 	@SuppressWarnings("unchecked")
 	private GraphDomBuilder<String, String, String, String> mockBuilder() {
@@ -45,6 +46,7 @@ public class GraphDomAdapterImplTest {
 	@Before
 	public void setUp() throws Exception {
 		document = mock(Document.class);
+		rootElement = mock(Element.class);
 		
 		graph = HashGraphTest.toGraph(new String[][][] {
 				new String[][] {
@@ -59,15 +61,17 @@ public class GraphDomAdapterImplTest {
 		builder = mockBuilder();
 		context = "Some Context";
 		
-		when(builder.createContext(any(Document.class), anyGraph())).thenReturn(context);
+		when(builder.createContext(any(Document.class), any(Element.class), anyGraph()))
+				.thenReturn(context);
 		when(builder.createDocument()).thenReturn(document);
+		when(builder.createRootElement(document)).thenReturn(rootElement);
 		
-		vertexNodes = new Node[] {mock(Node.class), mock(Node.class), mock(Node.class)};
+		vertexNodes = new Element[] {mock(Element.class), mock(Element.class), mock(Element.class)};
 		when(builder.createVertex(context, "one", "one")).thenReturn(vertexNodes[0]);
 		when(builder.createVertex(context, "two", "two")).thenReturn(vertexNodes[1]);
 		when(builder.createVertex(context, "three", "three")).thenReturn(vertexNodes[2]);
 		
-		edgeNodes = new Node[] {mock(Node.class), mock(Node.class)};
+		edgeNodes = new Element[] {mock(Element.class), mock(Element.class)};
 		when(builder.createEdge(context, new EdgeKey<String>("one", "two"), "one-two"))
 				.thenReturn(edgeNodes[0]);
 		when(builder.createEdge(context, new EdgeKey<String>("one", "three"), "one-three"))
@@ -83,23 +87,23 @@ public class GraphDomAdapterImplTest {
 		
 		assertEquals(document, actual);
 		verify(builder).createDocument();
-		verify(builder).createContext(document, graph);
+		verify(builder).createContext(document, rootElement, graph);
 		
 		verify(builder, times(3)).createVertex(anyString(), anyString(), anyString());
 		verify(builder).createVertex(context, "one", "one");
 		verify(builder).createVertex(context, "two", "two");
 		verify(builder).createVertex(context, "three", "three");
 		
-		verify(document).appendChild(vertexNodes[0]);
-		verify(document).appendChild(vertexNodes[1]);
-		verify(document).appendChild(vertexNodes[2]);
+		verify(rootElement).appendChild(vertexNodes[0]);
+		verify(rootElement).appendChild(vertexNodes[1]);
+		verify(rootElement).appendChild(vertexNodes[2]);
 		
 		verify(builder, times(2)).createEdge(anyString(), anyEdgeKey(), anyString());
 		verify(builder).createEdge(context, new EdgeKey<String>("one", "two"), "one-two");
 		verify(builder).createEdge(context, new EdgeKey<String>("one", "three"), "one-three");
 		
-		verify(document).appendChild(edgeNodes[0]);
-		verify(document).appendChild(edgeNodes[1]);
+		verify(rootElement).appendChild(edgeNodes[0]);
+		verify(rootElement).appendChild(edgeNodes[1]);
 	}
 	
 }

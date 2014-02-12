@@ -27,6 +27,9 @@ public abstract class AbstractGraphDomBuilderContext<K, V, E> implements
 	 */
 	private Document document;
 	
+	/**
+	 * The root element of the document.
+	 */
 	private Element rootElement;
 	
 	/**
@@ -38,6 +41,7 @@ public abstract class AbstractGraphDomBuilderContext<K, V, E> implements
 	 * Constructs the context with the given document and graph.
 	 * 
 	 * @param document
+	 * @param rootElement
 	 * @param graph
 	 */
 	public AbstractGraphDomBuilderContext(Document document, Element rootElement, 

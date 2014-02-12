@@ -44,3 +44,30 @@ TEXTAREA#input {
 	margin: 0px;
 	border: 0px;
 }
+
+line {
+	stroke: black;
+	stroke-width: 3px;
+}
+
+.edas-graph-state-delete line {
+	stroke-width: 8px;
+}
+
+.edas-graph-state-delete line:hover {
+	stroke: red;
+}
+
+circle {
+	radius: 20px;
+	fill: blue;
+}
+
+.edas-graph-state-delete circle:hover {
+	fill: red;
+}
+
+text {
+	text-anchor: middle;
+	dominant-baseline: central;
+}

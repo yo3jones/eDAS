@@ -6,7 +6,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import edu.unlv.cs.edas.graph.design.DesignEdge;
 import edu.unlv.cs.edas.graph.design.DesignVertex;
@@ -16,6 +15,11 @@ import edu.unlv.cs.graph.EdgeKey;
 import edu.unlv.cs.graph.Graph;
 import edu.unlv.cs.graph.dom.domain.GraphDomBuilder;
 
+/**
+ * A {@link GraphDomBuilder} implementation for creating a SVG DOM for a design graph.
+ * 
+ * @author Chris Jones
+ */
 public class DesignDomGraphBuilder implements GraphDomBuilder<Key, DesignVertex, DesignEdge, 
 		DesignDomGraphBuilderContext> {
 
@@ -47,28 +51,26 @@ public class DesignDomGraphBuilder implements GraphDomBuilder<Key, DesignVertex,
 	}
 
 	@Override
-	public Node createVertex(DesignDomGraphBuilderContext context, Key key, DesignVertex vertex) {
+	public Element createVertex(DesignDomGraphBuilderContext context, Key key, DesignVertex vertex) {
 		Document document = context.getDocument();
 		Position position = vertex.getPosition();
-		Integer id = vertex.getId().getId();
+		Integer id = key.getId();
 		
 		Element groupElement = document.createElement("g");
 		
 		Element vertexElement = document.createElement("circle");
 		vertexElement.setAttribute("id", "-v-" + id);
-		vertexElement.setAttribute("vertexName", id.toString());
+		vertexElement.setAttribute("vertexId", id.toString());
 		vertexElement.setAttribute("r", "20");
 		vertexElement.setAttribute("cx", position.getX().toString());
 		vertexElement.setAttribute("cy", position.getY().toString());
-		vertexElement.setAttribute("fill", "blue");
 		groupElement.appendChild(vertexElement);
 		
 		Element textElement = document.createElement("text");
 		textElement.setAttribute("id", "-l-" + id);
-		textElement.setAttribute("vertexName", id.toString());
+		textElement.setAttribute("vertexId", id.toString());
 		textElement.setAttribute("x", position.getX().toString());
 		textElement.setAttribute("y", position.getY().toString());
-		textElement.setAttribute("style", "text-anchor: middle; dominant-baseline: central;");
 		textElement.setTextContent(vertex.getLabel());
 		groupElement.appendChild(textElement);
 		
@@ -76,22 +78,20 @@ public class DesignDomGraphBuilder implements GraphDomBuilder<Key, DesignVertex,
 	}
 
 	@Override
-	public Node createEdge(DesignDomGraphBuilderContext context, EdgeKey<Key> key, 
+	public Element createEdge(DesignDomGraphBuilderContext context, EdgeKey<Key> key, 
 			DesignEdge edge) {
 		DesignVertex beginVertex = context.getGraph().getVertex(key.getFromKey());
 		DesignVertex endVertex = context.getGraph().getVertex(key.getToKey());
 		
 		Element edgeElement = context.getDocument().createElement("line");
-		edgeElement.setAttribute("edgeName", beginVertex.getId().getId() + "-" + 
-				endVertex.getId().getId());
-		edgeElement.setAttribute("vertexName1", beginVertex.getId().getId().toString());
-		edgeElement.setAttribute("vertexName2", endVertex.getId().getId().toString());
+		edgeElement.setAttribute("edgeName", key.getFromKey().getId() + "-" + 
+				key.getToKey().getId());
+		edgeElement.setAttribute("vertexId1", key.getFromKey().getId().toString());
+		edgeElement.setAttribute("vertexId2", key.getToKey().getId().toString());
 		edgeElement.setAttribute("x1", beginVertex.getPosition().getX().toString());
 		edgeElement.setAttribute("y1", beginVertex.getPosition().getY().toString());
 		edgeElement.setAttribute("x2", endVertex.getPosition().getX().toString());
 		edgeElement.setAttribute("y2", endVertex.getPosition().getY().toString());
-		edgeElement.setAttribute("stroke", "black");
-		edgeElement.setAttribute("stroke-width", "2");
 		
 		return edgeElement;
 	}

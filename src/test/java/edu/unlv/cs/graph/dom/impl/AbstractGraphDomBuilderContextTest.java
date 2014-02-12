@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import edu.unlv.cs.graph.Graph;
 
@@ -14,9 +15,9 @@ public class AbstractGraphDomBuilderContextTest {
 	private static class TestAbstractGraphDomBuilderContext extends 
 			AbstractGraphDomBuilderContext<String, String, String> {
 
-		public TestAbstractGraphDomBuilderContext(Document document, 
+		public TestAbstractGraphDomBuilderContext(Document document, Element rootElement, 
 				Graph<String, String, String> graph) {
-			super(document, graph);
+			super(document, rootElement, graph);
 		}
 		
 	}
@@ -24,6 +25,7 @@ public class AbstractGraphDomBuilderContextTest {
 	private TestAbstractGraphDomBuilderContext context;
 	
 	private Document document;
+	private Element rootElement;
 	private Graph<String, String, String> graph;
 	
 	@SuppressWarnings("unchecked")
@@ -34,14 +36,20 @@ public class AbstractGraphDomBuilderContextTest {
 	@Before
 	public void setUp() throws Exception {
 		document = mock(Document.class);
+		rootElement = mock(Element.class);
 		graph = mockGraph();
 		
-		context = new TestAbstractGraphDomBuilderContext(document, graph);
+		context = new TestAbstractGraphDomBuilderContext(document, rootElement, graph);
 	}
 	
 	@Test
 	public void testGetDocument() throws Exception {
 		assertEquals(document, context.getDocument());
+	}
+	
+	@Test
+	public void testGetRootElement() {
+		assertEquals(rootElement, context.getRootElement());
 	}
 	
 	@Test

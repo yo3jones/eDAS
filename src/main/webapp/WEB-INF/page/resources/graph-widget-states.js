@@ -11,6 +11,16 @@ var GraphStates = {};
 		this.dragEndVertex = null;
 	};
 	
+	GraphState.prototype.init = function () {
+		
+	};
+	
+	GraphState.prototype._clearClasses = function() {
+		this.widget.element.removeClass("edas-graph-state-select " +
+				"edas-graph-state-line " +
+				"edas-graph-state-delete");
+	};
+	
 	GraphState.prototype.onMouseDown = function(event) {
 		var target = $(event.target);
 		var position = this._getPositionFromEvent(event);
@@ -70,22 +80,21 @@ var GraphStates = {};
 	};
 	
 	GraphState.prototype.onDblClickVertex = function(event) {
-		var vertexName = this._getVertexIdFromEvent(event);
+		var vertexId = this._getVertexIdFromEvent(event);
 		var labelElement = this._getLabelFromEvent(event);
-		var me = this;
 		
 		$("#edas-graph-vertex-label-dialog-input")
 			.val(labelElement.text())
 			.off("keypress")
-			.keypress(function(event) {
+			.keypress($.proxy(function(event) {
 				if (event.which == 13) {
 					var label = $("#edas-graph-vertex-label-dialog-input").val();
 					labelElement.text(label);
-					me.widget.options.graph.vertices[vertexName].label = label;
-					me.widget.saveVertex(vertexName);
+					this.widget.options.graph.vertices[vertexId].label = label;
+					this.widget.saveVertex(vertexId);
 					$("#edas-graph-vertex-label-dialog").dialog("close");
 				}
-			});
+			}, this));
 		$("#edas-graph-vertex-label-dialog")
 			.dialog("option", "position", {my: "left center", at: "right center", of: event})
 			.dialog("open");
@@ -118,11 +127,11 @@ var GraphStates = {};
 	
 	GraphState.prototype._getVertexIdFromEvent = function (event) {
 		var target = $(event.target);
-		return target.sAttr("vertexName");
+		return target.sAttr("vertexId");
 	};
 	
 	GraphState.prototype._getVertexIdFromVertex = function (vertex) {
-		return vertex.sAttr("vertexName");
+		return vertex.sAttr("vertexId");
 	};
 	
 	GraphState.prototype._getVertexFromEvent = function (event) {
@@ -148,8 +157,13 @@ var GraphStates = {};
 	
 	SelectGraphState.prototype.constructor = GraphState;
 	
+	SelectGraphState.prototype.init = function() {
+		this._clearClasses();
+		this.widget.element.addClass("edas-graph-state-select");
+	};
+	
 	SelectGraphState.prototype._onDragVertex = function(position) {
-		var vertexName = this._getVertexIdFromVertex(this.dragStartVertex);
+		var vertexId = this._getVertexIdFromVertex(this.dragStartVertex);
 		var labelElement = this._getLabelFromVertex(this.dragStartVertex);
 		
 		var x = position.x;
@@ -161,22 +175,22 @@ var GraphStates = {};
 		labelElement.x(x);
 		labelElement.y(y);
 		
-		this.widget.getSvg().sByAttr("vertexName1", vertexName).each(function() {
+		this.widget.getSvg().sByAttr("vertexId1", vertexId).each(function() {
 			$(this).sAttr("x1", x);
 			$(this).sAttr("y1", y);
 		});
-		this.widget.getSvg().sByAttr("vertexName2", vertexName).each(function() {
+		this.widget.getSvg().sByAttr("vertexId2", vertexId).each(function() {
 			$(this).sAttr("x2", x);
 			$(this).sAttr("y2", y);
 		});
 		
-		this.widget.options.graph.vertices[vertexName].position.x = x;
-		this.widget.options.graph.vertices[vertexName].position.y = y;
+		this.widget.options.graph.vertices[vertexId].x = x;
+		this.widget.options.graph.vertices[vertexId].y = y;
 	};	
 	
 	SelectGraphState.prototype._onDragStopVertex = function(event, ui) {
-		var vertexName = this._getVertexIdFromVertex(this.dragStartVertex);
-		this.widget.saveVertex(vertexName);
+		var vertexId = this._getVertexIdFromVertex(this.dragStartVertex);
+		this.widget.saveVertex(vertexId);
 	};
 	
 	function LineGraphState(widget) {
@@ -186,6 +200,11 @@ var GraphStates = {};
 	LineGraphState.prototype = new GraphState();
 	
 	LineGraphState.prototype.constructor = GraphState;
+	
+	LineGraphState.prototype.init = function() {
+		this._clearClasses();
+		this.widget.element.addClass("edas-graph-state-line");
+	};
 	
 	LineGraphState.prototype._onDragStartVertex = function(position) {
 		var vertexId = this._getVertexIdFromVertex(this.dragStartVertex);
@@ -234,6 +253,11 @@ var GraphStates = {};
 	
 	DeleteGraphState.prototype.constructor = GraphState;
 	
+	DeleteGraphState.prototype.init = function() {
+		this._clearClasses();
+		this.widget.element.addClass("edas-graph-state-delete");
+	};
+	
 	DeleteGraphState.prototype.onHoverInVertex = function(event) {
 		this._getVertexFromEvent(event)
 			.sAttr("fill", "red");
@@ -260,8 +284,8 @@ var GraphStates = {};
 	};
 	
 	DeleteGraphState.prototype.onClickEdge = function(event) {
-		var startVertexId = $(event.target).sAttr("vertexName1");
-		var endVertexId = $(event.target).sAttr("vertexName2");
+		var startVertexId = $(event.target).sAttr("vertexId1");
+		var endVertexId = $(event.target).sAttr("vertexId2");
 		this.widget.deleteEdge(startVertexId, endVertexId);
 	};
 } (jQuery));

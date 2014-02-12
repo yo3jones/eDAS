@@ -1,17 +1,30 @@
 package edu.unlv.cs.edas.graph.design;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 import edu.unlv.cs.edas.graph.domain.Edge;
-import edu.unlv.cs.edas.graph.domain.Key;
-import edu.unlv.cs.graph.EdgeKey;
 
-public class DesignEdge extends Edge {
-
-	DesignEdge() {
-		super();
+/**
+ * An implementation of {@link Edge} for edges on a design graph.
+ * 
+ * @author Chris Jones
+ * 
+ */
+public class DesignEdge implements Edge {
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) return false;
+		if (obj == this) return true;
+		if (obj.getClass() != this.getClass()) return false;
+		return true;
 	}
 	
-	public DesignEdge(EdgeKey<Key> id) throws IllegalArgumentException {
-		super(id);
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+			.toString();
 	}
-
+	
 }

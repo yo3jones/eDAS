@@ -6,15 +6,32 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.util.Assert;
 
+/**
+ * This is a immutable POJO that represents two dimensional coordinate.
+ * 
+ * @author Chris Jones
+ * 
+ */
 public class Position {
 
+	/**
+	 * The x coordinate of this position.
+	 */
 	private Integer x;
+	
+	/**
+	 * The y coordinate of this position.
+	 */
 	private Integer y;
 	
-	Position() {
-		
-	}
-	
+	/**
+	 * Constructs a position with the given x and y coordinate.
+	 * 
+	 * @param x
+	 *            The x coordinate.
+	 * @param y
+	 *            The y coordinate.
+	 */
 	public Position(Integer x, Integer y) {
 		Assert.notNull(x);
 		Assert.notNull(y);
@@ -22,20 +39,22 @@ public class Position {
 		this.y = y;
 	}
 	
+	/**
+	 * Returns the x coordinate of this position.
+	 * 
+	 * @return The x coordinate of this position.
+	 */
 	public Integer getX() {
 		return x;
 	}
 	
-	public void setX(Integer x) {
-		this.x = x;
-	}
-	
+	/**
+	 * Returns the y coordinate of this position.
+	 * 
+	 * @return The y coordinate of this position.
+	 */
 	public Integer getY() {
 		return y;
-	}
-	
-	public void setY(Integer y) {
-		this.y = y;
 	}
 	
 	@Override

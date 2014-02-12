@@ -6,15 +6,36 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.util.Assert;
 
+/**
+ * An immutable POJO that represents a unique identifier of a graph within the
+ * eDAS application.
+ * 
+ * @author Chris Jones
+ * 
+ */
 public class GraphId {
 
+	/**
+	 * The unique value.
+	 */
 	private Long id;
 	
+	/**
+	 * Constructs a graph ID with the given value.
+	 * 
+	 * @param id
+	 *            value of the ID.
+	 */
 	public GraphId(Long id) {
 		Assert.notNull(id);
 		this.id = id;
 	}
 	
+	/**
+	 * Returns the value of this ID.
+	 * 
+	 * @return The value of this ID.
+	 */
 	public Long getId() {
 		return id;
 	}

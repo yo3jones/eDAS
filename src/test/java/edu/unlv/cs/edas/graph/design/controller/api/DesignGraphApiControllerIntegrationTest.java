@@ -23,7 +23,7 @@ import org.springframework.web.context.WebApplicationContext;
 @WebAppConfiguration
 @ContextConfiguration(classes=TestDesignGraphApiControllerConfig.class)
 public class DesignGraphApiControllerIntegrationTest {
-
+	
 	@Inject
 	private WebApplicationContext wac;
 	
@@ -40,21 +40,24 @@ public class DesignGraphApiControllerIntegrationTest {
 		String jsonGraph = IOUtils.toString(in);
 		
 		mockMvc.perform(post("/v1/design/graphs")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(jsonGraph))
+				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.id").value(1001));
 		
+		mockMvc.perform(put("/v1/design/graphs/1001")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonGraph))
+			.andExpect(status().isOk());
+		
 		mockMvc.perform(get("/v1/design/graphs/1001"))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.vertices[0].id.name").value("A"))
-			.andExpect(jsonPath("$.vertices[0].position.x").value(1))
-			.andExpect(jsonPath("$.vertices[0].position.y").value(1))
-			.andExpect(jsonPath("$.vertices[1].id.name").value("B"))
-			.andExpect(jsonPath("$.vertices[1].position.x").value(2))
-			.andExpect(jsonPath("$.vertices[1].position.y").value(2))
-			.andExpect(jsonPath("$.edges[0].id.fromKey.name").value("A"))
-			.andExpect(jsonPath("$.edges[0].id.toKey.name").value("B"));
+			.andExpect(jsonPath("$.vertices['1'].label").value("A"))
+			.andExpect(jsonPath("$.vertices['1'].x").value(150))
+			.andExpect(jsonPath("$.vertices['1'].y").value(150))
+			.andExpect(jsonPath("$.vertices['2'].label").value("B"))
+			.andExpect(jsonPath("$.vertices['2'].x").value(350))
+			.andExpect(jsonPath("$.vertices['2'].y").value(150))
+			.andExpect(jsonPath("$.edges['1-2'].e").value("e"));
 	}
 	
 }

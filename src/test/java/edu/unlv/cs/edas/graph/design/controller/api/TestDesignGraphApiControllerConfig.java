@@ -6,6 +6,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import edu.unlv.cs.edas.graph.design.adapter.DesignGraphAdapter;
 import edu.unlv.cs.edas.graph.design.adapter.impl.DesignGraphAdapterImpl;
+import edu.unlv.cs.edas.graph.design.dom.DesignGraphDomAdapter;
 import edu.unlv.cs.edas.graph.design.manager.DesignGraphManager;
 import edu.unlv.cs.edas.graph.design.manager.impl.DesignGraphManagerImpl;
 
@@ -26,6 +27,11 @@ public class TestDesignGraphApiControllerConfig {
 	@Bean
 	public DesignGraphManager getManager() {
 		return new DesignGraphManagerImpl();
+	}
+	
+	@Bean
+	public DesignGraphDomAdapter getDomAdapter() {
+		return new DesignGraphDomAdapter();
 	}
 	
 }

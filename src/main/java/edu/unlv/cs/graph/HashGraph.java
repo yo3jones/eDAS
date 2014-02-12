@@ -3,11 +3,12 @@ package edu.unlv.cs.graph;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.springframework.util.Assert;
 
 /**
@@ -57,12 +58,12 @@ public class HashGraph<K, V, E> implements Graph<K, V, E> {
 		/**
 		 * A set that holds all vertices that the vertex is directly connected to.
 		 */
-		private Set<K> adjacentVertices = new HashSet<K>();
+		private Set<K> adjacentVertices = new LinkedHashSet<K>();
 		
 		/**
 		 * A set that holds all vertices that connect to this vertex.
 		 */
-		private Set<K> reverseAdjacentVertices = new HashSet<K>();
+		private Set<K> reverseAdjacentVertices = new LinkedHashSet<K>();
 		
 		/**
 		 * Returns a set that holds all vertices that the vertex is directly
@@ -92,12 +93,12 @@ public class HashGraph<K, V, E> implements Graph<K, V, E> {
 	 * A mapping between the key that uniquely identifies a vertex and the
 	 * vertex's value.
 	 */
-	private Map<K, V> vertices = new HashMap<K, V>();
+	private Map<K, V> vertices = new LinkedHashMap<K, V>();
 	
 	/**
 	 * A mapping between and {@link HashEdgeKey} and the edge's value.
 	 */
-	private Map<EdgeKey<K>, E> edges = new HashMap<EdgeKey<K>, E>();
+	private Map<EdgeKey<K>, E> edges = new LinkedHashMap<EdgeKey<K>, E>();
 	
 	/**
 	 * A mapping between a key that uniquely identifies a vertex and the sets of
@@ -106,7 +107,7 @@ public class HashGraph<K, V, E> implements Graph<K, V, E> {
 	 * 
 	 * @see AdjacentVertices
 	 */
-	private Map<K, AdjacentVertices<K>> adjacentVertices = new HashMap<K, AdjacentVertices<K>>();
+	private Map<K, AdjacentVertices<K>> adjacentVertices = new LinkedHashMap<K, AdjacentVertices<K>>();
 	
 	@Override
 	public V putVertex(K key, V vertex) throws IllegalArgumentException {
@@ -115,7 +116,7 @@ public class HashGraph<K, V, E> implements Graph<K, V, E> {
 		
 		if (vertices.containsKey(key)) {
 			// this vertex already exists, so just update it's value
-			vertices.put(key, vertex);
+			return vertices.put(key, vertex);
 		}
 		
 		// add a set for future adjacent vertices
@@ -275,6 +276,19 @@ public class HashGraph<K, V, E> implements Graph<K, V, E> {
 	public boolean containsEdge(EdgeKey<K> key) throws IllegalArgumentException {
 		Assert.notNull(key);
 		return edges.containsKey(key);
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) return false;
+		if (obj == this) return true;
+		if (obj.getClass() != this.getClass()) return false;
+		HashGraph<?, ?, ?> that = (HashGraph<?, ?, ?>) obj;
+		return new EqualsBuilder()
+			.append(this.vertices, that.vertices)
+			.append(this.edges, that.edges)
+			.append(this.adjacentVertices, that.adjacentVertices)
+			.isEquals();
 	}
 	
 }

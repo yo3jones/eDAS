@@ -7,18 +7,17 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.util.Assert;
 
 /**
- * A key for vertices in graphs meant for the distributed algorithm simulator.
+ * A key for vertices in graphs meant for eDAS application.
  * 
  * @author Chris Jones
  * 
  */
 public class Key {
 
+	/**
+	 * The value of the key.
+	 */
 	private Integer id;
-	
-	Key() {
-		
-	}
 	
 	/**
 	 * Constructs a vertex key with the given name.
@@ -35,10 +34,6 @@ public class Key {
 	
 	public Integer getId() {
 		return id;
-	}
-	
-	void setId(Integer id) {
-		this.id = id;
 	}
 	
 	@Override

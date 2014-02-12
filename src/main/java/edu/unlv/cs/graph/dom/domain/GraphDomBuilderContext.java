@@ -28,6 +28,11 @@ public interface GraphDomBuilderContext<K, V, E> {
 	 */
 	Document getDocument();
 	
+	/**
+	 * Returns the root element of the document.
+	 * 
+	 * @return The root element of the document.
+	 */
 	Element getRootElement();
 	
 	/**

@@ -2,9 +2,10 @@
 	$.widget("edas.graphComm", {
 		
 		options: {
-			baseUrl: null,
-			errorCallback: null
+			baseUrl: null
 		},
+		
+		_currentGroupCount: 0,
 		
 		_create: function() {
 			this.element.css("display", "none");
@@ -61,26 +62,24 @@
 		},
 		
 		_queueRequest: function(requestOptions, callback) {
-			var me = this;
 			$.extend(requestOptions, {
-				success: function(data) {
-					me._onSuccess(callback, data);
-				},
-				error: function() {
-					me._onError();
-				}
+				success: $.proxy(this._onSuccess, this, callback),
+				error: $.proxy(this._onError, this)
 			});
 			
 			$(this.element).queue("ajax", function() {
 				$.ajax(requestOptions);
 			});
 			
-			$(this.element).queue("complete", function(){
-				$(me.element).dequeue("ajax");
-			});
+			$(this.element).queue("complete", $.proxy(function() {
+				$(this.element).dequeue("ajax");
+			}, this));
+			
+			this._currentGroupCount++;
 			
 			if ($(this.element).queue("complete").length == 1) {
-				$(me.element).dequeue("ajax");
+				this._trigger("groupStart");
+				$(this.element).dequeue("ajax");
 			}
 		},
 		
@@ -90,14 +89,18 @@
 			}
 			
 			$(this.element).dequeue("complete");
+			
+			if ($(this.element).queue("complete") == 0) {
+				this._trigger("groupComplete", null, {count: this._currentGroupCount});
+				this._currentGroupCount = 0;
+			}
 		},
 		
 		_onError: function() {
-			if (this.options.errorCallback) {
-				this.options.errorCallback();
-			}
+			this._trigger("error");
 			$(this.element).clearQueue("ajax");
 			$(this.element).clearQueue("complete");
+			this._currentGroupCount = 0;
 		}
 		
 	});

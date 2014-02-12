@@ -2,7 +2,6 @@ package edu.unlv.cs.graph.dom.domain;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import edu.unlv.cs.graph.EdgeKey;
 import edu.unlv.cs.graph.Graph;
@@ -36,6 +35,13 @@ public interface GraphDomBuilder<K, V, E, C> {
 	 */
 	Document createDocument();
 	
+	/**
+	 * Returns a new element that will be the root element of the document.
+	 * 
+	 * @param document
+	 *            The document being generated.
+	 * @return A new element that will be the root element of the document.
+	 */
 	Element createRootElement(Document document);
 	
 	/**
@@ -56,7 +62,7 @@ public interface GraphDomBuilder<K, V, E, C> {
 	C createContext(Document document, Element rootElement, Graph<K, V, E> graph);
 	
 	/**
-	 * Returns a new node that represents the given vertex of the graph.
+	 * Returns a new element that represents the given vertex of the graph.
 	 * 
 	 * @param context
 	 *            The context that was created by
@@ -65,12 +71,12 @@ public interface GraphDomBuilder<K, V, E, C> {
 	 *            The key of the vertex.
 	 * @param vertex
 	 *            The vertex value.
-	 * @return A new node that represents the given vertex of the graph.
+	 * @return A new element that represents the given vertex of the graph.
 	 */
-	Node createVertex(C context, K key, V vertex);
+	Element createVertex(C context, K key, V vertex);
 	
 	/**
-	 * Returns a new node that represents the given edge of the graph.
+	 * Returns a new element that represents the given edge of the graph.
 	 * 
 	 * @param context
 	 *            The context that was created by
@@ -79,8 +85,8 @@ public interface GraphDomBuilder<K, V, E, C> {
 	 *            The key of the edge.
 	 * @param edge
 	 *            The edge value.
-	 * @return A new node that represents the given edge of the graph.
+	 * @return A new element that represents the given edge of the graph.
 	 */
-	Node createEdge(C context, EdgeKey<K> key, E edge);
+	Element createEdge(C context, EdgeKey<K> key, E edge);
 	
 }
