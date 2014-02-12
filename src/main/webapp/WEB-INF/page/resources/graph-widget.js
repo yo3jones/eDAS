@@ -156,7 +156,9 @@
 			if ($("#edas-graph-error-message").is(":visible")) {
 				$("#edas-graph-error-message").hide("slide", {direction: "up"}, 500, then);
 			} else {
-				then();
+				if (then) {
+					then();
+				}
 			}
 		},
 		
@@ -176,7 +178,9 @@
 			if ($("#edas-graph-info-message").is(":visible")) {
 				$("#edas-graph-info-message").hide("slide", {direction: "up"}, 500, then);
 			} else {
-				then();
+				if (then) {
+					then();
+				}
 			}
 		},
 		
