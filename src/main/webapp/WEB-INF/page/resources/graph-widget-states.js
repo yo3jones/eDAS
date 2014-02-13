@@ -175,18 +175,89 @@ var GraphStates = {};
 		labelElement.x(x);
 		labelElement.y(y);
 		
-		this.widget.getSvg().sByAttr("vertexId1", vertexId).each(function() {
+		var me = this;
+		$("line", this.widget.getSvg()).sByAttr("vertexId1", vertexId).each(function() {
 			$(this).sAttr("x1", x);
 			$(this).sAttr("y1", y);
 		});
-		this.widget.getSvg().sByAttr("vertexId2", vertexId).each(function() {
+		$("line", this.widget.getSvg()).sByAttr("vertexId2", vertexId).each(function() {
 			$(this).sAttr("x2", x);
 			$(this).sAttr("y2", y);
+		});
+		$("text", this.widget.getSvg()).sByAttr("vertexId1", vertexId).each(function() {
+			var edge = me._getLineFromWeight($(this));
+			var p = me._getLinePosition(edge);
+			var mp = me._getMidPoint(p);
+			var weightOffset = me._getWeightOffset(p);
+			$(this).sAttr("x", mp.x);
+			$(this).sAttr("y", mp.y);
+			$(this).sAttr("dx", weightOffset.x);
+			$(this).sAttr("dy", weightOffset.y);
+		});
+		$("text", this.widget.getSvg()).sByAttr("vertexId2", vertexId).each(function() {
+			var edge = me._getLineFromWeight($(this));
+			var p = me._getLinePosition(edge);
+			var mp = me._getMidPoint(p);
+			var weightOffset = me._getWeightOffset(p);
+			$(this).sAttr("x", mp.x);
+			$(this).sAttr("y", mp.y);
+			$(this).sAttr("dx", weightOffset.x);
+			$(this).sAttr("dy", weightOffset.y);
 		});
 		
 		this.widget.options.graph.vertices[vertexId].x = x;
 		this.widget.options.graph.vertices[vertexId].y = y;
-	};	
+	};
+	
+	SelectGraphState.prototype._getLineFromWeight = function(weight) {
+		var edgeId = weight.sAttr("edgeId");
+		return this.widget.getSvg().sById("-e-" + edgeId);
+	};
+	
+	SelectGraphState.prototype._getLinePosition = function(line) {
+		return {
+			x1: parseInt(line.sAttr("x1")),
+			y1: parseInt(line.sAttr("y1")),
+			x2: parseInt(line.sAttr("x2")),
+			y2: parseInt(line.sAttr("y2"))
+		};
+	};
+	
+	SelectGraphState.prototype._getMidPoint = function(p) {
+		return {
+			x: (p.x1 + p.x2) / 2,
+			y: (p.y1 + p.y2) / 2
+		};
+	};
+	
+	SelectGraphState.prototype._getWeightOffset = function(p) {
+		var lineDx = p.x1 - p.x2;
+		var lineDy = p.y1 - p.y2;
+		
+		var dx;
+		var dy;
+		
+		var d = 20;
+		
+		if (lineDx == 0) {
+			dx = d;
+			dy = 0;
+		} else if (lineDy == 0) {
+			dx = 0;
+			dy = d;
+		} else {
+			var lineM = lineDy / lineDx;
+			var m = -1 * (1 / lineM);
+			var k = Math.sqrt(1 + m * m);
+			dx = Math.round(d / k);
+			dy = Math.round((m * d) / k);
+		}
+		
+		return {
+			x: dx,
+			y: dy
+		};
+	};
 	
 	SelectGraphState.prototype._onDragStopVertex = function(event, ui) {
 		var vertexId = this._getVertexIdFromVertex(this.dragStartVertex);

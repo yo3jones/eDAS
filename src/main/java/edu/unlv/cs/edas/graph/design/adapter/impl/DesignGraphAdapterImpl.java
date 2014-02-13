@@ -70,12 +70,12 @@ public class DesignGraphAdapterImpl extends AbstractGraphAdapter<DesignVertex, D
 
 	@Override
 	protected void updateEdgeFromDto(DesignEdge edge, DesignEdgeDto edgeDto) {
-		// nothing to do here
+		edge.setWeight(edgeDto.getWeight());
 	}
 
 	@Override
 	protected void updateEdgeDtoFromEdge(DesignEdgeDto edgeDto, DesignEdge edge) {
-		// nothing to do here
+		edgeDto.setWeight(edge.getWeight());
 	}
 
 }

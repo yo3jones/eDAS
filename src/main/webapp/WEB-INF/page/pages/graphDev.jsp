@@ -3,7 +3,7 @@
 <html>
 <c:url var="resourceUrl" value="/resources/"/>
 <head>
-<script type="text/javascript" src="${resourceUrl}lib/jquery-2.1.0.min.js"></script>
+<script type="text/javascript" src="${resourceUrl}lib/jquery-1.11.0.min.js"></script>
 <script type="text/javascript" src="${resourceUrl}lib/jquery-ui-1.10.4.custom.min.js"></script>
 <script type="text/javascript" src="${resourceUrl}/svg-plugin.js"></script>
 
@@ -75,64 +75,64 @@
      },
      "edges": {
           "8-4": {
-               "e": "e"
+               "weight": 1
           },
           "9-4": {
-               "e": "e"
+               "weight": 1
           },
           "9-5": {
-               "e": "e"
+               "weight": 1
           },
           "2-5": {
-               "e": "e"
+               "weight": 1
           },
           "9-6": {
-               "e": "e"
+               "weight": 1
           },
           "2-4": {
-               "e": "e"
+               "weight": 1
           },
           "9-7": {
-               "e": "e"
+               "weight": 1
           },
           "9-8": {
-               "e": "e"
+               "weight": 1
           },
           "3-8": {
-               "e": "e"
+               "weight": 1
           },
           "4-5": {
-               "e": "e"
+               "weight": 1
           },
           "3-4": {
-               "e": "e"
+               "weight": 1
           },
           "6-1": {
-               "e": "e"
+               "weight": 1
           },
           "6-2": {
-               "e": "e"
+               "weight": 1
           },
           "7-3": {
-               "e": "e"
+               "weight": 1
           },
           "9-3": {
-               "e": "e"
+               "weight": 1
           },
           "9-2": {
-               "e": "e"
+               "weight": 1
           },
           "1-3": {
-               "e": "e"
+               "weight": 1
           },
           "9-1": {
-               "e": "e"
+               "weight": 1
           },
           "7-1": {
-               "e": "e"
+               "weight": 1
           },
           "1-2": {
-               "e": "e"
+               "weight": 1
           }
      }
 }</textarea>

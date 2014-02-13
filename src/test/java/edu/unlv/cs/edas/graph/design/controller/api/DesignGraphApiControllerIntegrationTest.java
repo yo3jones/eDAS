@@ -57,7 +57,7 @@ public class DesignGraphApiControllerIntegrationTest {
 			.andExpect(jsonPath("$.vertices['2'].label").value("B"))
 			.andExpect(jsonPath("$.vertices['2'].x").value(350))
 			.andExpect(jsonPath("$.vertices['2'].y").value(150))
-			.andExpect(jsonPath("$.edges['1-2'].e").value("e"));
+			.andExpect(jsonPath("$.edges['1-2'].weight").value(1));
 	}
 	
 }

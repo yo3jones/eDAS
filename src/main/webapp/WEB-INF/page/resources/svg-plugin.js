@@ -19,7 +19,7 @@
 	};
 	
 	$.fn.sByAttr = function(name, value) {
-		return $("*", this).filter(function(index) {
+		return this.filter(function(index) {
 			return $(this).sAttr(name) == value;
 		});
 	};

@@ -41,8 +41,13 @@ public class DesignGraphAdapterImplTest {
 		vertexDto.setY(6);
 		graphDto.addVertex(3, vertexDto);
 		
-		graphDto.addEdge(1, 2, new DesignEdgeDto());
-		graphDto.addEdge(1, 3, new DesignEdgeDto());
+		DesignEdgeDto edgeDto = new DesignEdgeDto();
+		edgeDto.setWeight(7);
+		graphDto.addEdge(1, 2, edgeDto);
+		
+		edgeDto = new DesignEdgeDto();
+		edgeDto.setWeight(8);
+		graphDto.addEdge(1, 3, edgeDto);
 		
 		DesignGraph graph = adapter.createGraph(graphDto);
 		DesignGraphDto actual = adapter.createDto(graph);

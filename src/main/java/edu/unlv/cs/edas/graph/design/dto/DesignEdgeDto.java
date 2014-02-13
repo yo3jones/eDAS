@@ -1,5 +1,6 @@
 package edu.unlv.cs.edas.graph.design.dto;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -14,27 +15,27 @@ import edu.unlv.cs.edas.graph.dto.EdgeDto;
 public class DesignEdgeDto implements EdgeDto {
 
 	/**
-	 * A dummy member so this object can serialize.
+	 * The weight of this edge.
 	 */
-	private String e = "e";
+	private Integer weight;
 	
 	/**
-	 * Returns a dummy value.
+	 * Returns the weight of this edge.
 	 * 
-	 * @return A dummy value.
+	 * @return The weight of this edge.
 	 */
-	public String getE() {
-		return e;
+	public Integer getWeight() {
+		return weight;
 	}
 	
 	/**
-	 * Sets a dummy value.
+	 * Sets the weight of this edge.
 	 * 
-	 * @param e
-	 *            A dummy value.
+	 * @param weight
+	 *            The weight of this edge.
 	 */
-	public void setE(String e) {
-		this.e = e;
+	public void setWeight(Integer weight) {
+		this.weight = weight;
 	}
 	
 	@Override
@@ -42,12 +43,16 @@ public class DesignEdgeDto implements EdgeDto {
 		if (obj == null) return false;
 		if (obj == this) return true;
 		if (obj.getClass() != this.getClass()) return false;
-		return true;
+		DesignEdgeDto that = (DesignEdgeDto) obj;
+		return new EqualsBuilder()
+			.append(this.weight, that.weight)
+			.isEquals();
 	}
 	
 	@Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+			.append("weight", weight)
 			.toString();
 	}
 	
