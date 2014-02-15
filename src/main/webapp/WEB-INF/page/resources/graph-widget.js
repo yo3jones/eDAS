@@ -227,6 +227,12 @@
 			this._loadGraph();
 		},
 		
+		saveEdge: function(edgeId) {
+			var edge = this.options.graph.edges[edgeId];
+			var url = "/" + this.options.graphId + "/edges/" + edgeId;
+			this._comm.graphComm("putJson", url, JSON.stringify(edge));
+		},
+		
 		deleteEdge: function(startVertexId, endVertexId) {
 			var url = "/" + this.options.graphId + "/edges/" + startVertexId + "-" + endVertexId;
 			this._comm.graphComm("deleteJson", url);
@@ -266,7 +272,7 @@
 				this.options.state.onMouseUp(event);
 			}, this));
 			
-			$("circle, text").dblclick($.proxy(function(event) {
+			$("circle.vertex-circle, text.vertex-label").dblclick($.proxy(function(event) {
 				this.options.state.onDblClickVertex(event);
 			}, this)).click($.proxy(function(event) {
 				this.options.state.onClickVertex(event);
@@ -276,7 +282,7 @@
 				this.options.state.onHoverOutVertex(event);
 			}, this));
 			
-			$("line").dblclick($.proxy(function(event) {
+			$("line.edge-line, line.edge-line-select, text.edge-weight").dblclick($.proxy(function(event) {
 				this.options.state.onDblClickEdge(event);
 			}, this)).click($.proxy(function(event) {
 				this.options.state.onClickEdge(event);

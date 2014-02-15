@@ -207,6 +207,28 @@ public class DesignGraphApiController {
 	}
 	
 	/**
+	 * Called when a users PUTSs an edge.
+	 * 
+	 * @param id
+	 *            The ID of the graph being updated.
+	 * @param fromVertexId
+	 *            The ID of the start vertex of the edge being updated.
+	 * @param toVertexId
+	 *            The ID of the end vertex of the edge being updated.
+	 * @param edgeDto
+	 *            The edge DTO with values to update on the edge.
+	 */
+	@RequestMapping(value="/{id}/edges/{fromVertexId}-{toVertexId}", method=PUT)
+	public void putEdge(@PathVariable Long id, @PathVariable Integer fromVertexId, 
+			@PathVariable Integer toVertexId, @RequestBody DesignEdgeDto edgeDto) {
+		DesignGraph designGraph = getGraph(id);
+		
+		EdgeKey<Key> edgeId = new EdgeKey<Key>(new Key(fromVertexId), new Key(toVertexId));
+		DesignEdge edge = adapter.createEdge(edgeDto);
+		designGraph.putEdge(edgeId, edge);
+	}
+	
+	/**
 	 * Called when a client DELETEs an edge.
 	 * 
 	 * @param id

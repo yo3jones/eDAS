@@ -76,19 +76,20 @@ public class DesignDomGraphBuilderTest {
 		Element actual = builder.createVertex(context, key, vertex);
 		assertEquals("g", actual.getTagName());
 		assertEquals(2, actual.getChildNodes().getLength());
+		assertEquals("-v-1", actual.getAttribute("id"));
+		assertEquals("1", actual.getAttribute("vertexId"));
+		assertEquals("vertex-container", actual.getAttribute("class"));
 		
 		Element actualCircle = (Element) actual.getChildNodes().item(0);
 		assertEquals("circle", actualCircle.getTagName());
-		assertEquals("-v-1", actualCircle.getAttribute("id"));
-		assertEquals("1", actualCircle.getAttribute("vertexId"));
-		assertEquals("20", actualCircle.getAttribute("r"));
+		assertEquals("vertex-circle", actualCircle.getAttribute("class"));
+		assertEquals("15", actualCircle.getAttribute("r"));
 		assertEquals("2", actualCircle.getAttribute("cx"));
 		assertEquals("3", actualCircle.getAttribute("cy"));
 		
 		Element actualText = (Element) actual.getChildNodes().item(1);
 		assertEquals("text", actualText.getTagName());
-		assertEquals("-l-1", actualText.getAttribute("id"));
-		assertEquals("1", actualText.getAttribute("vertexId"));
+		assertEquals("vertex-label", actualText.getAttribute("class"));
 		assertEquals("2", actualText.getAttribute("x"));
 		assertEquals("3", actualText.getAttribute("y"));
 		assertEquals("some label", actualText.getTextContent());
@@ -111,25 +112,34 @@ public class DesignDomGraphBuilderTest {
 		
 		Element actual = builder.createEdge(context, key, edge);
 		assertEquals("g", actual.getTagName());
-		assertEquals(2, actual.getChildNodes().getLength());
+		assertEquals(3, actual.getChildNodes().getLength());
+		assertEquals("-e-1-2", actual.getAttribute("id"));
+		assertEquals("1-2", actual.getAttribute("edgeId"));
+		assertEquals("1", actual.getAttribute("vertexId1"));
+		assertEquals("2", actual.getAttribute("vertexId2"));
+		assertEquals("edge-container edge-container-1 edge-container-2", 
+				actual.getAttribute("class"));
+		assertEquals("15", actual.getAttribute("weightDistance"));
 		
-		Element acutalLine = (Element) actual.getChildNodes().item(0);
+		Element acutalLineSelect = (Element) actual.getChildNodes().item(0);
+		assertEquals("line", acutalLineSelect.getTagName());
+		assertEquals("edge-line-select", acutalLineSelect.getAttribute("class"));
+		assertEquals("3", acutalLineSelect.getAttribute("x1"));
+		assertEquals("5", acutalLineSelect.getAttribute("y1"));
+		assertEquals("6", acutalLineSelect.getAttribute("x2"));
+		assertEquals("8", acutalLineSelect.getAttribute("y2"));
+		
+		Element acutalLine = (Element) actual.getChildNodes().item(1);
 		assertEquals("line", acutalLine.getTagName());
-		assertEquals("-e-1-2", acutalLine.getAttribute("id"));
-		assertEquals("1-2", acutalLine.getAttribute("edgeId"));
-		assertEquals("1", acutalLine.getAttribute("vertexId1"));
-		assertEquals("2", acutalLine.getAttribute("vertexId2"));
+		assertEquals("edge-line", acutalLine.getAttribute("class"));
 		assertEquals("3", acutalLine.getAttribute("x1"));
 		assertEquals("5", acutalLine.getAttribute("y1"));
 		assertEquals("6", acutalLine.getAttribute("x2"));
 		assertEquals("8", acutalLine.getAttribute("y2"));
 		
-		Element actualText = (Element) actual.getChildNodes().item(1);
+		Element actualText = (Element) actual.getChildNodes().item(2);
 		assertEquals("text", actualText.getTagName());
-		assertEquals("-w-1-2", actualText.getAttribute("id"));
-		assertEquals("1-2", actualText.getAttribute("edgeId"));
-		assertEquals("1", actualText.getAttribute("vertexId1"));
-		assertEquals("2", actualText.getAttribute("vertexId2"));
+		assertEquals("edge-weight", actualText.getAttribute("class"));
 		assertEquals("4", actualText.getAttribute("x"));
 		assertEquals("6", actualText.getAttribute("y"));
 		assertEquals("9", actualText.getTextContent());

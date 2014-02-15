@@ -24,7 +24,7 @@ var GraphStates = {};
 	GraphState.prototype.onMouseDown = function(event) {
 		var target = $(event.target);
 		var position = this._getPositionFromEvent(event);
-		if (target.isCircle() || target.isText()) {
+		if (target.is("circle.vertex-circle, text.vertex-label")) {
 			this.dragStartVertex = this._getVertexFromEvent(event);
 			this._onDragStartVertex(position);
 		}
@@ -48,19 +48,11 @@ var GraphStates = {};
 	};
 	
 	GraphState.prototype._getPositionFromEvent = function(event) {
-		if (false) {
-			console.log(event.pageX + "," + this.widget.getSvg().offset().left);
-			return {
-				x: event.originalEvent.layerX, 
-				y: event.originalEvent.layerY
-			};
-		} else {
-			var svgPosition = this.widget.getSvgContainer().offset();
-			return {
-				x: event.pageX - svgPosition.left,
-				y: event.pageY - svgPosition.top
-			};
-		}
+		var svgPosition = this.widget.getSvgContainer().offset();
+		return {
+			x: event.pageX - svgPosition.left,
+			y: event.pageY - svgPosition.top
+		};
 	};
 	
 	GraphState.prototype._onDragStartVertex = function(position) {
@@ -79,26 +71,49 @@ var GraphStates = {};
 		
 	};
 	
-	GraphState.prototype.onDblClickVertex = function(event) {
-		var vertexId = this._getVertexIdFromEvent(event);
-		var labelElement = this._getLabelFromEvent(event);
-		
+	GraphState.prototype._showInput = function(event, val, onEnter) {
 		$("#edas-graph-vertex-label-dialog-input")
-			.val(labelElement.text())
-			.off("keypress")
-			.keypress($.proxy(function(event) {
-				if (event.which == 13) {
-					var label = $("#edas-graph-vertex-label-dialog-input").val();
-					labelElement.text(label);
-					this.widget.options.graph.vertices[vertexId].label = label;
-					this.widget.saveVertex(vertexId);
-					$("#edas-graph-vertex-label-dialog").dialog("close");
-				}
-			}, this));
+		.val(val)
+		.off("keypress")
+		.keypress($.proxy(function(event) {
+			if (event.which == 13) {
+				var value = $("#edas-graph-vertex-label-dialog-input").val();
+				onEnter(value);
+				$("#edas-graph-vertex-label-dialog").dialog("close");
+			}
+		}, this));
 		$("#edas-graph-vertex-label-dialog")
 			.dialog("option", "position", {my: "left center", at: "right center", of: event})
 			.dialog("open");
 		$("#edas-graph-vertex-label-dialog-input").select();
+	};
+	
+	GraphState.prototype.onDblClickVertex = function(event) {
+		var vertexId = this._getVertexIdFromEvent(event);
+		var labelElement = this._getLabelFromEvent(event);
+		
+		this._showInput(event, labelElement.text(), $.proxy(function(value) {
+			labelElement.text(value);
+			this.widget.options.graph.vertices[vertexId].label = value;
+			this.widget.saveVertex(vertexId);
+		}, this));
+	};
+	
+	GraphState.prototype.onDblClickEdge = function(event) {
+		var target = $(event.target);
+		var edge = target.parent();
+		var weight = edge.find("text.edge-weight");
+		var edgeId = edge.sAttr("edgeId");
+		
+		this._showInput(event, weight.text(), $.proxy(function(value) {
+			if (!$.isNumeric(value)) {
+				return
+			}
+			value = parseInt(value);
+			weight.text(value);
+			this.widget.options.graph.edges[edgeId].weight = value;
+			this.widget.saveEdge(edgeId);
+		}, this));
 	};
 	
 	GraphState.prototype.onHoverInVertex = function (event) {
@@ -113,10 +128,6 @@ var GraphStates = {};
 		
 	};
 	
-	GraphState.prototype.onDblClickEdge = function(event) {
-		
-	};
-	
 	GraphState.prototype.onHoverInEdge = function (event) {
 		
 	};
@@ -126,27 +137,23 @@ var GraphStates = {};
 	};
 	
 	GraphState.prototype._getVertexIdFromEvent = function (event) {
-		var target = $(event.target);
-		return target.sAttr("vertexId");
+		return $(event.target).parent().sAttr("vertexId");
 	};
 	
 	GraphState.prototype._getVertexIdFromVertex = function (vertex) {
-		return vertex.sAttr("vertexId");
+		return vertex.parent().sAttr("vertexId");
 	};
 	
 	GraphState.prototype._getVertexFromEvent = function (event) {
-		var vertexId = this._getVertexIdFromEvent(event);
-		return this.widget.getSvg().sById("-v-" + vertexId);
+		return $(".vertex-circle", $(event.target).parent());
 	};
 	
 	GraphState.prototype._getLabelFromEvent = function (event) {
-		var vertexId = this._getVertexIdFromEvent(event);
-		return this.widget.getSvg().sById("-l-" + vertexId);
+		return $(".vertex-label", $(event.target).parent());
 	};
 	
 	GraphState.prototype._getLabelFromVertex = function (vertex) {
-		var vertexId = this._getVertexIdFromVertex(vertex);
-		return this.widget.getSvg().sById("-l-" + vertexId);
+		return $(".vertex-label", vertex.parent());
 	};
 	
 	function SelectGraphState(widget) {
@@ -175,43 +182,25 @@ var GraphStates = {};
 		labelElement.x(x);
 		labelElement.y(y);
 		
+		var edges = $("g.edge-container-" + vertexId);
+		
 		var me = this;
-		$("line", this.widget.getSvg()).sByAttr("vertexId1", vertexId).each(function() {
-			$(this).sAttr("x1", x);
-			$(this).sAttr("y1", y);
-		});
-		$("line", this.widget.getSvg()).sByAttr("vertexId2", vertexId).each(function() {
-			$(this).sAttr("x2", x);
-			$(this).sAttr("y2", y);
-		});
-		$("text", this.widget.getSvg()).sByAttr("vertexId1", vertexId).each(function() {
-			var edge = me._getLineFromWeight($(this));
+		edges.sByAttr("vertexId1", vertexId).find("line").sAttr("x1", x).sAttr("y1", y);
+		edges.sByAttr("vertexId2", vertexId).find("line").sAttr("x2", x).sAttr("y2", y);
+		edges.each(function () {
+			var edge = $(".edge-line", this);
+			var weight = $(".edge-weight", this);
 			var p = me._getLinePosition(edge);
 			var mp = me._getMidPoint(p);
 			var weightOffset = me._getWeightOffset(p);
-			$(this).sAttr("x", mp.x);
-			$(this).sAttr("y", mp.y);
-			$(this).sAttr("dx", weightOffset.x);
-			$(this).sAttr("dy", weightOffset.y);
-		});
-		$("text", this.widget.getSvg()).sByAttr("vertexId2", vertexId).each(function() {
-			var edge = me._getLineFromWeight($(this));
-			var p = me._getLinePosition(edge);
-			var mp = me._getMidPoint(p);
-			var weightOffset = me._getWeightOffset(p);
-			$(this).sAttr("x", mp.x);
-			$(this).sAttr("y", mp.y);
-			$(this).sAttr("dx", weightOffset.x);
-			$(this).sAttr("dy", weightOffset.y);
+			weight.sAttr("x", mp.x);
+			weight.sAttr("y", mp.y);
+			weight.sAttr("dx", weightOffset.x);
+			weight.sAttr("dy", weightOffset.y);
 		});
 		
 		this.widget.options.graph.vertices[vertexId].x = x;
 		this.widget.options.graph.vertices[vertexId].y = y;
-	};
-	
-	SelectGraphState.prototype._getLineFromWeight = function(weight) {
-		var edgeId = weight.sAttr("edgeId");
-		return this.widget.getSvg().sById("-e-" + edgeId);
 	};
 	
 	SelectGraphState.prototype._getLinePosition = function(line) {
@@ -219,7 +208,8 @@ var GraphStates = {};
 			x1: parseInt(line.sAttr("x1")),
 			y1: parseInt(line.sAttr("y1")),
 			x2: parseInt(line.sAttr("x2")),
-			y2: parseInt(line.sAttr("y2"))
+			y2: parseInt(line.sAttr("y2")),
+			d: parseInt(line.parent().sAttr("weightDistance"))
 		};
 	};
 	
@@ -237,20 +227,18 @@ var GraphStates = {};
 		var dx;
 		var dy;
 		
-		var d = 20;
-		
 		if (lineDx == 0) {
-			dx = d;
+			dx = p.d;
 			dy = 0;
 		} else if (lineDy == 0) {
 			dx = 0;
-			dy = d;
+			dy = p.d;
 		} else {
 			var lineM = lineDy / lineDx;
 			var m = -1 * (1 / lineM);
 			var k = Math.sqrt(1 + m * m);
-			dx = Math.round(d / k);
-			dy = Math.round((m * d) / k);
+			dx = Math.round(p.d / k);
+			dy = Math.round((m * p.d) / k);
 		}
 		
 		return {
@@ -329,34 +317,15 @@ var GraphStates = {};
 		this.widget.element.addClass("edas-graph-state-delete");
 	};
 	
-	DeleteGraphState.prototype.onHoverInVertex = function(event) {
-		this._getVertexFromEvent(event)
-			.sAttr("fill", "red");
-	};
-	
-	DeleteGraphState.prototype.onHoverOutVertex = function(event) {
-		this._getVertexFromEvent(event)
-			.sAttr("fill", "blue");
-	};
-	
 	DeleteGraphState.prototype.onClickVertex = function(event) {
 		var vertexId = this._getVertexIdFromEvent(event);
 		this.widget.deleteVertex(vertexId);
 	};
 	
-	DeleteGraphState.prototype.onHoverInEdge = function(event) {
-		$(event.target)
-			.sAttr("stroke", "red");
-	};
-	
-	DeleteGraphState.prototype.onHoverOutEdge = function(event) {
-		$(event.target)
-			.sAttr("stroke", "black");
-	};
-	
 	DeleteGraphState.prototype.onClickEdge = function(event) {
-		var startVertexId = $(event.target).sAttr("vertexId1");
-		var endVertexId = $(event.target).sAttr("vertexId2");
+		var edge = $(event.target).parent();
+		var startVertexId = edge.sAttr("vertexId1");
+		var endVertexId = edge.sAttr("vertexId2");
 		this.widget.deleteEdge(startVertexId, endVertexId);
 	};
 } (jQuery));

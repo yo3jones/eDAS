@@ -160,6 +160,22 @@ public class DesignGraphApiControllerTest {
 	}
 	
 	@Test
+	public void testPutEdge() {
+		Long id = 1L;
+		Integer fromVertexId = 2;
+		Integer toVertexId = 3;
+		DesignEdgeDto edgeDto = mock(DesignEdgeDto.class);
+		DesignEdge edge = new DesignEdge();
+		
+		when(manager.getGraph(new DesignGraphId(id))).thenReturn(graph);
+		when(adapter.createEdge(edgeDto)).thenReturn(edge);
+		
+		controller.putEdge(id, fromVertexId, toVertexId, edgeDto);
+		
+		verify(graph).putEdge(new EdgeKey<Key>(new Key(fromVertexId), new Key(toVertexId)), edge);
+	}
+	
+	@Test
 	public void testDeleteEdge() {
 		Long id = 1L;
 		Integer fromVertexId = 2;

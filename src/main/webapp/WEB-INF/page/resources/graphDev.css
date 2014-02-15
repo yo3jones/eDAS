@@ -45,21 +45,32 @@ TEXTAREA#input {
 	border: 0px;
 }
 
-line {
+line.edge-line {
 	stroke: black;
-	stroke-width: 3px;
+	stroke-width: 2px;
 }
 
-.edas-graph-state-delete line {
-	stroke-width: 8px;
+line.edge-line-select {
+	stroke-width: 10px;
 }
 
-.edas-graph-state-delete line:hover {
+.edas-graph-state-select line.edge-line-select,
+.edas-graph-state-delete line.edge-line-select {
+	stroke-opacity: 0.0;
+	stroke: black;
+}
+
+.edas-graph-state-select line.edge-line-select:hover {
+	stroke-opacity: 5.0;
+	stroke: green;
+}
+
+.edas-graph-state-delete line.edge-line-select:hover {
+	stroke-opacity: 5.0;
 	stroke: red;
 }
 
 circle {
-	radius: 20px;
 	fill: blue;
 }
 
