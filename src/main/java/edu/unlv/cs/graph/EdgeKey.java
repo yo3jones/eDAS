@@ -2,8 +2,6 @@ package edu.unlv.cs.graph;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.util.Assert;
 
 /**
@@ -88,10 +86,11 @@ public final class EdgeKey<K> {
 	
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-				.append("fromKey", fromKey)
-				.append("toKey", toKey)
-				.toString();
+		return new StringBuilder()
+			.append(fromKey.toString())
+			.append("-")
+			.append(toKey.toString())
+			.toString();
 	}
 	
 }

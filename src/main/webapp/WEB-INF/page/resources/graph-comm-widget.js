@@ -48,6 +48,7 @@
 			if ($.isFunction(data) && !callback) {
 				callback = data;
 			}
+			
 			var defaultRequestOptions = {
 				url: this.options.baseUrl + url,
 				contentType: "application/json",
@@ -57,6 +58,11 @@
 				cache: false,
 				data: data
 			};
+			
+			var token = $("meta[name='_csrf']").attr("content");
+			var header = $("meta[name='_csrf_header']").attr("content");
+			defaultRequestOptions.headers[header] = token;
+			
 			$.extend(defaultRequestOptions, requestOptions);
 			this._queueRequest(defaultRequestOptions, callback);
 		},

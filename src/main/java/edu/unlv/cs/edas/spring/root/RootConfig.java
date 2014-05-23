@@ -7,8 +7,8 @@ import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.unlv.cs.edas.graph.design.dom.DesignDomGraphBuilder;
-import edu.unlv.cs.edas.graph.design.dom.DesignGraphDomAdapter;
+import edu.unlv.cs.edas.design.dom.DesignDomGraphBuilder;
+import edu.unlv.cs.edas.design.dom.DesignGraphDomAdapter;
 
 @Configuration
 @ComponentScan(basePackages="edu.unlv.cs.edas", 

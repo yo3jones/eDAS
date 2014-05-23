@@ -2,7 +2,9 @@ package edu.unlv.cs.edas.spring.api;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+import edu.unlv.cs.edas.spring.root.MongoConfig;
 import edu.unlv.cs.edas.spring.root.RootConfig;
+import edu.unlv.cs.edas.spring.root.SecurityConfig;
 
 public class ApiWebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
@@ -13,7 +15,7 @@ public class ApiWebInitializer extends AbstractAnnotationConfigDispatcherServlet
 	
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return new Class<?>[] {RootConfig.class};
+		return new Class<?>[] {RootConfig.class, MongoConfig.class, SecurityConfig.class};
 	}
 
 	@Override

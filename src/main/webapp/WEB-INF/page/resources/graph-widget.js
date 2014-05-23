@@ -294,7 +294,7 @@
 		},
 		
 		_createGraph: function() {
-			this._comm.graphComm("postJson", "?empty=true", $.proxy(function(data) {
+			this._comm.graphComm("postJson", "", $.proxy(function(data) {
 				this.options.graphId = data.id;
 				this._loadGraph();
 			}, this));

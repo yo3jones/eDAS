@@ -8,8 +8,13 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.springframework.data.annotation.Transient;
 import org.springframework.util.Assert;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import edu.unlv.cs.edas.design.dto.JsonEdgeKeyDeserializer;
 
 /**
  * A directional implementation of {@link Graph} that uses java hashing for
@@ -46,8 +51,8 @@ import org.springframework.util.Assert;
  * 
  * @see Graph
  */
-public class HashGraph<K, V, E> implements Graph<K, V, E> {
-	
+public class HashGraph<K, V, E> extends AbstractGraph<K, V, E> {
+
 	/**
 	 * This class simply holds adjacent vertex information for a vertex.
 	 * 
@@ -93,12 +98,13 @@ public class HashGraph<K, V, E> implements Graph<K, V, E> {
 	 * A mapping between the key that uniquely identifies a vertex and the
 	 * vertex's value.
 	 */
-	private Map<K, V> vertices = new LinkedHashMap<K, V>();
+	private Map<K, V> vertices;
 	
 	/**
 	 * A mapping between and {@link HashEdgeKey} and the edge's value.
 	 */
-	private Map<EdgeKey<K>, E> edges = new LinkedHashMap<EdgeKey<K>, E>();
+	@JsonDeserialize(keyUsing=JsonEdgeKeyDeserializer.class)
+	private Map<EdgeKey<K>, E> edges;
 	
 	/**
 	 * A mapping between a key that uniquely identifies a vertex and the sets of
@@ -107,7 +113,24 @@ public class HashGraph<K, V, E> implements Graph<K, V, E> {
 	 * 
 	 * @see AdjacentVertices
 	 */
-	private Map<K, AdjacentVertices<K>> adjacentVertices = new LinkedHashMap<K, AdjacentVertices<K>>();
+	@Transient
+	@JsonIgnore
+	private Map<K, AdjacentVertices<K>> adjacentVertices;
+	
+	public HashGraph() {
+		super();
+	}
+	
+	public HashGraph(Graph<K, V, E> graph) {
+		super(graph);
+	}
+	
+	@Override
+	protected void initGraph() {
+		vertices = new LinkedHashMap<K, V>();
+		edges = new LinkedHashMap<EdgeKey<K>, E>();
+		adjacentVertices = new LinkedHashMap<K, AdjacentVertices<K>>();
+	}
 	
 	@Override
 	public V putVertex(K key, V vertex) throws IllegalArgumentException {
@@ -276,19 +299,6 @@ public class HashGraph<K, V, E> implements Graph<K, V, E> {
 	public boolean containsEdge(EdgeKey<K> key) throws IllegalArgumentException {
 		Assert.notNull(key);
 		return edges.containsKey(key);
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null) return false;
-		if (obj == this) return true;
-		if (obj.getClass() != this.getClass()) return false;
-		HashGraph<?, ?, ?> that = (HashGraph<?, ?, ?>) obj;
-		return new EqualsBuilder()
-			.append(this.vertices, that.vertices)
-			.append(this.edges, that.edges)
-			.append(this.adjacentVertices, that.adjacentVertices)
-			.isEquals();
 	}
 	
 }

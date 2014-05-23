@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
+<meta name="_csrf" content="${_csrf.token}"/>
+<meta name="_csrf_header" content="${_csrf.headerName}"/>
 <c:url var="resourceUrl" value="/resources/"/>
 <head>
 <script type="text/javascript" src="${resourceUrl}lib/jquery-1.11.0.min.js"></script>

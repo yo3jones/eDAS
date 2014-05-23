@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class HashGraphTest {
-
+	
 	public static HashGraph<String, String, String> toGraph(String[][][] values) {
 		HashGraph<String, String, String> graph = new HashGraph<String, String, String>();
 		
