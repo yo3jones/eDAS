@@ -10,7 +10,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.bson.types.ObjectId;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,11 +20,9 @@ import edu.unlv.cs.edas.design.dom.DesignGraphDomAdapter;
 import edu.unlv.cs.edas.design.domain.DesignEdge;
 import edu.unlv.cs.edas.design.domain.DesignGraph;
 import edu.unlv.cs.edas.design.domain.DesignGraphDetails;
-import edu.unlv.cs.edas.design.domain.DesignHashGraph;
 import edu.unlv.cs.edas.design.domain.DesignVertex;
 import edu.unlv.cs.edas.design.domain.Position;
 import edu.unlv.cs.edas.design.manager.DesignGraphDetailsManager;
-import edu.unlv.cs.edas.user.domain.User;
 import edu.unlv.cs.edas.user.domain.UserManager;
 import edu.unlv.cs.graph.EdgeKey;
 import edu.unlv.cs.graph.Graph;
@@ -37,7 +34,7 @@ import edu.unlv.cs.graph.Graph;
  *
  */
 @RestController
-@RequestMapping("/{version}/design/graphs")
+@RequestMapping("/{version}/design/graphDetails")
 public class DesignGraphDetailsApiController {
 	
 	/**
@@ -53,28 +50,6 @@ public class DesignGraphDetailsApiController {
 	@Inject DesignGraphDomAdapter domAdapter;
 	
 	/**
-	 * Called when a client POSTs a graph.
-	 * 
-	 * @return A Response containing the id of the graph created.
-	 */
-	@RequestMapping(method=POST)
-	public CreateResponse postGraph() {
-		User currentUser = userManager.getCurrentUser();
-		DesignGraphDetails graphDetails = new DesignGraphDetails();
-		
-		DesignGraph graph = new DesignHashGraph();
-		graphDetails.setGraph(graph);
-		graphDetails.setOwner(currentUser.getId());
-		
-		ObjectId id = manager.save(graphDetails);
-		
-		CreateResponse response = new CreateResponse();
-		response.setId(id.toHexString());
-		
-		return response;
-	}
-	
-	/**
 	 * Called when a client PUTs a graph.
 	 * 
 	 * @param id
@@ -83,10 +58,16 @@ public class DesignGraphDetailsApiController {
 	 *            The graph DTO of the graph being updated.
 	 */
 	@RequestMapping(value="/{id}", method=PUT)
-	public void putGraph(@PathVariable String id, @RequestBody DesignGraph graph) {
-		DesignGraphDetails graphDetails = manager.get(id);
-		graphDetails.setGraph(graph);
+	public void putDesignGraph(@PathVariable String id, 
+			@RequestBody DesignGraphDetails graphDetails) {
+		DesignGraphDetails existingGraphDetails = manager.get(id);
+		graphDetails.setOwner(existingGraphDetails.getOwner());
 		manager.save(graphDetails);
+	}
+	
+	@RequestMapping(value="/{id}", method=DELETE)
+	public void deleteDesignGraph(@PathVariable String id) {
+		manager.delete(id);
 	}
 	
 	/**
@@ -97,10 +78,9 @@ public class DesignGraphDetailsApiController {
 	 * @return A graph DTO of the graph requested.
 	 */
 	@RequestMapping(value="/{id}", method=GET, produces="application/json")
-	public DesignGraph getGraphJson(@PathVariable String id) {
+	public DesignGraphDetails getDesignGraphJson(@PathVariable String id) {
 		DesignGraphDetails graphDetails = manager.get(id);
-		DesignGraph graph = graphDetails.getGraph();
-		return graph;
+		return graphDetails;
 	}
 
 	/**
@@ -145,7 +125,7 @@ public class DesignGraphDetailsApiController {
 		
 		DesignVertex vertex = new DesignVertex();
 		vertex.setLabel("");
-		Position position = new Position(50, 50);
+		Position position = new Position(5.0, 5.0);
 		vertex.setPosition(position);
 		
 		graph.putVertex(vertexKey, vertex);

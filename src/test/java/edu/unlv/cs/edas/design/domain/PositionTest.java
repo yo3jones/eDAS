@@ -19,13 +19,13 @@ public class PositionTest {
 	
 	@Before
 	public void setUp() {
-		expected = new Position(1, 2);
+		expected = new Position(1.0, 2.0);
 		
-		expectedSame = new Position(1, 2);
+		expectedSame = new Position(1.0, 2.0);
 		
-		expectedOther1 = new Position(1, 1);
-		expectedOther2 = new Position(2, 2);
-		expectedOther3 = new Position(3, 3);
+		expectedOther1 = new Position(1.0, 1.0);
+		expectedOther2 = new Position(2.0, 2.0);
+		expectedOther3 = new Position(3.0, 3.0);
 	}
 	
 	@Test

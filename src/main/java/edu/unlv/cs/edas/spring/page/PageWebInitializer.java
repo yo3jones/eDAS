@@ -1,5 +1,8 @@
 package edu.unlv.cs.edas.spring.page;
 
+import javax.servlet.Filter;
+
+import org.springframework.web.filter.HiddenHttpMethodFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public class PageWebInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
@@ -24,4 +27,9 @@ public class PageWebInitializer extends AbstractAnnotationConfigDispatcherServle
 		return new String[] {"/"};
 	}
 
+	@Override
+	protected Filter[] getServletFilters() {
+		return new Filter[] {new HiddenHttpMethodFilter()};
+	}
+	
 }

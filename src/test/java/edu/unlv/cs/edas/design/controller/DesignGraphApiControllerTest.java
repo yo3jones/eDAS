@@ -5,15 +5,10 @@ import static org.mockito.Mockito.*;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.apache.commons.lang3.mutable.MutableObject;
-import org.bson.types.ObjectId;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.w3c.dom.Document;
 
-import edu.unlv.cs.edas.design.controller.CreateResponse;
 import edu.unlv.cs.edas.design.controller.DesignGraphDetailsApiController;
 import edu.unlv.cs.edas.design.dom.DesignGraphDomAdapter;
 import edu.unlv.cs.edas.design.domain.DesignEdge;
@@ -43,25 +38,6 @@ public class DesignGraphApiControllerTest {
 	}
 	
 	@Test
-	public void testPostGraph() {
-		final MutableObject<DesignGraphDetails> actualGraphDetail = new MutableObject<>();
-		final ObjectId expectedId = new ObjectId();
-		
-		when(manager.save(any(DesignGraphDetails.class))).thenAnswer(new Answer<ObjectId>() {
-			@Override
-			public ObjectId answer(InvocationOnMock invocation) throws Throwable {
-				actualGraphDetail.setValue((DesignGraphDetails) invocation.getArguments()[0]);
-				return expectedId;
-			}
-		});
-		
-		CreateResponse actualResponse = controller.postGraph();
-		assertNotNull(actualGraphDetail.getValue());
-		assertNotNull(actualGraphDetail.getValue().getGraph());
-		assertEquals(expectedId.toHexString(), actualResponse.getId());
-	}
-	
-	@Test
 	public void testPutGraph() {
 		String id = "some id";
 		DesignGraphDetails graphDetails = new DesignGraphDetails();
@@ -70,7 +46,7 @@ public class DesignGraphApiControllerTest {
 		
 		when(manager.get("some id")).thenReturn(graphDetails);
 		
-		controller.putGraph(id, graph);
+		controller.putDesignGraph(id, graphDetails);
 		
 		assertEquals(graph, graphDetails.getGraph());
 		verify(manager).save(graphDetails);
@@ -86,7 +62,7 @@ public class DesignGraphApiControllerTest {
 		graphDetails.setGraph(graph);
 		when(manager.get(id)).thenReturn(graphDetails);
 		
-		DesignGraph actual = controller.getGraphJson(id);
+		DesignGraphDetails actual = controller.getDesignGraphJson(id);
 		
 		assertEquals(actual.getClass(), DesignHashGraph.class);
 		assertEquals(graph, actual);
@@ -116,7 +92,7 @@ public class DesignGraphApiControllerTest {
 		
 		graphDetails.setGraph(graph);
 		vertex.setLabel("");
-		vertex.setPosition(new Position(50, 50));
+		vertex.setPosition(new Position(50.0, 50.0));
 		
 		when(manager.get(id)).thenReturn(graphDetails);
 		

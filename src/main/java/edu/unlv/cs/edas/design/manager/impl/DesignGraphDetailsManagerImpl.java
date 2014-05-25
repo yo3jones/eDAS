@@ -33,6 +33,9 @@ public class DesignGraphDetailsManagerImpl implements DesignGraphDetailsManager 
 	@Override
 	public DesignGraphDetails get(ObjectId id) {
 		DesignGraphDetails graphDetails = repository.findOne(id);
+		if (graphDetails == null) {
+			return null;
+		}
 		graphDetails.setGraph(new DesignHashGraph(graphDetails.getGraph()));
 		return graphDetails;
 	}
@@ -44,6 +47,16 @@ public class DesignGraphDetailsManagerImpl implements DesignGraphDetailsManager 
 		}
 		graphDetails = repository.save(graphDetails);
 		return graphDetails.getId();
+	}
+	
+	@Override
+	public void delete(String id) {
+		delete(new ObjectId(id));
+	}
+	
+	@Override
+	public void delete(ObjectId id) {
+		repository.delete(id);
 	}
 	
 	@Override

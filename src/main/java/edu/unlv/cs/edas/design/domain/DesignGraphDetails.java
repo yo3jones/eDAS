@@ -1,9 +1,14 @@
 package edu.unlv.cs.edas.design.domain;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -11,6 +16,7 @@ import edu.unlv.cs.edas.design.dto.ObjectIdDeserializer;
 import edu.unlv.cs.edas.design.dto.ObjectIdSerializer;
 
 @Document(collection="designGraphDetails")
+@JsonInclude(NON_NULL)
 public class DesignGraphDetails {
 	
 	@Id
@@ -21,12 +27,18 @@ public class DesignGraphDetails {
 	private String name;
 	
 	@JsonDeserialize(as=DesignHashGraph.class)
+	@JsonUnwrapped
 	private DesignGraph graph;
 	
+	@JsonIgnore
 	private ObjectId owner;
 	
 	public ObjectId getId() {
 		return id;
+	}
+	
+	public String getStringId() {
+		return id.toHexString();
 	}
 	
 	public void setId(ObjectId id) {

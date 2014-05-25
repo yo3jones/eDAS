@@ -22,8 +22,8 @@ import edu.unlv.cs.graph.dom.domain.GraphDomBuilder;
 public class DesignDomGraphBuilder implements GraphDomBuilder<Integer, DesignVertex, DesignEdge, 
 		DesignDomGraphBuilderContext> {
 
-	private static final Integer RADIUS = 15;
-	private static final Integer WEIGHT_DISTANCE = 15;
+	private static final Integer RADIUS = 25;
+	private static final Double WEIGHT_DISTANCE = 2.0;
 	
 	@Override
 	public Document createDocument() {
@@ -66,14 +66,14 @@ public class DesignDomGraphBuilder implements GraphDomBuilder<Integer, DesignVer
 		Element vertexElement = document.createElement("circle");
 		vertexElement.setAttribute("class", "vertex-circle");
 		vertexElement.setAttribute("r", RADIUS.toString());
-		vertexElement.setAttribute("cx", position.getX().toString());
-		vertexElement.setAttribute("cy", position.getY().toString());
+		vertexElement.setAttribute("cx", position.getX().toString() + "%");
+		vertexElement.setAttribute("cy", position.getY().toString() + "%");
 		groupElement.appendChild(vertexElement);
 		
 		Element textElement = document.createElement("text");
 		textElement.setAttribute("class", "vertex-label");
-		textElement.setAttribute("x", position.getX().toString());
-		textElement.setAttribute("y", position.getY().toString());
+		textElement.setAttribute("x", position.getX().toString() + "%");
+		textElement.setAttribute("y", position.getY().toString() + "%");
 		textElement.setTextContent(vertex.getLabel());
 		groupElement.appendChild(textElement);
 		
@@ -106,18 +106,18 @@ public class DesignDomGraphBuilder implements GraphDomBuilder<Integer, DesignVer
 		
 		Element edgeSelectElement = document.createElement("line");
 		edgeSelectElement.setAttribute("class", "edge-line-select");
-		edgeSelectElement.setAttribute("x1", vertexPosition1.getX().toString());
-		edgeSelectElement.setAttribute("y1", vertexPosition1.getY().toString());
-		edgeSelectElement.setAttribute("x2", vertexPosition2.getX().toString());
-		edgeSelectElement.setAttribute("y2", vertexPosition2.getY().toString());
+		edgeSelectElement.setAttribute("x1", vertexPosition1.getX().toString() + "%");
+		edgeSelectElement.setAttribute("y1", vertexPosition1.getY().toString() + "%");
+		edgeSelectElement.setAttribute("x2", vertexPosition2.getX().toString() + "%");
+		edgeSelectElement.setAttribute("y2", vertexPosition2.getY().toString() + "%");
 		groupElement.appendChild(edgeSelectElement);
 		
 		Element edgeElement = document.createElement("line");
 		edgeElement.setAttribute("class", "edge-line");
-		edgeElement.setAttribute("x1", vertexPosition1.getX().toString());
-		edgeElement.setAttribute("y1", vertexPosition1.getY().toString());
-		edgeElement.setAttribute("x2", vertexPosition2.getX().toString());
-		edgeElement.setAttribute("y2", vertexPosition2.getY().toString());
+		edgeElement.setAttribute("x1", vertexPosition1.getX().toString() + "%");
+		edgeElement.setAttribute("y1", vertexPosition1.getY().toString() + "%");
+		edgeElement.setAttribute("x2", vertexPosition2.getX().toString() + "%");
+		edgeElement.setAttribute("y2", vertexPosition2.getY().toString() + "%");
 		groupElement.appendChild(edgeElement);
 		
 		Position mid = getMidPosition(vertexPosition1, vertexPosition2);
@@ -125,10 +125,10 @@ public class DesignDomGraphBuilder implements GraphDomBuilder<Integer, DesignVer
 		
 		Element weightElement = document.createElement("text");
 		weightElement.setAttribute("class", "edge-weight");
-		weightElement.setAttribute("x", mid.getX().toString());
-		weightElement.setAttribute("y", mid.getY().toString());
-		weightElement.setAttribute("dx", weightOffset.getX().toString());
-		weightElement.setAttribute("dy", weightOffset.getY().toString());
+		weightElement.setAttribute("x", mid.getX().toString() + "%");
+		weightElement.setAttribute("y", mid.getY().toString() + "%");
+		weightElement.setAttribute("dx", weightOffset.getX().toString() + "%");
+		weightElement.setAttribute("dy", weightOffset.getY().toString() + "%");
 		weightElement.setTextContent(edge.getWeight() == null ? "" : edge.getWeight().toString());
 		groupElement.appendChild(weightElement);
 		
@@ -136,32 +136,32 @@ public class DesignDomGraphBuilder implements GraphDomBuilder<Integer, DesignVer
 	}
 
 	private Position getMidPosition(Position p1, Position p2) {
-		Integer midX = (p1.getX() + p2.getX()) / 2;
-		Integer midY = (p1.getY() + p2.getY()) / 2;
+		Double midX = (p1.getX() + p2.getX()) / 2.0;
+		Double midY = (p1.getY() + p2.getY()) / 2.0;
 		return new Position(midX, midY);
 	}
 	
 	private Position getWeightOffset(Position p1, Position p2) {
-		Integer lineDx = p1.getX() - p2.getX();
-		Integer lineDy = p1.getY() - p2.getY();
+		Double lineDx = p1.getX() - p2.getX();
+		Double lineDy = p1.getY() - p2.getY();
 		
-		Integer dx = null;
-		Integer dy = null;
+		Double dx = null;
+		Double dy = null;
 		
-		Integer d = WEIGHT_DISTANCE;
+		Double d = WEIGHT_DISTANCE;
 		
 		if (lineDx == 0) {
 			dx = d;
-			dy = 0;
+			dy = 0.0;
 		} else if (lineDy == 0) {
-			dx = 0;
+			dx = 0.0;
 			dy = d;
 		} else {
-			Double lineM = (double) lineDy / lineDx;
+			Double lineM = lineDy / lineDx;
 			Double m = -1 * (1 / lineM);
 			Double k = Math.sqrt(1 + m * m);
-			dx = (int) (d / k);
-			dy = (int) ((m * d) / k);
+			dx = (d / k);
+			dy = ((m * d) / k);
 		}
 		
 		return new Position(dx, dy);

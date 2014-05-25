@@ -15,6 +15,14 @@ var GraphStates = {};
 		
 	};
 	
+	GraphState.prototype._getRelX = function(x) {
+		return (x / this.widget.getSvg().width()) * 100.0;
+	};
+	
+	GraphState.prototype._getRelY = function(y) {
+		return (y / this.widget.getSvg().height()) * 100.0;
+	};
+	
 	GraphState.prototype._clearClasses = function() {
 		this.widget.element.removeClass("edas-graph-state-select " +
 				"edas-graph-state-line " +
@@ -176,40 +184,46 @@ var GraphStates = {};
 		var x = position.x;
 		var y = position.y;
 		
-		this.dragStartVertex.cx(x);
-		this.dragStartVertex.cy(y);
+		var relX = this._getRelX(x);
+		var relY = this._getRelY(y);
 		
-		labelElement.x(x);
-		labelElement.y(y);
+		var perX = relX + "%";
+		var perY = relY + "%";
+		
+		this.dragStartVertex.cx(perX);
+		this.dragStartVertex.cy(perY);
+		
+		labelElement.x(perX);
+		labelElement.y(perY);
 		
 		var edges = $("g.edge-container-" + vertexId);
 		
 		var me = this;
-		edges.sByAttr("vertexId1", vertexId).find("line").sAttr("x1", x).sAttr("y1", y);
-		edges.sByAttr("vertexId2", vertexId).find("line").sAttr("x2", x).sAttr("y2", y);
+		edges.sByAttr("vertexId1", vertexId).find("line").sAttr("x1", perX).sAttr("y1", perY);
+		edges.sByAttr("vertexId2", vertexId).find("line").sAttr("x2", perX).sAttr("y2", perY);
 		edges.each(function () {
 			var edge = $(".edge-line", this);
 			var weight = $(".edge-weight", this);
 			var p = me._getLinePosition(edge);
 			var mp = me._getMidPoint(p);
 			var weightOffset = me._getWeightOffset(p);
-			weight.sAttr("x", mp.x);
-			weight.sAttr("y", mp.y);
-			weight.sAttr("dx", weightOffset.x);
-			weight.sAttr("dy", weightOffset.y);
+			weight.sAttr("x", mp.x + "%");
+			weight.sAttr("y", mp.y + "%");
+			weight.sAttr("dx", weightOffset.x + "%");
+			weight.sAttr("dy", weightOffset.y + "%");
 		});
 		
-		this.widget.options.graph.vertices[vertexId].x = x;
-		this.widget.options.graph.vertices[vertexId].y = y;
+		this.widget.options.graph.vertices[vertexId].x = relX;
+		this.widget.options.graph.vertices[vertexId].y = relY;
 	};
 	
 	SelectGraphState.prototype._getLinePosition = function(line) {
 		return {
-			x1: parseInt(line.sAttr("x1")),
-			y1: parseInt(line.sAttr("y1")),
-			x2: parseInt(line.sAttr("x2")),
-			y2: parseInt(line.sAttr("y2")),
-			d: parseInt(line.parent().sAttr("weightDistance"))
+			x1: parseFloat(line.sAttr("x1")),
+			y1: parseFloat(line.sAttr("y1")),
+			x2: parseFloat(line.sAttr("x2")),
+			y2: parseFloat(line.sAttr("y2")),
+			d: parseFloat(line.parent().sAttr("weightDistance"))
 		};
 	};
 	
@@ -271,8 +285,9 @@ var GraphStates = {};
 		var y = this.dragStartVertex.cy();
 		this.widget.getSvg().sCreateElement("line")
 			.sId("edas-graph-line-" + vertexId)
-			.sAttr("stroke", "black")
-			.sAttr("stroke-width", "2")
+			.sAttr("class", "edge-line")
+//			.sAttr("stroke", "black")
+//			.sAttr("stroke-width", "2")
 			.sAttr("x1", x)
 			.sAttr("y1", y)
 			.sAttr("x2", x)

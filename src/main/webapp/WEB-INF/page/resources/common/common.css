@@ -1,0 +1,106 @@
+@CHARSET "UTF-8";
+
+html, body {
+	padding: 0px;
+	margin: 0px;
+}
+
+.edas-header {
+	height: 45px;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	z-index: 100;
+	padding: 0px 15px;
+}
+
+.edas-header-filler {
+	position: relative;
+	height: 45px;
+}
+
+.edas-header-home {
+	line-height: 45px;
+}
+
+.edas-header NAV UL {
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.edas-header NAV LI {
+	float: left;
+	padding: 0px 10px;
+}
+
+.edas-header NAV {
+	float: right;
+	line-height: 43px;
+}
+
+.edas-header NAV::AFTER {
+	clear: both;
+}
+
+.edas-header-link {
+	
+}
+
+.edas-content {
+	position: relative;
+	margin: 15px 15% 0px 15%;
+}
+
+.edas-table {
+	border-collapse: collapse;
+	border: none;
+}
+
+.edas-table TD {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.edas-table TH {
+	padding: 7px 7px;
+}
+
+FIELDSET {
+	padding: 0px;
+	margin: 0px;
+	border: none;
+	width: 416px;
+}
+
+FIELDSET P LABEL {
+	text-align: right;
+	float: left;
+	width: 100px;
+	padding: 5px 0px;
+	padding-right: 10px;
+}
+
+FIELDSET P INPUT,
+FIELDSET P TEXTAREA {
+	width: 300px;
+	float: left;
+}
+
+FIELDSET P {
+	clear: both;
+}
+
+.edas-button-bar {
+	clear: both;
+}
+
+.edas-button-bar {
+	clear: both;
+}
+
+.edas-button-bar BUTTON,
+.edas-button-bar A {
+	float: right;
+}

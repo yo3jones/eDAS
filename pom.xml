@@ -28,7 +28,12 @@
 		<groupId>javax.servlet</groupId>
 		<artifactId>jstl</artifactId>
 		<version>1.2</version>
-		<scope>runtime</scope>
+	</dependency>
+	<dependency>
+		<groupId>javax.servlet.jsp</groupId>
+		<artifactId>jsp-api</artifactId>
+		<version>2.0</version>
+		<scope>provided</scope>
 	</dependency>
 	<dependency>
 		<groupId>javax.inject</groupId>
@@ -121,6 +126,11 @@
 		<groupId>commons-io</groupId>
 		<artifactId>commons-io</artifactId>
 		<version>2.4</version>
+	</dependency>
+	<dependency>
+		<groupId>rhino</groupId>
+		<artifactId>js</artifactId>
+		<version>1.7R2</version>
 	</dependency>
     <dependency>
     	<groupId>org.mockito</groupId>

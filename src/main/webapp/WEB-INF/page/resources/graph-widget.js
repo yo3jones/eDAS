@@ -14,7 +14,7 @@
 		
 		_create: function() {
 			this._comm = $('<div></div>').graphComm({
-				baseUrl: this.options.baseUrl + "/api/v1/design/graphs",
+				baseUrl: this.options.baseUrl + "/api/v1/design/graphDetails",
 				error: $.proxy(this._onCommError, this),
 				groupComplete: $.proxy(this._showInfo, this)
 			}).appendTo(this.element);
@@ -23,7 +23,7 @@
 				.appendTo(this.element.append())
 				.css("position", "absolute")
 				.css("top", "0px")
-				.css("height", "40px")
+				.css("height", "51px")
 				.css("left", "0px")
 				.css("right", "0px");
 			
@@ -67,7 +67,7 @@
 			
 			$('<div id="edas-graph-svg-container"></div>').appendTo(this.element)
 				.css("position", "absolute")
-				.css("top", "40px")
+				.css("top", "51px")
 				.css("bottom", "0px")
 				.css("left", "0px")
 				.css("right", "0px");
@@ -97,8 +97,8 @@
 					'</div>' +
 				'</div>')
 				.css("position", "absolute")
-				.width("200px")
-				.height("50px")
+				.width("220px")
+				.height("60px")
 				.appendTo(this.element).hide();
 			
 			$(	'<div id="edas-graph-info-message" class="ui-widget">' +
@@ -108,8 +108,8 @@
 					'</div>' +
 				'</div>')
 				.css("position", "absolute")
-				.width("200px")
-				.height("50px")
+				.width("220px")
+				.height("60px")
 				.appendTo(this.element).hide();
 			
 			$("#edas-graph-error-reload-button").button({
@@ -144,7 +144,7 @@
 			this._hideInfo($.proxy(function() {
 				$("#edas-graph-error-message")
 				.show()
-				.position({my: "center top", at: "center top", of: this.element})
+				.position({my: "left top", at: "left top", of: this.element})
 				.hide()
 				.show("bounce", 500, $.proxy(function() {
 					setTimeout($.proxy(this._hideError, this), 7000);
@@ -166,7 +166,7 @@
 			this._hideError($.proxy(function() {
 				$("#edas-graph-info-message")
 					.show()
-					.position({my: "center top", at: "center top", of: this.element})
+					.position({my: "left top", at: "left top", of: this.element})
 					.hide()
 					.show("slide", {direction: "up"}, 500, $.proxy(function() {
 						setTimeout($.proxy(this._hideInfo, this), 1000);
@@ -197,6 +197,10 @@
 		},
 		
 		save: function(graph) {
+			if (!graph) {
+				graph = this.options.graph;
+			}
+			this._trigger("beforeSave", null, graph);
 			var url = "/" + this.options.graphId;
 			this._comm.graphComm("putJson", url, JSON.stringify(graph), function() {
 				$("#edas-graph-state-button-select").click();
@@ -248,6 +252,7 @@
 		_loadJsonGraph: function() {
 			this._comm.graphComm("getJson", "/" + this.options.graphId, $.proxy(function(data) {
 				this.options.graph = data;
+				this._trigger("graphLoaded", null, data);
 			}, this));
 		},
 		

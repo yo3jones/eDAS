@@ -20,6 +20,10 @@ public interface DesignGraphDetailsManager {
 	
 	ObjectId save(DesignGraphDetails graphDetails);
 	
+	void delete(String id);
+	
+	void delete(ObjectId id);
+	
 	Collection<DesignGraphDetails> findAllOwnedBy(ObjectId ownerId);
 	
 }

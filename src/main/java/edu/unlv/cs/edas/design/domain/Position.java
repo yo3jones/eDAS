@@ -23,12 +23,12 @@ public class Position {
 	/**
 	 * The x coordinate of this position.
 	 */
-	private Integer x;
+	private Double x;
 	
 	/**
 	 * The y coordinate of this position.
 	 */
-	private Integer y;
+	private Double y;
 	
 	Position() {
 		
@@ -42,7 +42,7 @@ public class Position {
 	 * @param y
 	 *            The y coordinate.
 	 */
-	public Position(Integer x, Integer y) {
+	public Position(Double x, Double y) {
 		Assert.notNull(x);
 		Assert.notNull(y);
 		this.x = x;
@@ -54,7 +54,7 @@ public class Position {
 	 * 
 	 * @return The x coordinate of this position.
 	 */
-	public Integer getX() {
+	public Double getX() {
 		return x;
 	}
 	
@@ -63,7 +63,7 @@ public class Position {
 	 * 
 	 * @return The y coordinate of this position.
 	 */
-	public Integer getY() {
+	public Double getY() {
 		return y;
 	}
 	

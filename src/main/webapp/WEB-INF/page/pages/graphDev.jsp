@@ -18,8 +18,6 @@
 <link rel="stylesheet" type="text/css" href="${resourceUrl}/graphDev.css">
 </head>
 <body>
-	<c:url var="graphsUrl" value="/api/v1/design/graphs"/>
-	<input type="hidden" id="graphs-url" value="${graphsUrl}"/>
 	<c:url var="baseUrl" value="/"/>
 	<input type="hidden" id="base-url" value="${baseUrl}"/>
 	<div class="left">

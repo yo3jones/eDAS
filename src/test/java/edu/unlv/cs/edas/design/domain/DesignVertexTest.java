@@ -20,29 +20,29 @@ public class DesignVertexTest {
 	public void setUp() {
 		vertex = new DesignVertex();
 		vertex.setLabel("1");
-		vertex.setPosition(new Position(2, 3));
+		vertex.setPosition(new Position(2.0, 3.0));
 		
 		same = new DesignVertex();
 		same.setLabel("1");
-		same.setPosition(new Position(2, 3));
+		same.setPosition(new Position(2.0, 3.0));
 		
 		vertex2 = new DesignVertex();
 		vertex2.setLabel("4");
-		vertex2.setPosition(new Position(2, 3));
+		vertex2.setPosition(new Position(2.0, 3.0));
 		
 		vertex3 = new DesignVertex();
 		vertex3.setLabel("1");
-		vertex3.setPosition(new Position(4, 3));
+		vertex3.setPosition(new Position(4.0, 3.0));
 		
 		vertex4 = new DesignVertex();
 		vertex4.setLabel("1");
-		vertex4.setPosition(new Position(2, 4));
+		vertex4.setPosition(new Position(2.0, 4.0));
 	}
 	
 	@Test
 	public void test() {
 		assertEquals("1", vertex.getLabel());
-		assertEquals(new Position(2, 3), vertex.getPosition());
+		assertEquals(new Position(2.0, 3.0), vertex.getPosition());
 	}
 	
 	@Test

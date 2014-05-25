@@ -1,0 +1,16 @@
+<taglib xmlns="http://java.sun.com/xml/j2ee" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/webjsptaglibrary_2_0.xsd"
+		version="2.0">
+	<tlib-version>2.0</tlib-version>
+	<short-name>edas</short-name>
+	<uri>http://www.unlv.edu/cs/edas</uri>
+	<tag>
+		<name>imports</name>
+		<tag-class>edu.unlv.cs.edas.tag.ImportsTag</tag-class>
+	</tag>
+	<tag>
+		<name>header</name>
+		<tag-class>edu.unlv.cs.edas.tag.HeaderTab</tag-class>
+	</tag>
+</taglib>
