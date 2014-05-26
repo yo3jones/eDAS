@@ -9,6 +9,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
+import edu.unlv.cs.edas.graph.domain.Edge;
+
 /**
  * An implementation of {@link Edge} for edges on a design graph.
  * 
@@ -16,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
  * 
  */
 @JsonAutoDetect(fieldVisibility=ANY, getterVisibility=NONE)
-public class DesignEdge {
+public class DesignEdge implements Edge {
 	
 	/**
 	 * The weight of this edge.
@@ -36,6 +38,7 @@ public class DesignEdge {
 	 * 
 	 * @return The weight of this edge.
 	 */
+	@Override
 	public Integer getWeight() {
 		return weight;
 	}

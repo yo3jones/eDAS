@@ -11,6 +11,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
+import edu.unlv.cs.edas.graph.domain.Vertex;
+
 /**
  * An implementation of {@link Vertex} for design graphs vertices.
  * 
@@ -18,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
  * 
  */
 @JsonAutoDetect(fieldVisibility=ANY, getterVisibility=NONE)
-public class DesignVertex {
+public class DesignVertex implements Vertex {
 
 	/**
 	 * The label of this vertex.
@@ -45,6 +47,7 @@ public class DesignVertex {
 	 * 
 	 * @return The label of this vertex.
 	 */
+	@Override
 	public String getLabel() {
 		return label;
 	}
@@ -54,6 +57,7 @@ public class DesignVertex {
 	 * 
 	 * @return The position of this vertex.
 	 */
+	@Override
 	public Position getPosition() {
 		return position;
 	}
