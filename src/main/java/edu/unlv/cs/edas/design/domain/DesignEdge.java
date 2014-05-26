@@ -1,8 +1,13 @@
 package edu.unlv.cs.edas.design.domain;
 
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 /**
  * An implementation of {@link Edge} for edges on a design graph.
@@ -10,12 +15,21 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * @author Chris Jones
  * 
  */
+@JsonAutoDetect(fieldVisibility=ANY, getterVisibility=NONE)
 public class DesignEdge {
 	
 	/**
 	 * The weight of this edge.
 	 */
 	private Integer weight;
+	
+	public DesignEdge() {
+		
+	}
+	
+	public DesignEdge(Integer weight) {
+		this.weight = weight;
+	}
 	
 	/**
 	 * Returns the weight of this edge.
@@ -24,16 +38,6 @@ public class DesignEdge {
 	 */
 	public Integer getWeight() {
 		return weight;
-	}
-	
-	/**
-	 * Sets the weight of this edge.
-	 * 
-	 * @param weight
-	 *            The weight of this edge.
-	 */
-	public void setWeight(Integer weight) {
-		this.weight = weight;
 	}
 	
 	@Override

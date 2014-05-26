@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import edu.unlv.cs.edas.design.domain.DesignGraphDetails;
 import edu.unlv.cs.edas.design.domain.ImmutableAlgorithm;
+import edu.unlv.cs.edas.design.domain.ImmutableDesignGraphDetails;
 import edu.unlv.cs.edas.design.domain.ImmutableRun;
 import edu.unlv.cs.edas.design.domain.MutableRun;
 import edu.unlv.cs.edas.design.domain.Run;
@@ -98,7 +98,7 @@ public class RunController {
 	
 	private ModelAndView getRunView(Run run) {
 		User user = userManager.getCurrentUser();
-		Collection<DesignGraphDetails> graphs = graphManager.findAllOwnedBy(user.getId());
+		Collection<ImmutableDesignGraphDetails> graphs = graphManager.findAllOwnedBy(user.getId());
 		Collection<ImmutableAlgorithm> algorithms = algorithmManager.getAllAlgorithmsByOwner(
 				user.getId());
 		

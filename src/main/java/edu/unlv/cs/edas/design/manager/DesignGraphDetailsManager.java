@@ -4,7 +4,8 @@ import java.util.Collection;
 
 import org.bson.types.ObjectId;
 
-import edu.unlv.cs.edas.design.domain.DesignGraphDetails;
+import edu.unlv.cs.edas.design.domain.ImmutableDesignGraphDetails;
+import edu.unlv.cs.edas.design.domain.MutableDesignGraphDetails;
 
 /**
  * A {@link GraphManager} for design graphs.
@@ -14,16 +15,16 @@ import edu.unlv.cs.edas.design.domain.DesignGraphDetails;
  */
 public interface DesignGraphDetailsManager {
 
-	DesignGraphDetails get(String id);
+	ImmutableDesignGraphDetails get(String id);
 	
-	DesignGraphDetails get(ObjectId id);
+	ImmutableDesignGraphDetails get(ObjectId id);
 	
-	ObjectId save(DesignGraphDetails graphDetails);
+	ImmutableDesignGraphDetails save(MutableDesignGraphDetails graphDetails);
 	
 	void delete(String id);
 	
 	void delete(ObjectId id);
 	
-	Collection<DesignGraphDetails> findAllOwnedBy(ObjectId ownerId);
+	Collection<ImmutableDesignGraphDetails> findAllOwnedBy(ObjectId ownerId);
 	
 }

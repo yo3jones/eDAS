@@ -70,9 +70,7 @@ public class DesignDomGraphBuilderTest {
 	@Test
 	public void testCreateVertex() {
 		Integer key = 1;
-		DesignVertex vertex = new DesignVertex();
-		vertex.setLabel("some label");
-		vertex.setPosition(new Position(2.0, 3.0));
+		DesignVertex vertex = new DesignVertex("some label", new Position(2.0, 3.0));
 		
 		Element actual = builder.createVertex(context, key, vertex);
 		assertEquals("g", actual.getTagName());
@@ -99,14 +97,11 @@ public class DesignDomGraphBuilderTest {
 	@Test
 	public void testCreateEdge() {
 		EdgeKey<Integer> key = new EdgeKey<Integer>(1, 2); 
-		DesignEdge edge = new DesignEdge();
-		edge.setWeight(9);
+		DesignEdge edge = new DesignEdge(9);
 		
-		DesignVertex beginVertex = new DesignVertex();
-		beginVertex.setPosition(new Position(3.0, 5.0));
+		DesignVertex beginVertex = new DesignVertex("", new Position(3.0, 5.0));
 		
-		DesignVertex endVertex = new DesignVertex();
-		endVertex.setPosition(new Position(6.0, 8.0));
+		DesignVertex endVertex = new DesignVertex("", new Position(6.0, 8.0));
 		
 		when(graph.getVertex(1)).thenReturn(beginVertex);
 		when(graph.getVertex(2)).thenReturn(endVertex);

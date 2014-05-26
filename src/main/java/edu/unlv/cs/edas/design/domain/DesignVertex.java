@@ -1,10 +1,14 @@
 package edu.unlv.cs.edas.design.domain;
 
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
+import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 /**
@@ -13,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
  * @author Chris Jones
  * 
  */
+@JsonAutoDetect(fieldVisibility=ANY, getterVisibility=NONE)
 public class DesignVertex {
 
 	/**
@@ -26,6 +31,15 @@ public class DesignVertex {
 	@JsonUnwrapped
 	private Position position;
 	
+	DesignVertex() {
+		
+	}
+	
+	public DesignVertex(String label, Position position) {
+		this.label = label;
+		this.position = position;
+	}
+	
 	/**
 	 * Returns the label of this vertex.
 	 * 
@@ -36,32 +50,12 @@ public class DesignVertex {
 	}
 	
 	/**
-	 * Sets the label of this vertex.
-	 * 
-	 * @param label
-	 *            The label of this vertex.
-	 */
-	public void setLabel(String label) {
-		this.label = label;
-	}
-	
-	/**
 	 * Returns the position of this vertex.
 	 * 
 	 * @return The position of this vertex.
 	 */
 	public Position getPosition() {
 		return position;
-	}
-
-	/**
-	 * Sets the position of this vertex.
-	 * 
-	 * @param position
-	 *            The position of this vertex.
-	 */
-	public void setPosition(Position position) {
-		this.position = position;
 	}
 	
 	@Override

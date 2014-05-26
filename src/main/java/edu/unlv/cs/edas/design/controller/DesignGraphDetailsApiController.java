@@ -21,6 +21,8 @@ import edu.unlv.cs.edas.design.domain.DesignEdge;
 import edu.unlv.cs.edas.design.domain.DesignGraph;
 import edu.unlv.cs.edas.design.domain.DesignGraphDetails;
 import edu.unlv.cs.edas.design.domain.DesignVertex;
+import edu.unlv.cs.edas.design.domain.ImmutableDesignGraphDetails;
+import edu.unlv.cs.edas.design.domain.MutableDesignGraphDetails;
 import edu.unlv.cs.edas.design.domain.Position;
 import edu.unlv.cs.edas.design.manager.DesignGraphDetailsManager;
 import edu.unlv.cs.edas.user.domain.UserManager;
@@ -59,8 +61,8 @@ public class DesignGraphDetailsApiController {
 	 */
 	@RequestMapping(value="/{id}", method=PUT)
 	public void putDesignGraph(@PathVariable String id, 
-			@RequestBody DesignGraphDetails graphDetails) {
-		DesignGraphDetails existingGraphDetails = manager.get(id);
+			@RequestBody MutableDesignGraphDetails graphDetails) {
+		ImmutableDesignGraphDetails existingGraphDetails = manager.get(id);
 		graphDetails.setOwner(existingGraphDetails.getOwner());
 		manager.save(graphDetails);
 	}
@@ -78,9 +80,8 @@ public class DesignGraphDetailsApiController {
 	 * @return A graph DTO of the graph requested.
 	 */
 	@RequestMapping(value="/{id}", method=GET, produces="application/json")
-	public DesignGraphDetails getDesignGraphJson(@PathVariable String id) {
-		DesignGraphDetails graphDetails = manager.get(id);
-		return graphDetails;
+	public ImmutableDesignGraphDetails getDesignGraphJson(@PathVariable String id) {
+		return manager.get(id);
 	}
 
 	/**
@@ -119,14 +120,11 @@ public class DesignGraphDetailsApiController {
 	 */
 	@RequestMapping(value="/{id}/vertices", method=POST)
 	public DesignVertex postVertex(@PathVariable String id) {
-		DesignGraphDetails graphDetails = manager.get(id);
+		MutableDesignGraphDetails graphDetails = new MutableDesignGraphDetails(manager.get(id));
 		DesignGraph graph = graphDetails.getGraph();
 		Integer vertexKey = getNextVertexId(graph);
 		
-		DesignVertex vertex = new DesignVertex();
-		vertex.setLabel("");
-		Position position = new Position(5.0, 5.0);
-		vertex.setPosition(position);
+		DesignVertex vertex = new DesignVertex("", new Position(5.0, 5.0));
 		
 		graph.putVertex(vertexKey, vertex);
 		
@@ -148,7 +146,7 @@ public class DesignGraphDetailsApiController {
 	@RequestMapping(value="/{id}/vertices/{vertexId}", method=PUT)
 	public void putVertex(@PathVariable String id, @PathVariable Integer vertexId, 
 			@RequestBody DesignVertex vertex) {
-		DesignGraphDetails graphDetails = manager.get(id);
+		MutableDesignGraphDetails graphDetails = new MutableDesignGraphDetails(manager.get(id));
 		DesignGraph graph = graphDetails.getGraph();
 		graph.putVertex(vertexId, vertex);
 		
@@ -165,7 +163,7 @@ public class DesignGraphDetailsApiController {
 	 */
 	@RequestMapping(value="/{id}/vertices/{vertexId}", method=DELETE)
 	public void deleteVertex(@PathVariable String id, @PathVariable Integer vertexId) {
-		DesignGraphDetails graphDetails = manager.get(id);
+		MutableDesignGraphDetails graphDetails = new MutableDesignGraphDetails(manager.get(id));
 		DesignGraph graph = graphDetails.getGraph();
 		graph.removeVertex(vertexId);
 		
@@ -186,7 +184,7 @@ public class DesignGraphDetailsApiController {
 	@RequestMapping(value="/{id}/edges/{fromVertexId}-{toVertexId}", method=POST)
 	public DesignEdge postEdge(@PathVariable String id, @PathVariable Integer fromVertexId, 
 			@PathVariable Integer toVertexId) {
-		DesignGraphDetails graphDetails = manager.get(id);
+		MutableDesignGraphDetails graphDetails = new MutableDesignGraphDetails(manager.get(id));
 		DesignGraph designGraph = graphDetails.getGraph();
 		
 		EdgeKey<Integer> edgeId = new EdgeKey<Integer>(fromVertexId, toVertexId);
@@ -214,7 +212,7 @@ public class DesignGraphDetailsApiController {
 	@RequestMapping(value="/{id}/edges/{fromVertexId}-{toVertexId}", method=PUT)
 	public void putEdge(@PathVariable String id, @PathVariable Integer fromVertexId, 
 			@PathVariable Integer toVertexId, @RequestBody DesignEdge edge) {
-		DesignGraphDetails graphDetails = manager.get(id);
+		MutableDesignGraphDetails graphDetails = new MutableDesignGraphDetails(manager.get(id));
 		DesignGraph graph = graphDetails.getGraph();
 		
 		EdgeKey<Integer> edgeId = new EdgeKey<Integer>(fromVertexId, toVertexId);
@@ -236,7 +234,7 @@ public class DesignGraphDetailsApiController {
 	@RequestMapping(value="/{id}/edges/{fromVertexId}-{toVertexId}", method=DELETE)
 	public void deleteEdge(@PathVariable String id, @PathVariable Integer fromVertexId, 
 			@PathVariable Integer toVertexId) {
-		DesignGraphDetails graphDetails = manager.get(id);
+		MutableDesignGraphDetails graphDetails = new MutableDesignGraphDetails(manager.get(id));
 		DesignGraph graph = graphDetails.getGraph();
 		EdgeKey<Integer> key = new EdgeKey<Integer>(fromVertexId, toVertexId);
 		graph.removeEdge(key);

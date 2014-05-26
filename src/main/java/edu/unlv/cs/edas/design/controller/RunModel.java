@@ -5,13 +5,14 @@ import java.util.Collection;
 import edu.unlv.cs.edas.design.domain.Algorithm;
 import edu.unlv.cs.edas.design.domain.DesignGraphDetails;
 import edu.unlv.cs.edas.design.domain.ImmutableAlgorithm;
+import edu.unlv.cs.edas.design.domain.ImmutableDesignGraphDetails;
 import edu.unlv.cs.edas.design.domain.Run;
 
 public class RunModel {
 
 	private Run run;
 	private DesignGraphDetails graph;
-	private Collection<DesignGraphDetails> graphs;
+	private Collection<ImmutableDesignGraphDetails> graphs;
 	private Algorithm algorithm;
 	private Collection<ImmutableAlgorithm> algorithms;
 	
@@ -35,11 +36,11 @@ public class RunModel {
 		this.graph = graph;
 	}
 	
-	public Collection<DesignGraphDetails> getGraphs() {
+	public Collection<ImmutableDesignGraphDetails> getGraphs() {
 		return graphs;
 	}
 	
-	public void setGraphs(Collection<DesignGraphDetails> graphs) {
+	public void setGraphs(Collection<ImmutableDesignGraphDetails> graphs) {
 		this.graphs = graphs;
 	}
 	

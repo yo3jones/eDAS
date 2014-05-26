@@ -15,14 +15,11 @@ public class DesignEdgeTest {
 	
 	@Before
 	public void setUp() {
-		edge = new DesignEdge();
-		edge.setWeight(1);
+		edge = new DesignEdge(1);
 		
-		same = new DesignEdge();
-		same.setWeight(1);
+		same = new DesignEdge(1);
 		
-		edge2 = new DesignEdge();
-		edge2.setWeight(2);
+		edge2 = new DesignEdge(2);
 	}
 	
 	@Test

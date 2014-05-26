@@ -16,11 +16,11 @@ var GraphStates = {};
 	};
 	
 	GraphState.prototype._getRelX = function(x) {
-		return (x / this.widget.getSvg().width()) * 100.0;
+		return (x / this.widget.getSvg().parent().width()) * 100.0;
 	};
 	
 	GraphState.prototype._getRelY = function(y) {
-		return (y / this.widget.getSvg().height()) * 100.0;
+		return (y / this.widget.getSvg().parent().height()) * 100.0;
 	};
 	
 	GraphState.prototype._clearClasses = function() {

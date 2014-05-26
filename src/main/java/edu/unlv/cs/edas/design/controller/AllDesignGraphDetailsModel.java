@@ -2,17 +2,18 @@ package edu.unlv.cs.edas.design.controller;
 
 import java.util.Collection;
 
-import edu.unlv.cs.edas.design.domain.DesignGraphDetails;
+import edu.unlv.cs.edas.design.domain.ImmutableDesignGraphDetails;
 
 public class AllDesignGraphDetailsModel {
 
-	private Collection<DesignGraphDetails> graphDetails;
+	private Collection<ImmutableDesignGraphDetails> graphDetails;
 	
-	public Collection<DesignGraphDetails> getGraphDetails() {
+	public Collection<ImmutableDesignGraphDetails> getGraphDetails() {
 		return graphDetails;
 	}
 	
-	public AllDesignGraphDetailsModel setGraphDetails(Collection<DesignGraphDetails> graphDetails) {
+	public AllDesignGraphDetailsModel setGraphDetails(
+			Collection<ImmutableDesignGraphDetails> graphDetails) {
 		this.graphDetails = graphDetails;
 		return this;
 	}

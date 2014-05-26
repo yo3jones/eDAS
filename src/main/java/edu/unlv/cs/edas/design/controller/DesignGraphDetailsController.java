@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import edu.unlv.cs.edas.design.domain.DesignGraphDetails;
-import edu.unlv.cs.edas.design.domain.DesignHashGraph;
+import edu.unlv.cs.edas.design.domain.ImmutableDesignGraphDetails;
+import edu.unlv.cs.edas.design.domain.MutableDesignGraphDetails;
 import edu.unlv.cs.edas.design.manager.DesignGraphDetailsManager;
 import edu.unlv.cs.edas.user.domain.User;
 import edu.unlv.cs.edas.user.domain.UserManager;
@@ -27,7 +27,7 @@ public class DesignGraphDetailsController {
 	@RequestMapping(method=GET)
 	public ModelAndView getAll() {
 		User user = userManager.getCurrentUser();
-		Collection<DesignGraphDetails> graphDetails = manager.findAllOwnedBy(user.getId());
+		Collection<ImmutableDesignGraphDetails> graphDetails = manager.findAllOwnedBy(user.getId());
 		
 		ModelAndView view = new ModelAndView("design/allDesignGraphDetails");
 		view.addObject("model", new AllDesignGraphDetailsModel()
@@ -38,13 +38,12 @@ public class DesignGraphDetailsController {
 	
 	@RequestMapping(value="/new", method=GET)
 	public String getNew() {
-		DesignGraphDetails graphDetails = new DesignGraphDetails();
-		graphDetails.setGraph(new DesignHashGraph());
+		MutableDesignGraphDetails graphDetails = new MutableDesignGraphDetails();
 		
 		User user = userManager.getCurrentUser();
 		graphDetails.setOwner(user.getId());
 		
-		ObjectId id = manager.save(graphDetails);
+		ObjectId id = manager.save(graphDetails).getId();
 		return "redirect:/design/graphDetails/" + id.toHexString();
 	}
 	
