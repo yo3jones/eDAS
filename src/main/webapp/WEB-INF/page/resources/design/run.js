@@ -3,6 +3,7 @@ $(function() {
 		$("#run-put-form").submit();
 	});
 	$("#run-back-button").button();
+	$("#run-execute-button").button();
 	
 	var graphValues = [];
 	$("#run-graphs").children(".run-graph-value").each(function() {

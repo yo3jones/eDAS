@@ -24,6 +24,8 @@
 			<c:url var="backUrl" value="/design/runs"/>
 			<a href="${backUrl}"><button id="run-back-button">Back</button></a>
 			<button id="run-save-button">Save</button>
+			<c:url var="executionsUrl" value="/executions/${model.run.stringId}"/>
+			<a href="${executionsUrl}"><button id="run-execute-button">Execute</button></a>
 		</div>
 	</fieldset>
 	

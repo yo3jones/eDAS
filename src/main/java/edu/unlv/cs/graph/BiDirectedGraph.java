@@ -17,6 +17,8 @@ import org.springframework.util.Assert;
  */
 public class BiDirectedGraph<K, V, E> implements Graph<K, V, E> {
 
+	private static final long serialVersionUID = 1056620556784668183L;
+	
 	/**
 	 * The backing graph that actually holds the graph data.
 	 */
@@ -77,6 +79,11 @@ public class BiDirectedGraph<K, V, E> implements Graph<K, V, E> {
 		return backingGraph.getAdjacentVertices(key);
 	}
 
+	@Override
+	public Set<K> getDestinatingAdjacentVertices(K key) throws IllegalArgumentException {
+		return backingGraph.getDestinatingAdjacentVertices(key);
+	}
+	
 	@Override
 	public Set<K> getVertexSet() {
 		return backingGraph.getVertexSet();

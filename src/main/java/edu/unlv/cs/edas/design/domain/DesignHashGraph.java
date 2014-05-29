@@ -19,6 +19,8 @@ import edu.unlv.cs.graph.HashGraph;
 public class DesignHashGraph extends HashGraph<Integer, DesignVertex, DesignEdge> implements 
 		DesignGraph {
 
+	private static final long serialVersionUID = 8667250637546891398L;
+
 	@PersistenceConstructor
 	@JsonCreator
 	DesignHashGraph(@JsonProperty("vertices") Map<Integer, DesignVertex> vertices, 

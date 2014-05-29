@@ -71,13 +71,13 @@ FIELDSET {
 	padding: 0px;
 	margin: 0px;
 	border: none;
-	width: 416px;
+	width: 526px;
 }
 
 FIELDSET P LABEL {
 	text-align: right;
 	float: left;
-	width: 100px;
+	width: 210px;
 	padding: 5px 0px;
 	padding-right: 10px;
 }
@@ -86,6 +86,11 @@ FIELDSET P INPUT,
 FIELDSET P TEXTAREA {
 	width: 300px;
 	float: left;
+}
+
+FIELDSET P INPUT[type='checkbox'] {
+	width: auto;
+	height: 27px;
 }
 
 FIELDSET P {
@@ -103,4 +108,24 @@ FIELDSET P {
 .edas-button-bar BUTTON,
 .edas-button-bar A {
 	float: right;
+}
+
+line.edge-line {
+	stroke: #C00;
+	stroke-width: 3px;
+}
+
+line.edge-line-select {
+	stroke-width: 10px;
+}
+
+circle {
+	fill: white;
+	stroke: #C00;
+	stroke-width: 3px;
+}
+
+text {
+	text-anchor: middle;
+	dominant-baseline: central;
 }

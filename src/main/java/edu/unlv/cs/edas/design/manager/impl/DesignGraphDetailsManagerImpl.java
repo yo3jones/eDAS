@@ -7,11 +7,13 @@ import java.util.Collection;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import edu.unlv.cs.edas.design.domain.ImmutableDesignGraphDetails;
 import edu.unlv.cs.edas.design.domain.MutableDesignGraphDetails;
+import edu.unlv.cs.edas.design.manager.DesignGraphDetailsChangedEvent;
 import edu.unlv.cs.edas.design.manager.DesignGraphDetailsManager;
 import edu.unlv.cs.edas.design.persistence.DesignGraphRepository;
 
@@ -25,6 +27,8 @@ import edu.unlv.cs.edas.design.persistence.DesignGraphRepository;
 public class DesignGraphDetailsManagerImpl implements DesignGraphDetailsManager {
 	
 	@Autowired DesignGraphRepository repository;
+	
+	@Autowired ApplicationEventPublisher publisher;
 	
 	@Override
 	public ImmutableDesignGraphDetails get(String id) {
@@ -43,6 +47,9 @@ public class DesignGraphDetailsManagerImpl implements DesignGraphDetailsManager 
 	@Override
 	public ImmutableDesignGraphDetails save(MutableDesignGraphDetails graphDetails) {
 		MutableDesignGraphDetails savedGraphDetails = repository.save(graphDetails);
+		
+		publisher.publishEvent(new DesignGraphDetailsChangedEvent(this, savedGraphDetails.getId()));
+		
 		return new ImmutableDesignGraphDetails(savedGraphDetails);
 	}
 	

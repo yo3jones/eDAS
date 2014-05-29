@@ -5,11 +5,13 @@ import java.util.Collection;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import edu.unlv.cs.edas.design.domain.ImmutableRun;
 import edu.unlv.cs.edas.design.domain.MutableRun;
+import edu.unlv.cs.edas.design.manager.RunChangedEvent;
 import edu.unlv.cs.edas.design.manager.RunManager;
 import edu.unlv.cs.edas.design.persistence.RunRepository;
 
@@ -17,6 +19,8 @@ import edu.unlv.cs.edas.design.persistence.RunRepository;
 public class RunManagerImpl implements RunManager {
 
 	@Autowired RunRepository repository;
+	
+	@Autowired ApplicationEventPublisher publisher;
 	
 	@Override
 	public ImmutableRun get(ObjectId id) {
@@ -30,7 +34,9 @@ public class RunManagerImpl implements RunManager {
 
 	@Override
 	public ImmutableRun save(MutableRun run) {
-		return new ImmutableRun(repository.save(run));
+		ImmutableRun savedRun = new ImmutableRun(repository.save(run));
+		publisher.publishEvent(new RunChangedEvent(this, savedRun.getId()));
+		return savedRun;
 	}
 
 	@Override

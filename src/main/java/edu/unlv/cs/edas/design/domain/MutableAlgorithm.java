@@ -19,6 +19,8 @@ import edu.unlv.cs.edas.design.dto.ObjectIdSerializer;
 @JsonAutoDetect(fieldVisibility=ANY, getterVisibility=NONE)
 public class MutableAlgorithm implements Algorithm {
 
+	private static final long serialVersionUID = 2720110707151278261L;
+
 	@Id
 	@JsonSerialize(using=ObjectIdSerializer.class)
 	@JsonDeserialize(using=ObjectIdDeserializer.class)
@@ -31,6 +33,12 @@ public class MutableAlgorithm implements Algorithm {
 	
 	private String algorithm;
 	
+	private String stateDisplayPattern;
+	
+	private String messageDisplayPattern;
+	
+	private Boolean bidirectional;
+	
 	public MutableAlgorithm() {
 		
 	}
@@ -40,6 +48,9 @@ public class MutableAlgorithm implements Algorithm {
 		this.ownerId = algorithm.getOwnerId();
 		this.name = algorithm.getName();
 		this.algorithm = algorithm.getAlgorithm();
+		this.stateDisplayPattern = algorithm.getStateDisplayPattern();
+		this.messageDisplayPattern = algorithm.getMessageDisplayPattern();
+		this.bidirectional = algorithm.getBidirectional();
 	}
 	
 	@Override
@@ -83,4 +94,31 @@ public class MutableAlgorithm implements Algorithm {
 		this.algorithm = algorithm;
 	}
 
+	@Override
+	public String getStateDisplayPattern() {
+		return stateDisplayPattern;
+	}
+	
+	public void setStateDisplayPattern(String stateDisplayPattern) {
+		this.stateDisplayPattern = stateDisplayPattern;
+	}
+	
+	@Override
+	public String getMessageDisplayPattern() {
+		return messageDisplayPattern;
+	}
+	
+	public void setMessageDisplayPattern(String messageDisplayPattern) {
+		this.messageDisplayPattern = messageDisplayPattern;
+	}
+	
+	@Override
+	public Boolean getBidirectional() {
+		return bidirectional;
+	}
+	
+	public void setBidirectional(Boolean bidirectional) {
+		this.bidirectional = bidirectional;
+	}
+	
 }

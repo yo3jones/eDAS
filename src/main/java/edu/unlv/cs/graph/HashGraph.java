@@ -1,5 +1,6 @@
 package edu.unlv.cs.graph;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,14 +53,16 @@ import edu.unlv.cs.edas.design.dto.JsonEdgeKeyDeserializer;
  * @see Graph
  */
 public class HashGraph<K, V, E> extends AbstractGraph<K, V, E> {
-
+	
 	/**
 	 * This class simply holds adjacent vertex information for a vertex.
 	 * 
 	 * @param <K> {@link HashGraph}
 	 */
-	public static class AdjacentVertices<K> {
+	public static class AdjacentVertices<K> implements Serializable {
 		
+		private static final long serialVersionUID = -2061756405703128852L;
+
 		/**
 		 * A set that holds all vertices that the vertex is directly connected to.
 		 */
@@ -93,6 +96,8 @@ public class HashGraph<K, V, E> extends AbstractGraph<K, V, E> {
 		}
 		
 	}
+	
+	private static final long serialVersionUID = -2560757460110230555L;
 	
 	/**
 	 * A mapping between the key that uniquely identifies a vertex and the
@@ -269,6 +274,17 @@ public class HashGraph<K, V, E> extends AbstractGraph<K, V, E> {
 		return adjacentVertices.get(key).getAdjacentVertices();
 	}
 
+	@Override
+	public Set<K> getDestinatingAdjacentVertices(K key) throws IllegalArgumentException {
+		Assert.notNull(key);
+		if (!vertices.containsKey(key)) {
+			throw new IllegalArgumentException("Cannot get the adjacent vertices for a vertex "
+					+ "that is not in this graph. [key=" + key + "]");
+		}
+		
+		return adjacentVertices.get(key).getReverseAdjacentVertices();
+	}
+	
 	@Override
 	public Set<K> getVertexSet() {
 		return Collections.unmodifiableSet(vertices.keySet());

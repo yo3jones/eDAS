@@ -51,7 +51,7 @@ public abstract class AbstractGraphDomBuilder<V extends Vertex, E extends Edge,
 		groupElement.setAttribute("class", "vertex-container");
 		
 		Element vertexElement = document.createElement("circle");
-		vertexElement.setAttribute("class", "vertex-circle");
+		vertexElement.setAttribute("class", "vertex-circle vertex-circle-" + id);
 		vertexElement.setAttribute("r", RADIUS.toString());
 		vertexElement.setAttribute("cx", position.getX().toString() + "%");
 		vertexElement.setAttribute("cy", position.getY().toString() + "%");

@@ -4,6 +4,8 @@ import org.bson.types.ObjectId;
 
 public final class ImmutableRun implements Run {
 
+	private static final long serialVersionUID = 8628607463822592452L;
+	
 	private Run mutableRun;
 	
 	public ImmutableRun(Run mutableRun) {

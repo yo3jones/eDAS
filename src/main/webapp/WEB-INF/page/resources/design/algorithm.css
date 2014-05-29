@@ -1,0 +1,9 @@
+@CHARSET "UTF-8";
+
+.edas-content FIELDSET {
+	width: 726px;
+}
+
+.edas-content FIELDSET P TEXTAREA {
+	width: 500px;
+} 

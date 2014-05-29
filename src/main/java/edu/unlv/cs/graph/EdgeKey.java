@@ -1,5 +1,7 @@
 package edu.unlv.cs.graph;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.util.Assert;
@@ -12,7 +14,9 @@ import org.springframework.util.Assert;
  * @param <K>
  *            The unique identifier of the vertices.
  */
-public final class EdgeKey<K> {
+public final class EdgeKey<K> implements Serializable {
+
+	private static final long serialVersionUID = -8109807759040990745L;
 
 	/**
 	 * The key that uniquely identifies the start vertex of the edge.

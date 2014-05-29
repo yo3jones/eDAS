@@ -1,5 +1,6 @@
 package edu.unlv.cs.graph;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
@@ -18,7 +19,7 @@ import java.util.Set;
  * @param <E>
  *            The value for each edge.
  */
-public interface Graph<K, V, E> {
+public interface Graph<K, V, E> extends Serializable {
 	
 	/**
 	 * Puts a vertex onto this graph. If a vertex with the given key already
@@ -123,6 +124,8 @@ public interface Graph<K, V, E> {
 	 *             </ul>
 	 */
 	Set<K> getAdjacentVertices(K key) throws IllegalArgumentException;
+	
+	Set<K> getDestinatingAdjacentVertices(K key) throws IllegalArgumentException;
 	
 	/**
 	 * Returns a set of identifiers of all the vertices in this graph.

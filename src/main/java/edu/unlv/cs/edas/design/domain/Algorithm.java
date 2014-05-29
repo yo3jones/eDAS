@@ -1,8 +1,10 @@
 package edu.unlv.cs.edas.design.domain;
 
+import java.io.Serializable;
+
 import org.bson.types.ObjectId;
 
-public interface Algorithm {
+public interface Algorithm extends Serializable {
 
 	ObjectId getId();
 	
@@ -13,5 +15,11 @@ public interface Algorithm {
 	String getName();
 	
 	String getAlgorithm();
+	
+	String getStateDisplayPattern();
+	
+	String getMessageDisplayPattern();
+	
+	Boolean getBidirectional();
 	
 }

@@ -20,6 +20,8 @@ import edu.unlv.cs.edas.graph.domain.Edge;
 @JsonAutoDetect(fieldVisibility=ANY, getterVisibility=NONE)
 public class DesignEdge implements Edge {
 	
+	private static final long serialVersionUID = -83315136561751849L;
+	
 	/**
 	 * The weight of this edge.
 	 */

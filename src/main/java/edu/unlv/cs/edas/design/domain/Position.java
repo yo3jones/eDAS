@@ -3,6 +3,8 @@ package edu.unlv.cs.edas.design.domain;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 
+import java.io.Serializable;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -18,7 +20,9 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
  * 
  */
 @JsonAutoDetect(fieldVisibility=ANY, getterVisibility=NONE)
-public class Position {
+public class Position implements Serializable {
+
+	private static final long serialVersionUID = -3446559763936160481L;
 
 	/**
 	 * The x coordinate of this position.

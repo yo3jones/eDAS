@@ -5,6 +5,14 @@ HTML, BODY {
 	height: 100%;
 }
 
+.graph-details-content FIELDSET {
+	width: 376px;
+}
+
+.graph-details-content FIELDSET P LABEL {
+	width: 60px;
+}
+
 .graph-details-content.edas-content {
 	margin-left: 0px;
 	margin-right: 0px;
@@ -19,7 +27,7 @@ HTML, BODY {
 	position: absolute;
 	left: 0px;
 	top: 0px;
-	width: 425px;
+	width: 377px;
 	bottom: 0px;
 	
 }
@@ -27,7 +35,7 @@ HTML, BODY {
 .graph-details-graph {
 	position: absolute;
 	top: 0px;
-	left: 425px;
+	left: 377px;
 	right: 0px;
 	bottom: 0px;
 	border: 1px solid #e3a1a1;
@@ -47,15 +55,6 @@ HTML, BODY {
 	top: 5px;
 }
 
-line.edge-line {
-	stroke: #C00;
-	stroke-width: 3px;
-}
-
-line.edge-line-select {
-	stroke-width: 10px;
-}
-
 .edas-graph-state-select line.edge-line-select,
 .edas-graph-state-delete line.edge-line-select {
 	stroke-opacity: 0.0;
@@ -72,19 +71,8 @@ line.edge-line-select {
 	stroke: grey;
 }
 
-circle {
-	fill: white;
-	stroke: #C00;
-	stroke-width: 3px;
-}
-
 .edas-graph-state-delete circle:hover {
 	fill: grey;
-}
-
-text {
-	text-anchor: middle;
-	dominant-baseline: central;
 }
 
 #edas-graph-toolbar-impl {

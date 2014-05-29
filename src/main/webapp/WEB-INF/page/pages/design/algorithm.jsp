@@ -7,6 +7,7 @@
 <edas:imports/>
 <c:url var="resourceUrl" value="/resources/design"/>
 <script type="text/javascript" src="${resourceUrl}/algorithm.js"></script>
+<link rel="stylesheet" type="text/css" href="${resourceUrl}/algorithm.css">
 </head>
 <body>
 <edas:header/>
@@ -14,6 +15,9 @@
 	<fieldset class="ui-widget">
 		<form:form id="algorithms-put-form" method="PUT">
 			<p><label>Name:</label><input type="text" name="name" value="${model.name}"></p>
+			<p><label>State Display Pattern:</label><input type="text" name="stateDisplayPattern" value="${model.stateDisplayPattern}"></p>
+			<p><label>Message Display Pattern:</label><input type="text" name="messageDisplayPattern" value="${model.messageDisplayPattern}"></p>
+			<p><label>Bidirectional:</label><input type="checkbox" name="bidirectional" ${model.bidirectional ? "checked" : ""}></p>
 			<p><label>Algorithm:</label><textarea rows="20" name="algorithm">${model.algorithm}</textarea></p>
 		</form:form>
 		<div class="edas-button-bar">

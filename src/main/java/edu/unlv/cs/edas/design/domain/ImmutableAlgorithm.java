@@ -4,6 +4,8 @@ import org.bson.types.ObjectId;
 
 public final class ImmutableAlgorithm implements Algorithm {
 
+	private static final long serialVersionUID = 3060340419328184396L;
+	
 	private Algorithm mutableAlgorithm;
 	
 	public ImmutableAlgorithm(Algorithm mutableAlgorithm) {
@@ -35,4 +37,19 @@ public final class ImmutableAlgorithm implements Algorithm {
 		return mutableAlgorithm.getAlgorithm();
 	}
 
+	@Override
+	public final String getStateDisplayPattern() {
+		return mutableAlgorithm.getStateDisplayPattern();
+	}
+	
+	@Override
+	public final String getMessageDisplayPattern() {
+		return mutableAlgorithm.getMessageDisplayPattern();
+	}
+	
+	@Override
+	public final Boolean getBidirectional() {
+		return mutableAlgorithm.getBidirectional();
+	}
+	
 }

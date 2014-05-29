@@ -52,10 +52,16 @@ public class AlgorithmController {
 	@RequestMapping(value="/{id}", method=PUT)
 	public ModelAndView putAlgorithm(@PathVariable String id, 
 			@RequestParam String name,
-			@RequestParam String algorithm) {
+			@RequestParam String algorithm,
+			@RequestParam String stateDisplayPattern,
+			@RequestParam String messageDisplayPattern,
+			@RequestParam(required=false, defaultValue="false") Boolean bidirectional) {
 		MutableAlgorithm mutableAlgorithm = new MutableAlgorithm(manager.get(id));
 		mutableAlgorithm.setName(name);
 		mutableAlgorithm.setAlgorithm(algorithm);
+		mutableAlgorithm.setStateDisplayPattern(stateDisplayPattern);
+		mutableAlgorithm.setMessageDisplayPattern(messageDisplayPattern);
+		mutableAlgorithm.setBidirectional(bidirectional);
 		
 		return getAlgorithmView(manager.save(mutableAlgorithm));
 	}

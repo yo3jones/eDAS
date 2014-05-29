@@ -11,6 +11,8 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 @JsonAutoDetect(fieldVisibility=ANY, getterVisibility=NONE)
 public class ImmutableDesignGraphDetails implements DesignGraphDetails {
 
+	private static final long serialVersionUID = 1780499828238696135L;
+	
 	@JsonUnwrapped
 	private MutableDesignGraphDetails graphDetails;
 	

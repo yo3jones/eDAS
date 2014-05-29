@@ -22,6 +22,8 @@ import edu.unlv.cs.edas.graph.domain.Vertex;
 @JsonAutoDetect(fieldVisibility=ANY, getterVisibility=NONE)
 public class DesignVertex implements Vertex {
 
+	private static final long serialVersionUID = 8466540774779693270L;
+
 	/**
 	 * The label of this vertex.
 	 */

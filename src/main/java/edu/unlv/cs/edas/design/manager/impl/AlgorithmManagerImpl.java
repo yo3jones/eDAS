@@ -5,11 +5,13 @@ import java.util.Collection;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import edu.unlv.cs.edas.design.domain.ImmutableAlgorithm;
 import edu.unlv.cs.edas.design.domain.MutableAlgorithm;
+import edu.unlv.cs.edas.design.manager.AlgorithmChangedEvent;
 import edu.unlv.cs.edas.design.manager.AlgorithmManager;
 import edu.unlv.cs.edas.design.persistence.AlgorithmRepository;
 
@@ -17,6 +19,8 @@ import edu.unlv.cs.edas.design.persistence.AlgorithmRepository;
 public class AlgorithmManagerImpl implements AlgorithmManager {
 
 	@Autowired AlgorithmRepository repository;
+	
+	@Autowired ApplicationEventPublisher publisher;
 	
 	@Override
 	public ImmutableAlgorithm get(ObjectId id) {
@@ -34,7 +38,9 @@ public class AlgorithmManagerImpl implements AlgorithmManager {
 
 	@Override
 	public ImmutableAlgorithm save(MutableAlgorithm algorithm) {
-		return new ImmutableAlgorithm(repository.save(algorithm));
+		ImmutableAlgorithm savedAlgorithm = new ImmutableAlgorithm(repository.save(algorithm));
+		publisher.publishEvent(new AlgorithmChangedEvent(this, savedAlgorithm.getId()));
+		return savedAlgorithm;
 	}
 
 	@Override

@@ -20,6 +20,8 @@ import edu.unlv.cs.edas.design.dto.ObjectIdSerializer;
 @JsonAutoDetect(fieldVisibility=ANY, getterVisibility=NONE)
 public class MutableRun implements Run {
 
+	private static final long serialVersionUID = -553312792859259663L;
+
 	@Id
 	@JsonSerialize(using=ObjectIdSerializer.class)
 	@JsonDeserialize(using=ObjectIdDeserializer.class)

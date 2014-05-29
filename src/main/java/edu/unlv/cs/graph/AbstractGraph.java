@@ -2,6 +2,8 @@ package edu.unlv.cs.graph;
 
 public abstract class AbstractGraph<K, V, E> implements Graph<K, V, E> {
 
+	private static final long serialVersionUID = -1811835000773734513L;
+
 	public AbstractGraph() {
 		initGraph();
 	}

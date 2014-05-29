@@ -23,6 +23,8 @@ import edu.unlv.cs.edas.design.dto.ObjectIdSerializer;
 @JsonAutoDetect(fieldVisibility=ANY, getterVisibility=NONE)
 public class MutableDesignGraphDetails implements DesignGraphDetails {
 
+	private static final long serialVersionUID = 6044759232115624609L;
+
 	@Id
 	@JsonSerialize(using=ObjectIdSerializer.class)
 	@JsonDeserialize(using=ObjectIdDeserializer.class)
