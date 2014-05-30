@@ -61,6 +61,7 @@ function handleOutMessage(from, message) {
 		}
 		if (message.v == state.u) {
 			state.status = 'leader';
+			state._style = 'highlight';
 		}
 	}
 }

@@ -68,3 +68,7 @@ HTML, BODY {
 	border: 3px solid black;
 	padding: 2px;
 }
+
+CIRCLE.highlight {
+	fill: #C00;
+}

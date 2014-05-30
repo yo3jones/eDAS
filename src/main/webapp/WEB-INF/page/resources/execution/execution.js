@@ -88,7 +88,11 @@ $(function() {
 	var loadRound = function(round) {
 		$("#execution-round").html(round.round);
 		comm.graphComm("getJson", "/" + round.round, function(data) {
-			$("#execution-message-count").html(data.messageCount);
+			if (round.step == "e") {
+				$("#execution-message-count").html(data.previousMessageCount);
+			} else {
+				$("#execution-message-count").html(data.messageCount);
+			}
 			showState(data, round);
 		});
 	};
@@ -100,7 +104,23 @@ $(function() {
 		$("CIRCLE.vertex-circle").each(function() {
 			var clientRect = this.getBoundingClientRect();
 			var id = $(this).parent().get(0).getAttribute("vertexid");
+			
+			var state = roundData.graph.vertices[id].state;
+			var origClass = this.getAttribute("orig-class");
+			if (origClass == null || origClass == "") {
+				origClass = this.getAttribute("class");
+				this.setAttribute("orig-class", origClass);
+			}
+			this.setAttribute("class", origClass);
+			if ("_style" in state) {
+				this.setAttribute("class", origClass + " " + state._style);
+			}
+			
 			var display = roundData.graph.vertices[id].stateDisplay;
+			if (display.length == 0) {
+				return;
+			}
+			
 			var div = $("<div class='execution-vertex-state ui-corner-all'>" + display + "</div>")
 					.appendTo($(this).offsetParent())
 					.css({position: "absolute"});

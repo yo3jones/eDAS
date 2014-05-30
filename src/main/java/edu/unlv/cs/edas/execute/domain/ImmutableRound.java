@@ -24,6 +24,11 @@ public final class ImmutableRound implements Round {
 	}
 
 	@Override
+	public final Integer getPreviousMessageCount() {
+		return round.getPreviousMessageCount();
+	}
+	
+	@Override
 	public final ExecutionGraph getGraph() {
 		return new ExecutionUnmodifiableGraph(round.getGraph());
 	}

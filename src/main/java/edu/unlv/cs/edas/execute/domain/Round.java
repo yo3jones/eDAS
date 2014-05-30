@@ -6,6 +6,8 @@ public interface Round extends Serializable {
 
 	Integer getMessageCount();
 	
+	Integer getPreviousMessageCount();
+	
 	ExecutionGraph getGraph();
 	
 }

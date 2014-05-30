@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 import javax.script.Invocable;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jayway.jsonpath.JsonPath;
 
 import edu.unlv.cs.edas.design.domain.Algorithm;
 import edu.unlv.cs.edas.design.domain.DesignEdge;
@@ -119,6 +122,7 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 		Round currentRound = execution.getCurrentRound();
 		MutableRound nextRound = new MutableRound();
 		nextRound.setMessageCount(currentRound.getMessageCount());
+		nextRound.setPreviousMessageCount(currentRound.getMessageCount());
 		nextRound.setGraph(new ExecutionHashGraph());
 		Map<EdgeKey<Integer>, ExecutionEdge> edges = new HashMap<>();
 		
@@ -220,6 +224,7 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 		DesignGraph designGraph = execution.getDesignGraphDetails().getGraph();
 		MutableRound round = new MutableRound();
 		round.setMessageCount(0);
+		round.setPreviousMessageCount(0);
 		round.setGraph(new ExecutionHashGraph());
 		Map<EdgeKey<Integer>, ExecutionEdge> edges = new HashMap<>();
 		
@@ -286,15 +291,21 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 			return "";
 		}
 		
-		for (Map.Entry<String, Object> entry : values.entrySet()) {
-			StringBuilder sb = new StringBuilder()
-					.append("\\$\\{\\Q")
-					.append(entry.getKey())
-					.append("\\E\\}");
-			pattern = pattern.replaceAll(sb.toString(), entry.getValue().toString());
+		Pattern p = Pattern.compile("\\{\\$(\\w|\\.|\\[|\\]|\\*)*\\}");
+		Matcher m = p.matcher(pattern);
+		StringBuffer sb = new StringBuffer();
+		while(m.find()) {
+			String jsonPath = m.group();
+			jsonPath = jsonPath.substring(1, jsonPath.length() - 1);
+			Object output = JsonPath.read(values, jsonPath);
+			if (output == null) {
+				output = "";
+			}
+			m.appendReplacement(sb, output.toString());
 		}
+		m.appendTail(sb);
 		
-		return pattern;
+		return sb.toString();
 	}
 	
 	private boolean isNullMessage(Map<String, Object> message) {
@@ -315,6 +326,12 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 		}
 		if (nativeValue instanceof List) {
 			return convertNativeArray(nativeValue);
+		}
+		if (nativeValue instanceof Double) {
+			Double nativeDouble = (Double) nativeValue;
+			if (nativeDouble == Math.floor(nativeDouble)) {
+				return new Integer(nativeDouble.intValue());
+			}
 		}
 		return nativeValue;
 	}

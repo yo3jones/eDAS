@@ -23,7 +23,6 @@ public class ExecutionVertex implements Vertex {
 	@JsonIgnore
 	private DesignVertex design;
 	
-	@JsonIgnore
 	private Map<String, Object> state;
 
 	private String stateDisplay;

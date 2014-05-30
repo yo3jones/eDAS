@@ -12,6 +12,8 @@ public class MutableRound implements Round {
 	
 	private Integer messageCount;
 	
+	private Integer previousMessageCount;
+	
 	private ExecutionGraph graph;
 	
 	public MutableRound() {
@@ -20,6 +22,7 @@ public class MutableRound implements Round {
 	
 	public MutableRound(Round round) {
 		this.messageCount = round.getMessageCount();
+		this.previousMessageCount = round.getPreviousMessageCount();
 		this.graph = new ExecutionHashGraph(round.getGraph());
 	}
 	
@@ -34,6 +37,15 @@ public class MutableRound implements Round {
 	
 	public void incrementMessageCount() {
 		messageCount++;
+	}
+	
+	@Override
+	public Integer getPreviousMessageCount() {
+		return previousMessageCount;
+	}
+	
+	public void setPreviousMessageCount(Integer previousMessageCount) {
+		this.previousMessageCount = previousMessageCount;
 	}
 	
 	@Override

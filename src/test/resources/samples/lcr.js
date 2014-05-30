@@ -12,6 +12,7 @@ function onMessage(sender, v) {
 		state.send = v;
 	} else if(state.u == v) {
 		state.status = 'leader';
+		state._style = 'highlight';
 	} else if(v < state.u) {
 		// do nothing
 	}
