@@ -55,7 +55,7 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 		
 		public void send(Integer neighbor, Map<String, Object> message) {
 			Integer key = neighbors.get(neighbor);
-			messages.put(key, message);
+			messages.put(key, convertNativeMap(message));
 		}
 		
 		public void send(Integer neighbor, String message) {
@@ -193,8 +193,7 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 		}
 		
 		
-		@SuppressWarnings("unchecked")
-		Map<String, Object> state = (Map<String, Object>) engine.get("state");
+		Map<String, Object> state = getState(engine);
 		
 		String stateDisplay = formatDisplayPattern(algorithm.getStateDisplayPattern(), state);
 		ExecutionVertex vertex = new ExecutionVertex(currentVertex.getDesign(), state, 
@@ -250,8 +249,7 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 		
 		((Invocable) engine).invokeFunction("begin", designVertex.getLabel());
 		
-		@SuppressWarnings("unchecked")
-		Map<String, Object> state = (Map<String, Object>) engine.get("state");
+		Map<String, Object> state = getState(engine);
 		
 		String stateDisplay = formatDisplayPattern(algorithm.getStateDisplayPattern(), state);
 		ExecutionVertex vertex = new ExecutionVertex(designVertex, state, stateDisplay);
@@ -305,6 +303,46 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 	
 	private boolean isNotNullMessage(Map<String, Object> message) {
 		return !isNullMessage(message);
+	}
+	
+	private Map<String, Object> getState(ScriptEngine engine) {
+		return convertNativeMap(engine.get("state"));
+	}
+	
+	private static Object convertNative(Object nativeValue) {
+		if (nativeValue instanceof Map) {
+			return convertNativeMap(nativeValue);
+		}
+		if (nativeValue instanceof List) {
+			return convertNativeArray(nativeValue);
+		}
+		return nativeValue;
+	}
+	
+	private static Map<String, Object> convertNativeMap(Object nativeValue) {
+		if (!(nativeValue instanceof Map)) {
+			return null;
+		}
+		@SuppressWarnings("unchecked")
+		Map<String, Object> nativeMap = (Map<String, Object>) nativeValue;
+		Map<String, Object> map = new HashMap<>();
+		for (Map.Entry<String, Object> entry : nativeMap.entrySet()) {
+			map.put(entry.getKey(), convertNative(entry.getValue()));
+		}
+		return map;
+	}
+	
+	private static List<Object> convertNativeArray(Object nativeValue) {
+		if (!(nativeValue instanceof List)) {
+			return null;
+		}
+		@SuppressWarnings("unchecked")
+		List<Object> nativeList = (List<Object>) nativeValue;
+		List<Object> value = new ArrayList<>();
+		for (Object nativeListValue : nativeList) {
+			value.add(convertNative(nativeListValue));
+		}
+		return value;
 	}
 	
 }
