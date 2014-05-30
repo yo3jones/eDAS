@@ -2,6 +2,10 @@ package edu.unlv.cs.edas.design.controller;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +24,8 @@ import edu.unlv.cs.edas.user.domain.UserManager;
 @RequestMapping("/design/algorithms")
 public class AlgorithmController {
 
+	private static final String NO_COMPILE_ERROR_MESSAGE = null;
+	
 	@Autowired AlgorithmManager manager;
 	
 	@Autowired UserManager userManager;
@@ -82,8 +88,19 @@ public class AlgorithmController {
 	}
 	
 	private ModelAndView getAlgorithmView(Algorithm algorithm) {
+		String compileErrorMessage = NO_COMPILE_ERROR_MESSAGE;
+		try {
+			ScriptEngineManager mgr = new ScriptEngineManager();
+			ScriptEngine engine = mgr.getEngineByName("JavaScript");
+			engine.eval(algorithm.getAlgorithm());
+		} catch (ScriptException e) {
+			compileErrorMessage = e.getMessage();
+		}
+		
 		ModelAndView view = new ModelAndView("design/algorithm");
 		view.addObject("model", algorithm);
+		view.addObject("showCompileError", compileErrorMessage != NO_COMPILE_ERROR_MESSAGE);
+		view.addObject("compileErrorMessage", compileErrorMessage);
 		return view;
 	}
 	

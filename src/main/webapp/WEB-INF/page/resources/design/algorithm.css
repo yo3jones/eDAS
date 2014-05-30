@@ -6,4 +6,8 @@
 
 .edas-content FIELDSET P TEXTAREA {
 	width: 500px;
-} 
+}
+
+.ui-state-error {
+	padding: 10px;
+}

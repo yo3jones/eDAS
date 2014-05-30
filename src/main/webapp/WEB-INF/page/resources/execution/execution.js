@@ -1,6 +1,6 @@
 $(function() {
+	
 	$("body").keydown(function(event) {
-		console.log(event.keyCode);
 		if (event.keyCode == 37) {
 			$("#execution-prev-button").button().click();
 		}
@@ -35,8 +35,24 @@ $(function() {
 	});
 	
 	var comm = $("<div></div>").graphComm({
-		baseUrl: $("#execution-round-url").val()
+		baseUrl: $("#execution-round-url").val(),
+		error: function(event, message) {
+			handleError(message);
+		}
 	}).appendTo($("body"));
+	
+	var handleError = function(message) {
+		var messageDiv = $("<span></span>")
+			.html(message)
+			.addClass("execution-error")
+			.appendTo(".execution-content");
+		messageDiv.dialog({
+			appendTo: ".execution-content",
+			dialogClass: "ui-state-error",
+			modal: true,
+			width: "400px",
+			closeOnEscape: false});
+	};
 	
 	var getRound = function() {
 		var hash = location.hash;
@@ -107,7 +123,6 @@ $(function() {
 			
 			var display = roundData.graph.edges[fromVertexId + "-" + toVertexId].messageDisplay;
 			if (display == null || display == "") {
-				console.log("[display=" + display + "]");
 				return;
 			}
 			

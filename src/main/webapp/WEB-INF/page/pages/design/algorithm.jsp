@@ -18,6 +18,13 @@
 			<p><label>State Display Pattern:</label><input type="text" name="stateDisplayPattern" value="${model.stateDisplayPattern}"></p>
 			<p><label>Message Display Pattern:</label><input type="text" name="messageDisplayPattern" value="${model.messageDisplayPattern}"></p>
 			<p><label>Bidirectional:</label><input type="checkbox" name="bidirectional" ${model.bidirectional ? "checked" : ""}></p>
+			<c:if test="${showCompileError}">
+				<p>
+					<div class="ui-widget ui-state-error ui-corner-all">
+						<span class="ui-state-error-text">${compileErrorMessage}</span>
+					</div>
+				</p>
+			</c:if>
 			<p><label>Algorithm:</label><textarea rows="20" name="algorithm">${model.algorithm}</textarea></p>
 		</form:form>
 		<div class="edas-button-bar">

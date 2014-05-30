@@ -13,8 +13,8 @@
 <body>
 	<edas:header/>
 	<div class="edas-content execution-content">
-	<c:url var="roundUrl" value="/api/v1/executions/${model.run.stringId}"/>
-	<input type="hidden" id="execution-round-url" value="${roundUrl}">
+		<c:url var="roundUrl" value="/api/v1/executions/${model.run.stringId}"/>
+		<input type="hidden" id="execution-round-url" value="${roundUrl}">
 		<div class="execution-info ui-widget">
 			<p><label>Round:</label><span id="execution-round"></span></p>
 			<p><label>Message Count:</label><span id="execution-message-count"></span></p>

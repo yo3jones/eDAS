@@ -1,5 +1,6 @@
 package edu.unlv.cs.edas.execute.process.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -7,11 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -82,12 +85,24 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 		NULL_MESSAGE.put("NULL_MESSAGE", null);
 	}
 	
+	private String baseJs;
+	
+	@PostConstruct
+	public void init() throws IOException {
+		baseJs = IOUtils.toString(getClass().getResource("execution.js"));
+	}
+	
 	@Override
-	public void processToRound(Execution execution, Integer round) {
+	public void processToRound(Execution execution, Integer round) throws ScriptException, 
+			NoSuchMethodException {
 		try {
 			while (round >= execution.getRoundCount()) {
 				processNextRound(execution);
 			}
+		} catch (ScriptException e) {
+			throw e;
+		} catch (NoSuchMethodException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -133,11 +148,9 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 		ScriptEngine engine = mgr.getEngineByName("JavaScript");
 		
 		String stateJson = mapper.writeValueAsString(currentVertex.getState());
-		engine.eval("var state=" + stateJson + ";");
+		engine.eval(baseJs);
+		engine.eval("state = " + stateJson + ";");
 		engine.put("_mc", messageContext);
-		engine.eval("var NULL = {'NULL_MESSAGE': null};");
-		engine.eval("function isNotNull(msg) {return !('NULL_MESSAGE' in msg);}");
-		engine.eval("function send(neighbor, message) { _mc.send(neighbor, message); }");
 		engine.eval(algorithm.getAlgorithm());
 		
 		boolean sendIndividually = engine.get("onMessage") != null;
@@ -231,11 +244,8 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 		ScriptEngineManager mgr = new ScriptEngineManager();
 		ScriptEngine engine = mgr.getEngineByName("JavaScript");
 		
+		engine.eval(baseJs);
 		engine.put("_mc", messageContext);
-		engine.eval("var NULL = {'NULL_MESSAGE': null};");
-		engine.eval("function isNotNull(msg) {return !('NULL_MESSAGE' in msg);}");
-		engine.eval("var state = {};");
-		engine.eval("function send(neighbor, message) { _mc.send(neighbor, message); }");
 		engine.eval(algorithm.getAlgorithm());
 		
 		((Invocable) engine).invokeFunction("begin", designVertex.getLabel());

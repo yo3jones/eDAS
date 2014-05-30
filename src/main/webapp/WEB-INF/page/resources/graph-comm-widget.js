@@ -102,8 +102,8 @@
 			}
 		},
 		
-		_onError: function() {
-			this._trigger("error");
+		_onError: function(response) {
+			this._trigger("error", null, response.responseText);
 			$(this.element).clearQueue("ajax");
 			$(this.element).clearQueue("complete");
 			this._currentGroupCount = 0;
