@@ -141,7 +141,7 @@ $(function() {
 			var fromVertexId = this.getAttribute("vertexid1");
 			var toVertexId = this.getAttribute("vertexid2");
 			
-			var display = roundData.graph.edges[fromVertexId + "-" + toVertexId].messageDisplay;
+			var display = roundData.graph.edges[fromVertexId + "-" + toVertexId].messages[0].messageDisplay;
 			if (display == null || display == "") {
 				return;
 			}

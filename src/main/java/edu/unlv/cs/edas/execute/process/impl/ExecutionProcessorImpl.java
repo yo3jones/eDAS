@@ -34,6 +34,7 @@ import edu.unlv.cs.edas.execute.domain.ExecutionEdge;
 import edu.unlv.cs.edas.execute.domain.ExecutionHashGraph;
 import edu.unlv.cs.edas.execute.domain.ExecutionVertex;
 import edu.unlv.cs.edas.execute.domain.ImmutableRound;
+import edu.unlv.cs.edas.execute.domain.Message;
 import edu.unlv.cs.edas.execute.domain.MutableRound;
 import edu.unlv.cs.edas.execute.domain.Round;
 import edu.unlv.cs.edas.execute.process.ExecutionProcessor;
@@ -46,19 +47,20 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 		
 		private List<Integer> neighbors;
 		
-		private Map<Integer, Map<String, Object>> messages = new HashMap<>();
+		private Map<Integer, List<Map<String, Object>>> messages = new HashMap<>();
 		
 		public MessageContext(Collection<Integer> neighbors) {
 			this.neighbors = new ArrayList<>(neighbors);
 			Collections.sort(this.neighbors);
 			for (Integer key : neighbors) {
-				messages.put(key, NULL_MESSAGE);
+				messages.put(key, new ArrayList<Map<String, Object>>());
 			}
 		}
 		
 		public void send(Integer neighbor, Map<String, Object> message) {
 			Integer key = neighbors.get(neighbor);
-			messages.put(key, convertNativeMap(message));
+			List<Map<String, Object>> neighborMessages = messages.get(key);
+			neighborMessages.add(convertNativeMap(message));
 		}
 		
 		public void send(Integer neighbor, String message) {
@@ -75,7 +77,7 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 			send(neighbor, mapMessage);
 		}
 		
-		public Map<Integer, Map<String, Object>> getMessages() {
+		public Map<Integer, List<Map<String, Object>>> getMessages() {
 			return messages;
 		}
 		
@@ -166,20 +168,21 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 			Integer neightborKey = incomingNeighbors.get(i);
 			EdgeKey<Integer> incomingEdgeKey = new EdgeKey<Integer>(neightborKey, key);
 			ExecutionEdge currentEdge = currentRound.getGraph().getEdge(incomingEdgeKey);
-			Map<String, Object> message = currentEdge.getState();
-			if (message.isEmpty()) {
+			List<Message> messages = currentEdge.getMessages();
+			if (messages.isEmpty()) {
 				continue;
 			}
+			Message message = messages.iterator().next();
 			String valueString = null;
-			if (isNotNullMessage(message) && message.size() == 1) {
-				Object value = message.values().iterator().next();
+			if (isNotNullMessage(message.getMessage()) && message.getMessage().size() == 1) {
+				Object value = message.getMessage().values().iterator().next();
 				if (value instanceof String) {
 					valueString = "\"" + value.toString() +  "\"";
 				} else {
 					valueString = value.toString();
 				}
 			} else {
-				valueString = mapper.writeValueAsString(message);
+				valueString = mapper.writeValueAsString(message.getMessage());
 			}
 			if (sendIndividually) {
 				engine.eval("onMessage(" + i + ", " + valueString + ");");
@@ -204,17 +207,26 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 				stateDisplay);
 		nextRound.getGraph().putVertex(key, vertex);
 		
-		for (Map.Entry<Integer, Map<String, Object>> entry : messageContext.getMessages().entrySet()) {
+		for (Map.Entry<Integer, List<Map<String, Object>>> entry : messageContext.getMessages().entrySet()) {
 			EdgeKey<Integer> edgeKey = new EdgeKey<Integer>(key, entry.getKey());
 			ExecutionEdge currentEdge = currentRound.getGraph().getEdge(edgeKey);
-			Map<String, Object> message = entry.getValue();
-			if (isNotNullMessage(message)) {
-				nextRound.incrementMessageCount();
+			List<Map<String, Object>> inputMessages = entry.getValue();
+			if (!inputMessages.isEmpty() && isNotNullMessage(inputMessages.iterator().next())) {
+				nextRound.incrementMessageCount(inputMessages.size());
 			}
-			String messageDisplay = formatDisplayPattern(algorithm.getMessageDisplayPattern(), 
-					message);
-			ExecutionEdge edge = new ExecutionEdge(currentEdge.getDesign(), message, 
-					messageDisplay);
+			
+			List<Message> currentMessages = currentEdge.getMessages();
+			List<Message> messages = currentMessages.size() < 2 
+					? new ArrayList<Message>()
+					: new ArrayList<Message>(currentMessages.subList(1, currentMessages.size() - 1));
+			for (Map<String, Object> message : inputMessages) {
+				String messageDisplay = formatDisplayPattern(algorithm.getMessageDisplayPattern(), 
+						message);
+				messages.add(new Message(message, messageDisplay));
+			}
+			
+			ExecutionEdge edge = new ExecutionEdge(currentEdge.getDesign(), 
+					new HashMap<String, Object>(), messages);
 			edges.put(edgeKey, edge);
 		}
 	}
@@ -260,16 +272,23 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 		ExecutionVertex vertex = new ExecutionVertex(designVertex, state, stateDisplay);
 		round.getGraph().putVertex(key, vertex);
 		
-		for (Map.Entry<Integer, Map<String, Object>> entry : messageContext.getMessages().entrySet()) {
+		for (Map.Entry<Integer, List<Map<String, Object>>> entry : messageContext.getMessages().entrySet()) {
 			EdgeKey<Integer> edgeKey = new EdgeKey<Integer>(key, entry.getKey());
 			DesignEdge designEdge = designGraph.getEdge(edgeKey);
-			Map<String, Object> message = entry.getValue();
-			if (isNotNullMessage(message)) {
-				round.incrementMessageCount();
+			List<Map<String, Object>> inputMessages = entry.getValue();
+			if (!inputMessages.isEmpty() && isNotNullMessage(inputMessages.iterator().next())) {
+				round.incrementMessageCount(inputMessages.size());
 			}
-			String messageDisplay = formatDisplayPattern(algorithm.getMessageDisplayPattern(), 
-					message);
-			ExecutionEdge edge = new ExecutionEdge(designEdge, message, messageDisplay);
+			
+			List<Message> messages = new ArrayList<>();
+			for (Map<String, Object> message : inputMessages) {
+				String messageDisplay = formatDisplayPattern(algorithm.getMessageDisplayPattern(), 
+						message);
+				messages.add(new Message(message, messageDisplay));
+			}
+			
+			ExecutionEdge edge = new ExecutionEdge(designEdge, new HashMap<String, Object>(), 
+					messages);
 			edges.put(edgeKey, edge);
 		}
 	}

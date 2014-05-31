@@ -4,8 +4,10 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.list.UnmodifiableList;
 import org.apache.commons.collections4.map.UnmodifiableMap;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -15,39 +17,38 @@ import edu.unlv.cs.edas.design.domain.DesignEdge;
 import edu.unlv.cs.edas.graph.domain.Edge;
 
 @JsonAutoDetect(fieldVisibility=ANY, getterVisibility=NONE)
-public class ExecutionEdge implements Edge {
+public final class ExecutionEdge implements Edge {
 
 	private static final long serialVersionUID = -2498255078981953488L;
 
 	@JsonIgnore
 	private DesignEdge design;
 	
-	@JsonIgnore
 	private Map<String, Object> state;
 	
-	private String messageDisplay;
+	private List<Message> messages;
 	
-	public ExecutionEdge(DesignEdge design, Map<String, Object> state, String messageDisplay) {
+	public ExecutionEdge(DesignEdge design, Map<String, Object> state, List<Message> messages) {
 		this.design = design;
 		this.state = UnmodifiableMap.unmodifiableMap(new HashMap<String, Object>(state));
-		this.messageDisplay = messageDisplay;
+		this.messages = UnmodifiableList.unmodifiableList(messages);
 	}
 	
-	public DesignEdge getDesign() {
+	public final DesignEdge getDesign() {
 		return design;
 	}
 	
 	@Override
-	public Integer getWeight() {
+	public final Integer getWeight() {
 		return design.getWeight();
 	}
 
-	public Map<String, Object> getState() {
+	public final Map<String, Object> getState() {
 		return state;
 	}
 	
-	public String getMessageDisplay() {
-		return messageDisplay;
+	public final List<Message> getMessages() {
+		return messages;
 	}
 	
 }

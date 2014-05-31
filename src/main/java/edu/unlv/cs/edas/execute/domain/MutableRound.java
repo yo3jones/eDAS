@@ -35,8 +35,8 @@ public class MutableRound implements Round {
 		this.messageCount = messageCount;
 	}
 	
-	public void incrementMessageCount() {
-		messageCount++;
+	public void incrementMessageCount(Integer increment) {
+		messageCount += increment;
 	}
 	
 	@Override
