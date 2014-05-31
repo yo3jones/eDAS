@@ -89,12 +89,14 @@ public class AlgorithmController {
 	
 	private ModelAndView getAlgorithmView(Algorithm algorithm) {
 		String compileErrorMessage = NO_COMPILE_ERROR_MESSAGE;
-		try {
-			ScriptEngineManager mgr = new ScriptEngineManager();
-			ScriptEngine engine = mgr.getEngineByName("JavaScript");
-			engine.eval(algorithm.getAlgorithm());
-		} catch (ScriptException e) {
-			compileErrorMessage = e.getMessage();
+		if (algorithm.getAlgorithm() != null) {
+			try {
+				ScriptEngineManager mgr = new ScriptEngineManager();
+				ScriptEngine engine = mgr.getEngineByName("JavaScript");
+				engine.eval(algorithm.getAlgorithm());
+			} catch (ScriptException e) {
+				compileErrorMessage = e.getMessage();
+			}
 		}
 		
 		ModelAndView view = new ModelAndView("design/algorithm");
