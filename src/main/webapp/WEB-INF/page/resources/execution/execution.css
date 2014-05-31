@@ -72,3 +72,7 @@ HTML, BODY {
 CIRCLE.highlight {
 	fill: #C00;
 }
+
+.edge-container LINE.edge-line.highlight {
+	stroke: #C00;
+}

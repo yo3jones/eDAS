@@ -97,6 +97,25 @@ $(function() {
 		});
 	};
 	
+	var getOrigClass = function(element) {
+		var origClass = element.getAttribute("orig-class");
+		if (origClass == null || origClass == "") {
+			origClass = element.getAttribute("class");
+			element.setAttribute("orig-class", origClass);
+		}
+		return origClass;
+	};
+	
+	var restoreClass = function(element) {
+		var origClass = getOrigClass(element);
+		element.setAttribute("class", origClass);
+	};
+	
+	var addClass = function(element, newClass) {
+		var origClass = getOrigClass(element);
+		element.setAttribute("class", origClass + " " + newClass);
+	};
+	
 	var showState = function(roundData, round) {
 		$(".execution-vertex-state").remove();
 		$(".execution-edge-message").remove();
@@ -106,14 +125,9 @@ $(function() {
 			var id = $(this).parent().get(0).getAttribute("vertexid");
 			
 			var state = roundData.graph.vertices[id].state;
-			var origClass = this.getAttribute("orig-class");
-			if (origClass == null || origClass == "") {
-				origClass = this.getAttribute("class");
-				this.setAttribute("orig-class", origClass);
-			}
-			this.setAttribute("class", origClass);
+			restoreClass(this);
 			if ("_style" in state) {
-				this.setAttribute("class", origClass + " " + state._style);
+				addClass(this, state._style);
 			}
 			
 			var display = roundData.graph.vertices[id].stateDisplay;
@@ -133,15 +147,27 @@ $(function() {
 				left: left + "%"});
 		});
 		
-		if (round.step != "m") {
-			return;
-		}
-		
 		$("G.edge-container").each(function() {
+			var line = $(this).children("LINE.edge-line");
 			var fromVertexId = this.getAttribute("vertexid1");
 			var toVertexId = this.getAttribute("vertexid2");
 			
-			var display = roundData.graph.edges[fromVertexId + "-" + toVertexId].messages[0].messageDisplay;
+			var edge = roundData.graph.edges[fromVertexId + "-" + toVertexId];
+			
+			restoreClass(line.get(0));
+			if ("_style" in edge.state) {
+				addClass(line.get(0), edge.state._style);
+			}
+			
+			if (round.step != "m") {
+				return;
+			}
+			
+			if (edge.messages.length == 0) {
+				return;
+			}
+			
+			var display = edge.messages[0].messageDisplay;
 			if (display == null || display == "") {
 				return;
 			}

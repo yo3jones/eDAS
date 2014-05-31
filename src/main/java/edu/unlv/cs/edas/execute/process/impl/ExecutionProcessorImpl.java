@@ -173,6 +173,7 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 		engine.eval(algorithm.getAlgorithm());
 		
 		boolean sendIndividually = engine.get("onMessage") != null;
+		boolean sendSingle = engine.get("onMessages") != null;
 		
 		StringBuilder singleSend = new StringBuilder()
 				.append("onMessages([");
@@ -207,7 +208,7 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 			}
 			first = false;
 		}
-		if (!sendIndividually) {
+		if (sendSingle) {
 			singleSend.append("])");
 			engine.eval(singleSend.toString());
 		}
