@@ -9,3 +9,7 @@ function isNotNull(msg) {
 function send(neighbor, message) {
 	_mc.send(neighbor, message);
 }
+
+function getEdgeState(edge) {
+	return edgeStates[edge];
+}

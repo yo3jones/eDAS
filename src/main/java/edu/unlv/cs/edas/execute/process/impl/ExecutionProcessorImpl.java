@@ -81,6 +81,10 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 			return messages;
 		}
 		
+		public List<Integer> getNeighbors() {
+			return neighbors;
+		}
+		
 	}
 	
 	private static final Map<String, Object> NULL_MESSAGE;
@@ -141,7 +145,7 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 	
 	private void processRound(Algorithm algorithm, Round currentRound, MutableRound nextRound, 
 			Integer key, Map<EdgeKey<Integer>, ExecutionEdge> edges) throws JsonProcessingException, 
-			ScriptException {
+			ScriptException, NoSuchMethodException {
 		ExecutionVertex currentVertex = currentRound.getGraph().getVertex(key);
 		List<Integer> incomingNeighbors = new ArrayList<>(
 				currentRound.getGraph().getDestinatingAdjacentVertices(key));
@@ -152,10 +156,19 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 		
 		ScriptEngineManager mgr = new ScriptEngineManager();
 		ScriptEngine engine = mgr.getEngineByName("JavaScript");
+		Invocable invocable = (Invocable) engine;
 		
 		String stateJson = mapper.writeValueAsString(currentVertex.getState());
 		engine.eval(baseJs);
 		engine.eval("state = " + stateJson + ";");
+		
+		List<Map<String, Object>> edgeStates = new ArrayList<>();
+		for (Integer toKey : currentRound.getGraph().getAdjacentVertices(key)) {
+			ExecutionEdge edge = currentRound.getGraph().getEdge(new EdgeKey<Integer>(key, toKey));
+			edgeStates.add(edge.getState());
+		}
+		engine.eval("var edgeStates = " + mapper.writeValueAsString(edgeStates) + ";");
+		
 		engine.put("_mc", messageContext);
 		engine.eval(algorithm.getAlgorithm());
 		
@@ -225,14 +238,17 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 				messages.add(new Message(message, messageDisplay));
 			}
 			
-			ExecutionEdge edge = new ExecutionEdge(currentEdge.getDesign(), 
-					new HashMap<String, Object>(), messages);
+			Integer edgeIndex = messageContext.getNeighbors().indexOf(entry.getKey());
+			Map<String, Object> edgeState = convertNativeMap(invocable.invokeFunction(
+					"getEdgeState", edgeIndex));
+			
+			ExecutionEdge edge = new ExecutionEdge(currentEdge.getDesign(), edgeState, messages);
 			edges.put(edgeKey, edge);
 		}
 	}
 	
 	private void processFirstRound(Execution execution) throws ScriptException, 
-			NoSuchMethodException {
+			NoSuchMethodException, JsonProcessingException {
 		DesignGraph designGraph = execution.getDesignGraphDetails().getGraph();
 		MutableRound round = new MutableRound();
 		round.setMessageCount(0);
@@ -253,18 +269,26 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 	
 	private void processFirstRound(Algorithm algorithm, MutableRound round, DesignGraph designGraph, 
 			Integer key, Map<EdgeKey<Integer>, ExecutionEdge> edges) throws ScriptException, 
-			NoSuchMethodException {
+			NoSuchMethodException, JsonProcessingException {
 		DesignVertex designVertex = designGraph.getVertex(key);
 		MessageContext messageContext = new MessageContext(designGraph.getAdjacentVertices(key));
 		
+		ObjectMapper mapper = new ObjectMapper();
+		
 		ScriptEngineManager mgr = new ScriptEngineManager();
 		ScriptEngine engine = mgr.getEngineByName("JavaScript");
+		Invocable invocable = (Invocable) engine;
 		
 		engine.eval(baseJs);
+		List<Map<String, Object>> edgeStates = new ArrayList<>();
+		for (int i = 0; i < designGraph.getAdjacentVertices(key).size(); i++) {
+			edgeStates.add(new HashMap<String, Object>());
+		}
+		engine.eval("var edgeStates = " + mapper.writeValueAsString(edgeStates) + ";");
 		engine.put("_mc", messageContext);
 		engine.eval(algorithm.getAlgorithm());
 		
-		((Invocable) engine).invokeFunction("begin", designVertex.getLabel());
+		invocable.invokeFunction("begin", designVertex.getLabel());
 		
 		Map<String, Object> state = getState(engine);
 		
@@ -287,8 +311,11 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 				messages.add(new Message(message, messageDisplay));
 			}
 			
-			ExecutionEdge edge = new ExecutionEdge(designEdge, new HashMap<String, Object>(), 
-					messages);
+			Integer edgeIndex = messageContext.getNeighbors().indexOf(entry.getKey());
+			Map<String, Object> edgeState = convertNativeMap(invocable.invokeFunction(
+					"getEdgeState", edgeIndex));
+			
+			ExecutionEdge edge = new ExecutionEdge(designEdge, edgeState, messages);
 			edges.put(edgeKey, edge);
 		}
 	}

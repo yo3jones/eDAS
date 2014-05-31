@@ -2,16 +2,19 @@ function begin(value) {
 	state = {
 		u: value,
 		status: 'unknown',
-		send: [{v: value, f: 'out', h: 1}, {v: value, f: 'out', h: 1}],
 		phase: 0
 	};
-	send(0, state.send[0]);
-	send(1, state.send[1]);
+	
+	edgeStates[0].send = {v: value, f: 'out', h: 1};
+	edgeStates[1].send = {v: value, f: 'out', h: 1};
+	
+	send(0, edgeStates[0].send);
+	send(1, edgeStates[1].send);
 }
 
 function onMessages(messages) {
-	state.send[0] = NULL;
-	state.send[1] = NULL;
+	edgeStates[0].send = NULL;
+	edgeStates[1].send = NULL;
 	
 	handleOutMessage(0, messages[0]);
 	handleOutMessage(1, messages[1]);
@@ -28,18 +31,18 @@ function onMessages(messages) {
 			&& messages[0].h == 1 
 			&& messages[1].h == 1) {
 		state.phase = state.phase + 1;
-		state.send[0] = {
+		edgeStates[0].send = {
 				v: state.u, 
 				f: 'out', 
 				h: Math.pow(2, state.phase)};
-		state.send[1] = {
+		edgeStates[1].send = {
 				v: state.u, 
 				f: 'out', 
 				h: Math.pow(2, state.phase)};
 	}
 	
-	send(0, state.send[0]);
-	send(1, state.send[1]);
+	send(0, edgeStates[0].send);
+	send(1, edgeStates[1].send);
 }
 
 function handleOutMessage(from, message) {
@@ -47,13 +50,13 @@ function handleOutMessage(from, message) {
 	if (isNotNull(message) && message.f == 'out') {
 		if (message.v > state.u) {
 			if (message.h > 1){
-				state.send[opposite] = {
+				edgeStates[opposite].send = {
 						v: message.v, 
 						f: 'out', 
 						h: message.h - 1};
 			}
 			if (message.h == 1) {
-				state.send[from] = {
+				edgeStates[from].send = {
 						v: message.v, 
 						f: 'in', 
 						h: 1};
@@ -71,6 +74,6 @@ function handleInMessage(from, message) {
 	if (isNotNull(message) 
 			&& message.f == 'in' 
 			&& message.v != state.u) {
-		state.send[opposite] = {v: message.v, f: 'in', h: 1};
+		edgeStates[opposite].send = {v: message.v, f: 'in', h: 1};
 	}
 }

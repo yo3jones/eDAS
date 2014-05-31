@@ -1,20 +1,21 @@
 function begin(value) {
 	state.u = value;
-	state.send = value;
 	state.status = 'unknown';
 	
-	send(0, state.send);
+	edgeStates[0].send = value;
+	
+	send(0, edgeStates[0].send);
 }
 
 function onMessage(sender, v) {
-	state.send = NULL;
+	edgeStates[0].send = NULL;
 	if (v > state.u) {
-		state.send = v;
+		edgeStates[0].send = v;
 	} else if(state.u == v) {
 		state.status = 'leader';
 		state._style = 'highlight';
 	} else if(v < state.u) {
 		// do nothing
 	}
-	send(0, state.send);
+	send(0, edgeStates[0].send);
 }
