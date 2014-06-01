@@ -3,7 +3,11 @@ var state = {};
 var NULL = {'NULL_MESSAGE': null};
 
 function isNotNull(msg) {
-	return !('NULL_MESSAGE' in msg);
+	return !isNull(msg);
+}
+
+function isNull(msg) {
+	return 'NULL_MESSAGE' in msg;
 }
 
 function send(neighbor, message) {

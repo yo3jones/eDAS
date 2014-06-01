@@ -4,6 +4,7 @@ function begin(value) {
 	state.leaderUid = "";
 	state.level = 0;
 	state.convergecastEdge = null;
+	state.minBroadcastEdge = null;
 	state.min = null;
 	state.connectUid = null;
 	
@@ -27,15 +28,15 @@ function begin(value) {
 	
 	for (var j in edgeStates) {
 		if (j == minEdge) {
-			send(j, {type: "init", uid: value, min: true});
+			send(j, {type: "init", uid: value});
 		} else {
-			send(j, {type: "init", uid: value, min: false});
+			send(j, NULL);
 		}
 	}
 }
 
 function onMessage(from, message) {
-	if (message.type == "init") {
+	if (message.type == "init" || isNull(message)) {
 		handleInit(from, message);
 	} else if (message.type == "broadcast-new-leader") {
 		handleBroadcastNewLeader(from, message);
@@ -54,8 +55,9 @@ function handleInit(from, message) {
 	var edge = edgeStates[from];
 	edge.initialized = true;
 	edge.uid = message.uid;
-	if (message.min == true) {
-		if (edge.status == "branch" && state.uid > message.uid) {
+	if (isNotNull(message)) {
+		if (edge.status == "branch" 
+				&& state.uid > message.uid) {
 			state.status = "leader";
 			state._style = "highlight";
 		}
@@ -104,6 +106,9 @@ function broadcastNewLeader() {
 	if (state.status != "leader") {
 		return;
 	}
+	state.min = null;
+	state.connectUid = null;
+	state.convergecastEdge = null;
 	state.leaderUid = state.uid;
 	state.level++;
 	for (var i in edgeStates) {
@@ -111,7 +116,9 @@ function broadcastNewLeader() {
 		if (edge.status != "branch") {
 			continue;
 		}
-		send(i, {type: "broadcast-new-leader", leaderUid: state.leaderUid, level: state.level});
+		send(i, {type: "broadcast-new-leader", 
+				leaderUid: state.leaderUid, 
+				level: state.level});
 	}
 	
 	sendSearch();
@@ -120,6 +127,7 @@ function broadcastNewLeader() {
 function handleBroadcastNewLeader(from, message) {
 	state.min = null;
 	state.connectUid = null;
+	state.convergecastEdge = null;
 	state.leaderUid = message.leaderUid;
 	state.level = message.level;
 	if (state.status == "leader") {
@@ -158,12 +166,16 @@ function sendSearch() {
 				|| edge.status == "rejected") {
 			continue;
 		}
-		send(i, {type: "search", leaderUid: state.leaderUid, level: state.level});
+		send(i, {type: "search", 
+				uid: state.uid,
+				leaderUid: state.leaderUid, 
+				level: state.level});
 	}
 }
 
 function handleSearch(from, message) {
 	var edge = edgeStates[from];
+	edge.uid = message.uid;
 	edge.searchMessage = message;
 	doConvergecast();
 }
@@ -180,16 +192,14 @@ function doConvergecast() {
 	if (state.status == "leader") {
 		sendBroadcastMin(min);
 	} else {
-		send(state.convergecastEdge, {type: "convergecast", min: min});
+		send(state.convergecastEdge, 
+				{type: "convergecast", min: min});
 	}
 }
 
 function updateSearchEdges() {
 	for (var i in edgeStates) {
 		var edge = edgeStates[i];
-		if (state.uid == "G" && state.level == 2 && edge.uid == "A") {
-			log(edge.status);
-		}
 		if (edge.status != "unknown") {
 			continue;
 		}
@@ -233,6 +243,7 @@ function getConvergcastMin() {
 		if (min.value == null 
 				 || convergecastMin.value < min.value) {
 			min = convergecastMin;
+			state.minBroadcastEdge = i;
 		}
 	}
 	return min;
@@ -249,7 +260,9 @@ function getOutgoingMin() {
 			continue;
 		}
 		if (min.value == null || edge.weight < min.value) {
-			min = {value: edge.weight, fromUid: state.uid, toUid: edge.uid};
+			min = {value: edge.weight, 
+					fromUid: state.uid, 
+					toUid: edge.uid};
 		}
 	}
 	return min;
@@ -276,40 +289,26 @@ function sendBroadcastMin(min) {
 	if (min.value == null) {
 		return;
 	}
-	for (var i in edgeStates) {
-		var edge = edgeStates[i];
-		if (edge.status != "branch") {
-			continue;
-		}
-		send(i, {type: "broadcast-min", min: min});
+	state.min = min;
+	if (min.fromUid == state.uid) {
+		reactToMin(min);
+	} else {
+		send(state.minBroadcastEdge, {type: "broadcast-min", min: min});
 	}
-	reactToMin(min);
 }
 
 function handleBroadcastMin(from, message) {
 	var min = message.min;
 	state.min = min;
 	
-	if (state.status != "leaf") {
-		for (var i in edgeStates) {
-			var edge = edgeStates[i];
-			if (edge.status != "branch") {
-				continue;
-			}
-			if (i == from) {
-				continue;
-			}
-			send(i, {type: "broadcast-min", min: min});
-		}
+	if (min.fromUid == state.uid) {
+		reactToMin(min);
+	} else if (state.status != "leaf") {
+		send(state.minBroadcastEdge, {type: "broadcast-min", min: min});
 	}
-	
-	reactToMin(min);
 }
 
 function reactToMin(min) {
-	if (min.fromUid != state.uid) {
-		return;
-	}
 	var to = getEdgeByUid(min.toUid);
 	var toEdge = edgeStates[to];
 	state.status = "nonleaf";
