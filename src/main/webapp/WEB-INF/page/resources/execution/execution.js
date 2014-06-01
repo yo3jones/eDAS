@@ -11,11 +11,15 @@ $(function() {
 	
 	$("#execution-prev-button").button().click(function() {
 		var round = getRound();
-		var hash = "";
-		if (round.round == 0 && round.step == "e") {
+		
+		if (round == null) {
 			return;
 		}
-		if (round.step == "e") {
+		
+		var hash = "";
+		if (round.round == 0 && round.step == "e") {
+			hash = "#";
+		} else if (round.step == "e") {
 			hash = "#" + (round.round - 1) + "m";
 		} else {
 			hash = "#" + round.round + "e";
@@ -25,6 +29,12 @@ $(function() {
 	
 	$("#execution-next-button").button().click(function() {
 		var round = getRound();
+		
+		if (round == null) {
+			location.hash = "#0e";
+			return;
+		}
+		
 		var hash = "";
 		if (round.step == "m") {
 			hash = "#" + (round.round + 1) + "e";
@@ -78,15 +88,24 @@ $(function() {
 	var load = function() {
 		var round = getRound();
 		if (round == null) {
-			location.hash = "#0e";
-			return;
+			$("#execution-round").html("0");
+			$("#execution-message-count").html("0");
+			$(".execution-vertex-state").remove();
+			$(".execution-edge-message").remove();
+			$("CIRCLE.vertex-circle").each(function() {
+				restoreClass(this);
+			});
+			$("G.edge-container").each(function() {
+				var line = $(this).children("LINE.edge-line");
+				restoreClass(line.get(0));
+			});
+		} else {
+			loadRound(round);
 		}
-		
-		loadRound(round);
 	};
 	
 	var loadRound = function(round) {
-		$("#execution-round").html(round.round);
+		$("#execution-round").html(round.round + 1);
 		comm.graphComm("getJson", "/" + round.round, function(data) {
 			for (var i in data.log) {
 				if (window.console) {

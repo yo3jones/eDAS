@@ -75,6 +75,7 @@ CIRCLE.highlight {
 
 .edge-container LINE.edge-line.highlight {
 	stroke: #C00;
+	stroke-width: 5px;
 }
 
 .edge-container LINE.edge-line.disabled {
