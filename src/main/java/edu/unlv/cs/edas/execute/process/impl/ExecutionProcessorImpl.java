@@ -263,7 +263,7 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 			List<Message> currentMessages = currentEdge.getMessages();
 			List<Message> messages = currentMessages.size() < 2 
 					? new ArrayList<Message>()
-					: new ArrayList<Message>(currentMessages.subList(1, currentMessages.size() - 1));
+					: new ArrayList<Message>(currentMessages.subList(1, currentMessages.size()));
 			for (Map<String, Object> message : inputMessages) {
 				String messageDisplay = formatDisplayPattern(algorithm.getMessageDisplayPattern(), 
 						message);

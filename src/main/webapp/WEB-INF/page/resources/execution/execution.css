@@ -79,4 +79,5 @@ CIRCLE.highlight {
 
 .edge-container LINE.edge-line.disabled {
 	stroke: grey;
+	stroke-dasharray: 2 10;
 }
