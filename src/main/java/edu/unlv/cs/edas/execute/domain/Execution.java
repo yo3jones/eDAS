@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections4.list.UnmodifiableList;
+
 import edu.unlv.cs.edas.design.domain.ImmutableAlgorithm;
 import edu.unlv.cs.edas.design.domain.ImmutableDesignGraphDetails;
 import edu.unlv.cs.edas.design.domain.ImmutableRun;
@@ -20,12 +22,15 @@ public class Execution implements Serializable {
 	
 	private List<ImmutableRound> rounds;
 	
+	private List<String> log;
+	
 	public Execution(ImmutableRun run, ImmutableAlgorithm algorithm, 
 			ImmutableDesignGraphDetails designGraphDetails) {
 		this.run = run;
 		this.algorithm = algorithm;
 		this.designGraphDetails = designGraphDetails;
 		rounds = new ArrayList<>();
+		log = new ArrayList<>();
 	}
 	
 	public ImmutableRun getRun() {
@@ -54,6 +59,18 @@ public class Execution implements Serializable {
 	
 	public int getRoundCount() {
 		return rounds.size();
+	}
+	
+	public void clearLog() {
+		log.clear();
+	}
+	
+	public void log(String message) {
+		log.add(message);
+	}
+	
+	public List<String> getLog() {
+		return UnmodifiableList.unmodifiableList(log);
 	}
 	
 }

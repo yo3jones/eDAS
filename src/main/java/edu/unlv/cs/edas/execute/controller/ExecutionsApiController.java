@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.unlv.cs.edas.execute.domain.Execution;
-import edu.unlv.cs.edas.execute.domain.Round;
 import edu.unlv.cs.edas.execute.manager.ExecutionManager;
 import edu.unlv.cs.edas.execute.process.ExecutionProcessor;
 
@@ -25,13 +24,15 @@ public class ExecutionsApiController {
 	@Autowired ExecutionProcessor processor;
 	
 	@RequestMapping(value="/{runId}/{round}", produces="application/json")
-	public Round get(@PathVariable String runId, @PathVariable Integer round) throws 
+	public RoundModel get(@PathVariable String runId, @PathVariable Integer round) throws 
 			NoSuchMethodException, ScriptException {
 		Execution execution = manager.get(runId);
 		
 		processor.processToRound(execution, round);
 		
-		return execution.getRound(round);
+		return new RoundModel()
+				.setRound(execution.getRound(round))
+				.setLog(execution.getLog());
 	}
 	
 	@ExceptionHandler(ScriptException.class)

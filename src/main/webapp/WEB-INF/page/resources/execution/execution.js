@@ -88,6 +88,11 @@ $(function() {
 	var loadRound = function(round) {
 		$("#execution-round").html(round.round);
 		comm.graphComm("getJson", "/" + round.round, function(data) {
+			for (var i in data.log) {
+				if (window.console) {
+					window.console.log(data.log[i]);
+				}
+			}
 			if (round.step == "e") {
 				$("#execution-message-count").html(data.previousMessageCount);
 			} else {

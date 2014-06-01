@@ -13,3 +13,7 @@ function send(neighbor, message) {
 function getEdgeState(edge) {
 	return edgeStates[edge];
 }
+
+function log(message) {
+	_lc.log(message);
+}

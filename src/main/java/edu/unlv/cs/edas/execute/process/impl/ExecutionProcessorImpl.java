@@ -63,12 +63,24 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 			neighborMessages.add(convertNativeMap(message));
 		}
 		
+		public void send(String neighbor, Map<String, Object> message) {
+			send(Integer.parseInt(neighbor), message);
+		}
+		
 		public void send(Integer neighbor, String message) {
 			sendPrimitive(neighbor, message);
 		}
 		
+		public void send(String neighbor, String message) {
+			sendPrimitive(Integer.parseInt(neighbor), message);
+		}
+		
 		public void send(Integer neighbor, Number message) {
 			sendPrimitive(neighbor, message);
+		}
+		
+		public void send(String neighbor, Number message) {
+			sendPrimitive(Integer.parseInt(neighbor), message);
 		}
 		
 		private void sendPrimitive(Integer neighbor, Object message) {
@@ -83,6 +95,20 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 		
 		public List<Integer> getNeighbors() {
 			return neighbors;
+		}
+		
+	}
+	
+	public static class LogContext {
+		
+		private Execution execution;
+		
+		public LogContext(Execution execution) {
+			this.execution = execution;
+		}
+		
+		public void log(String message) {
+			execution.log(message);
 		}
 		
 	}
@@ -104,6 +130,7 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 	@Override
 	public void processToRound(Execution execution, Integer round) throws ScriptException, 
 			NoSuchMethodException {
+		execution.clearLog();
 		try {
 			while (round >= execution.getRoundCount()) {
 				processNextRound(execution);
@@ -131,9 +158,10 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 		nextRound.setPreviousMessageCount(currentRound.getMessageCount());
 		nextRound.setGraph(new ExecutionHashGraph());
 		Map<EdgeKey<Integer>, ExecutionEdge> edges = new HashMap<>();
+		LogContext logContext = new LogContext(execution);
 		
 		for (Integer key : currentRound.getGraph().getVertexSet()) {
-			processRound(execution.getAlgorithm(), currentRound, nextRound, key, edges);
+			processRound(execution.getAlgorithm(), currentRound, nextRound, key, edges, logContext);
 		}
 		
 		for (Map.Entry<EdgeKey<Integer>, ExecutionEdge> entry : edges.entrySet()) {
@@ -144,8 +172,8 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 	}
 	
 	private void processRound(Algorithm algorithm, Round currentRound, MutableRound nextRound, 
-			Integer key, Map<EdgeKey<Integer>, ExecutionEdge> edges) throws JsonProcessingException, 
-			ScriptException, NoSuchMethodException {
+			Integer key, Map<EdgeKey<Integer>, ExecutionEdge> edges, LogContext logContext) throws 
+			JsonProcessingException, ScriptException, NoSuchMethodException {
 		ExecutionVertex currentVertex = currentRound.getGraph().getVertex(key);
 		List<Integer> incomingNeighbors = new ArrayList<>(
 				currentRound.getGraph().getDestinatingAdjacentVertices(key));
@@ -163,13 +191,14 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 		engine.eval("state = " + stateJson + ";");
 		
 		List<Map<String, Object>> edgeStates = new ArrayList<>();
-		for (Integer toKey : currentRound.getGraph().getAdjacentVertices(key)) {
+		for (Integer toKey : messageContext.getNeighbors()) {
 			ExecutionEdge edge = currentRound.getGraph().getEdge(new EdgeKey<Integer>(key, toKey));
 			edgeStates.add(edge.getState());
 		}
 		engine.eval("var edgeStates = " + mapper.writeValueAsString(edgeStates) + ";");
 		
 		engine.put("_mc", messageContext);
+		engine.put("_lc", logContext);
 		engine.eval(algorithm.getAlgorithm());
 		
 		boolean sendIndividually = engine.get("onMessage") != null;
@@ -188,7 +217,9 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 			}
 			Message message = messages.iterator().next();
 			String valueString = null;
-			if (isNotNullMessage(message.getMessage()) && message.getMessage().size() == 1) {
+			if (isNotNullMessage(message.getMessage()) 
+					&& message.getMessage().size() == 1 
+					&& message.getMessage().containsKey("value")) {
 				Object value = message.getMessage().values().iterator().next();
 				if (value instanceof String) {
 					valueString = "\"" + value.toString() +  "\"";
@@ -256,9 +287,10 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 		round.setPreviousMessageCount(0);
 		round.setGraph(new ExecutionHashGraph());
 		Map<EdgeKey<Integer>, ExecutionEdge> edges = new HashMap<>();
+		LogContext logContext = new LogContext(execution);
 		
 		for (Integer key : designGraph.getVertexSet()) {
-			processFirstRound(execution.getAlgorithm(), round, designGraph, key, edges);
+			processFirstRound(execution.getAlgorithm(), round, designGraph, key, edges, logContext);
 		}
 		
 		for (Map.Entry<EdgeKey<Integer>, ExecutionEdge> entry : edges.entrySet()) {
@@ -269,8 +301,8 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 	}
 	
 	private void processFirstRound(Algorithm algorithm, MutableRound round, DesignGraph designGraph, 
-			Integer key, Map<EdgeKey<Integer>, ExecutionEdge> edges) throws ScriptException, 
-			NoSuchMethodException, JsonProcessingException {
+			Integer key, Map<EdgeKey<Integer>, ExecutionEdge> edges, LogContext logContext) throws 
+			ScriptException, NoSuchMethodException, JsonProcessingException {
 		DesignVertex designVertex = designGraph.getVertex(key);
 		MessageContext messageContext = new MessageContext(designGraph.getAdjacentVertices(key));
 		
@@ -282,11 +314,16 @@ public class ExecutionProcessorImpl implements ExecutionProcessor {
 		
 		engine.eval(baseJs);
 		List<Map<String, Object>> edgeStates = new ArrayList<>();
-		for (int i = 0; i < designGraph.getAdjacentVertices(key).size(); i++) {
-			edgeStates.add(new HashMap<String, Object>());
+		for (Integer toKey : messageContext.getNeighbors()) {
+			EdgeKey<Integer> edgeKey = new EdgeKey<Integer>(key, toKey);
+			DesignEdge edge = designGraph.getEdge(edgeKey);
+			Map<String, Object> edgeState = new HashMap<>();
+			edgeState.put("weight", edge.getWeight());
+			edgeStates.add(edgeState);
 		}
 		engine.eval("var edgeStates = " + mapper.writeValueAsString(edgeStates) + ";");
 		engine.put("_mc", messageContext);
+		engine.put("_lc", logContext);
 		engine.eval(algorithm.getAlgorithm());
 		
 		invocable.invokeFunction("begin", designVertex.getLabel());
