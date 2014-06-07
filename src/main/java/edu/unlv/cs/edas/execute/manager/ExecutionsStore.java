@@ -12,10 +12,6 @@ public interface ExecutionsStore {
 	
 	boolean contains(ObjectId id);
 	
-	void remove(ObjectId id);
-	
-	void removeByAlgorithmId(ObjectId algorithmId);
-	
-	void removeByGraphDetailsId(ObjectId graphDetailsId);
+	void clear();
 	
 }

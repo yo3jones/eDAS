@@ -16,7 +16,7 @@ public class ExecutionStoreGraphDetailsChangedListener implements
 	
 	@Override
 	public void onApplicationEvent(DesignGraphDetailsChangedEvent event) {
-		executions.removeByGraphDetailsId(event.getGraphDetailsId());
+		executions.clear();
 	}
 	
 }

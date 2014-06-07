@@ -67,7 +67,7 @@ public class ExecutionManagerImpl implements ExecutionManager, Serializable {
 	
 	@Override
 	public void clear(ObjectId id) {
-		executions.remove(id);
+		executions.clear();
 	}
 
 	@Override

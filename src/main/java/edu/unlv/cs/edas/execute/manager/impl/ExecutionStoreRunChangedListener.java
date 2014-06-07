@@ -15,7 +15,7 @@ public class ExecutionStoreRunChangedListener implements ApplicationListener<Run
 	
 	@Override
 	public void onApplicationEvent(RunChangedEvent event) {
-		executions.remove(event.getRunId());
+		executions.clear();
 	}
 	
 }

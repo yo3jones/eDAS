@@ -15,7 +15,7 @@ public class ExecutionStoreAlgorithmChangedListener implements
 	@Autowired ExecutionsStore executions;
 	
 	public void onApplicationEvent(AlgorithmChangedEvent event) {
-		executions.removeByAlgorithmId(event.getAlgorithmId());
+		executions.clear();
 	}
 	
 }
