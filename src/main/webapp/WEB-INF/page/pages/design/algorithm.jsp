@@ -14,18 +14,16 @@
 <div class="edas-content">
 	<fieldset class="ui-widget">
 		<form:form id="algorithms-put-form" method="PUT">
-			<p><label>Name:</label><input type="text" name="name" value="${model.name}"></p>
-			<p><label>State Display Pattern:</label><input type="text" name="stateDisplayPattern" value="${model.stateDisplayPattern}"></p>
-			<p><label>Message Display Pattern:</label><input type="text" name="messageDisplayPattern" value="${model.messageDisplayPattern}"></p>
-			<p><label>Bidirectional:</label><input type="checkbox" name="bidirectional" ${model.bidirectional ? "checked" : ""}></p>
+			<div class="edas-input-line"><label>Name:</label><input type="text" name="name" value="${model.name}"></div>
+			<div class="edas-input-line"><label>State Display Pattern:</label><input type="text" name="stateDisplayPattern" value="${model.stateDisplayPattern}"></div>
+			<div class="edas-input-line"><label>Message Display Pattern:</label><input type="text" name="messageDisplayPattern" value="${model.messageDisplayPattern}"></div>
+			<div class="edas-input-line"><label>Bidirectional:</label><input type="checkbox" name="bidirectional" ${model.bidirectional ? "checked" : ""}></div>
 			<c:if test="${showCompileError}">
-				<p>
-					<div class="ui-widget ui-state-error ui-corner-all">
-						<span class="ui-state-error-text">${compileErrorMessage}</span>
-					</div>
-				</p>
+				<div class="edas-input-line ui-widget ui-state-error ui-corner-all">
+					<span class="ui-state-error-text">${compileErrorMessage}</span>
+				</div>
 			</c:if>
-			<p><label>Algorithm:</label><textarea rows="20" name="algorithm">${model.algorithm}</textarea></p>
+			<div class="edas-input-line"><label>Algorithm:</label><textarea rows="20" name="algorithm">${model.algorithm}</textarea></div>
 		</form:form>
 		<div class="edas-button-bar">
 			<c:url var="algorithmsUrl" value="/design/algorithms"/>

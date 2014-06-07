@@ -21,7 +21,7 @@
 <div class="graph-details-content edas-content">
 	<div class="graph-details-fields">
 		<fieldset class="ui-widget">
-			<p><label>Name:</label><input type="text" id="graph-details-name"/></p>
+			<div class="edas-input-line"><label>Name:</label><input type="text" id="graph-details-name"/></div>
 			<div class="edas-button-bar">
 				<c:url var="graphDetailsBackUrl" value="/design/graphDetails"/>
 				<a href="${graphDetailsBackUrl}"><button id="graph-details-back">Back</button></a>

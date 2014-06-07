@@ -14,10 +14,10 @@
 	
 	<fieldset>
 		<form:form id="run-put-form" method="PUT">
-			<p><label class="ui-widget">Name:</label><input class="ui-widget" type="text" name="name" value="${model.run.name}"></p>
-			<p><label class="ui-widget">Graph:</label><input  class="ui-widget" type="text" id="run-graph-name" value="${model.graphName}"/></p>
+			<div class="edas-input-line"><label class="ui-widget">Name:</label><input class="ui-widget" type="text" name="name" value="${model.run.name}"></div>
+			<div class="edas-input-line"><label class="ui-widget">Graph:</label><input  class="ui-widget" type="text" id="run-graph-name" value="${model.graphName}"/></div>
 			<input type="hidden" name="graphId" id="run-graph-id" value="${model.graphId}"/>
-			<p><label class="ui-widget">Algorithm:</label><input  class="ui-widget" type="text" id="run-algorithm-name" value="${model.algorithmName}"></p>
+			<div class="edas-input-line"><label class="ui-widget">Algorithm:</label><input  class="ui-widget" type="text" id="run-algorithm-name" value="${model.algorithmName}"></div>
 			<input type="hidden" name="algorithmId" id="run-algorithm-id" value="${model.algorithmId}">
 		</form:form>
 		<div class="edas-button-bar">

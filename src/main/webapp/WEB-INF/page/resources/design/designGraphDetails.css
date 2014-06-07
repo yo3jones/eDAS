@@ -6,10 +6,10 @@ HTML, BODY {
 }
 
 .graph-details-content FIELDSET {
-	width: 376px;
+	width: 378px;
 }
 
-.graph-details-content FIELDSET P LABEL {
+.graph-details-content FIELDSET .edas-input-line LABEL {
 	width: 60px;
 }
 
@@ -27,7 +27,7 @@ HTML, BODY {
 	position: absolute;
 	left: 0px;
 	top: 0px;
-	width: 377px;
+	width: 379px;
 	bottom: 0px;
 	
 }
@@ -35,7 +35,7 @@ HTML, BODY {
 .graph-details-graph {
 	position: absolute;
 	top: 0px;
-	left: 377px;
+	left: 379px;
 	right: 0px;
 	bottom: 0px;
 	border: 1px solid #e3a1a1;
