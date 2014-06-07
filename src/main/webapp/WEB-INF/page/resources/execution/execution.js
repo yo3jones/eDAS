@@ -144,7 +144,7 @@ $(function() {
 		$(".execution-vertex-state").remove();
 		$(".execution-edge-message").remove();
 		
-		$("CIRCLE.vertex-circle").each(function() {
+		$("circle.vertex-circle").each(function() {
 			var clientRect = this.getBoundingClientRect();
 			var id = $(this).parent().get(0).getAttribute("vertexid");
 			
@@ -171,8 +171,8 @@ $(function() {
 				left: left + "%"});
 		});
 		
-		$("G.edge-container").each(function() {
-			var line = $(this).children("LINE.edge-line");
+		$("g.edge-container").each(function() {
+			var line = $(this).children("line.edge-line");
 			var fromVertexId = this.getAttribute("vertexid1");
 			var toVertexId = this.getAttribute("vertexid2");
 			
@@ -196,8 +196,8 @@ $(function() {
 				return;
 			}
 			
-			var fromVertex = $("CIRCLE.vertex-circle-" + fromVertexId);
-			var toVertex = $("CIRCLE.vertex-circle-" + toVertexId);
+			var fromVertex = $("circle.vertex-circle-" + fromVertexId);
+			var toVertex = $("circle.vertex-circle-" + toVertexId);
 			
 			var fromVertexBoundingRect = fromVertex.get(0).getBoundingClientRect();
 			var toVertexBoundingRect = toVertex.get(0).getBoundingClientRect();

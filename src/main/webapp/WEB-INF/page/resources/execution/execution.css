@@ -59,7 +59,7 @@ HTML, BODY {
 	padding: 2px;
 }
 
-.edge-container LINE.edge-line {
+.edge-container line.edge-line {
 	stroke: black;
 }
 
@@ -69,16 +69,20 @@ HTML, BODY {
 	padding: 2px;
 }
 
-CIRCLE.highlight {
+circle.highlight {
 	fill: #C00;
 }
 
-.edge-container LINE.edge-line.highlight {
+circle.disabled {
+	fill: grey;
+}
+
+.edge-container line.edge-line.highlight {
 	stroke: #C00;
 	stroke-width: 5px;
 }
 
-.edge-container LINE.edge-line.disabled {
+.edge-container line.edge-line.disabled {
 	stroke: grey;
 	stroke-dasharray: 2 10;
 }
